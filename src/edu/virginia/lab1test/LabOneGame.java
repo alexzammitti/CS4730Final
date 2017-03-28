@@ -24,10 +24,15 @@ public class LabOneGame extends Game {
 
 	/* Create a sprite object for our game. We'll use mario */
 	public int frameCounter = 0;
+	public boolean selection = true;
+	public boolean placing = false;
+	public boolean play = false;
 	public PhysicsSprite mario = new PhysicsSprite("Mario", "SpriteSheet.png");
 	public Sprite coin = new Sprite("Coin", "Coin.png");
 	public Sprite platform1 = new Sprite("Platform1", "Brick.png");
 	public Sprite platform2 = new Sprite("Platform2", "Brick.png");
+	public Sprite platform3 = new Sprite("Platform3", "Brick.png");
+	public Sprite spike1 = new Sprite("Spike1", "SpikeRow.png");
 	public SoundManager mySoundManager = SoundManager.getInstance();
 	public QuestManager myQM = new QuestManager();
 	public CollisionManager myCM = new CollisionManager();
@@ -52,28 +57,45 @@ public class LabOneGame extends Game {
 	 * Constructor. See constructor in Game.java for details on the parameters given
 	 * */
 	public LabOneGame() {
-		super("Lab Four Test Game", 1000, 600);
+		super("Lab Four Test Game", 1250, 700);
 		mario.setxPosition(0);
-		mario.setyPosition(507);
+		mario.setyPosition(130);
 		mario.setxScale(3.5);
 		mario.setyScale(3.5);
 		mario.setAlpha(0);
-		coin.setxPosition(800);
-		coin.setyPosition(60);
+		mario.setAirborne(true);
+
+		coin.setxPosition(1150);
+		coin.setyPosition(290);
 		coin.setxScale(.17);
 		coin.setyScale(.17);
-		platform1.setxPosition(200);
-		platform1.setyPosition(400);
+
+		platform1.setxPosition(0);
+		platform1.setyPosition(350);
 		platform1.setxScale(.7);
 		platform1.setyScale(.3);
-		platform2.setxPosition(550);
-		platform2.setyPosition(250);
+
 		platform2.setxScale(.7);
 		platform2.setyScale(.3);
+		platform2.setxPosition(1250 - platform2.getScaledWidth());
+		platform2.setyPosition(350);
+
+		spike1.setVisible(true);
+		spike1.setxScale(.3);
+		spike1.setyScale(.3);
+		spike1.setxPosition(650);
+		spike1.setyPosition(500);
+
+		platform3.setVisible(true);
+        platform3.setxScale(.7);
+        platform3.setyScale(.3);
+        platform3.setxPosition(300);
+        platform3.setyPosition(500);
+
 		coin.addEventListener(myQM, PickedUpEvent.COIN_PICKED_UP);
 		mario.addEventListener(myCM, CollisionEvent.COLLISION);
-		mySoundManager.setLoopMusic(true);
-		mySoundManager.playMusic("smb_over.mid");
+		//mySoundManager.setLoopMusic(true);
+		//mySoundManager.playMusic("smb_over.mid");
 
 		marioFade.animate(TweenableParams.ALPHA,0,1,100);
 		tweenJuggler.add(marioFade);
@@ -89,167 +111,175 @@ public class LabOneGame extends Game {
 	public void update(ArrayList<String> pressedKeys){
 		super.update(pressedKeys);
 		/* Make sure mario is not null. Sometimes Swing can auto cause an extra frame to go before everything is initialized */
-		frameCounter++;
-		if(frameCounter >= 2) {
-
-			mario.update(pressedKeys);
-			coin.update(pressedKeys);
-			platform1.update(pressedKeys);
-			platform2.update(pressedKeys);
-
-			if (mario.getyPosition() >= 508) {
-				mario.setAirborne(false);
-				mario.setyPosition(507);
-			}
+		if(selection) {
 
 
-			if (mario != null) {
-				if(marioFade.isComplete()) {
-					tweenJuggler.remove(marioFade);
-				}
-
-				if(coinx.isComplete()) {
-					coinFade.animate(TweenableParams.ALPHA,1,0,400);
-					tweenJuggler.add(coinFade);
-				}
-
-				if(coinFade.isComplete()) {
-					mySoundManager.setLoopMusic(false);
-					mySoundManager.stopMusic(mySoundManager.bkgmusic);
-					mySoundManager.playSound("smb_flag.mid");
-					this.pause();
-				}
-
-				if (mario.collidesWith(coin) && coin.isVisible() && !gotCoin) {
-					gotCoin = true;
-					coinx.animate(TweenableParams.X,coin.getxPosition(),450,100);
-					coiny.animate(TweenableParams.Y,coin.getyPosition(),200,100);
-					coinScaleX.animate(TweenableParams.SCALE_X,coin.getxScale(),coin.getxScale()*3,100);
-					coinScaleY.animate(TweenableParams.SCALE_Y,coin.getyScale(),coin.getyScale()*3,100);
-					tweenJuggler.add(coinx);
-					tweenJuggler.add(coiny);
-					tweenJuggler.add(coinScaleX);
-					tweenJuggler.add(coinScaleY);
-				}
-
-				if (mario.collidesWith(platform1)) {
-					if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() > mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-						if (mario.getyPosition() < platform1.getyPosition()) {
-							mario.setyPosition(platform1.getyPosition() - mario.getScaledHeight() - 1);
-							mario.setAirborne(false);
-							mario.setJump(false);
-							onPlat1 = true;
-						} else {
-							mario.setyPosition(platform1.getyPosition() + platform1.getScaledHeight() + 1);
-							mario.setyVelocity((int) (mario.getyVelocity() * (-1.5)));
-							mario.setJump(false);
-						}
-					}
-					if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-						if (mario.getxPosition() < platform1.getxPosition()) {
-							mario.setxPosition(platform1.getxPosition() - mario.getScaledWidth());
-							mario.setxVelocity((int) (mario.getxVelocity() * (-1.5)));
-						} else {
-							mario.setxPosition(platform1.getxPosition() + platform1.getScaledWidth());
-							mario.setxVelocity((int) (mario.getxVelocity() * (-1.5)));
-						}
-					}
-				}
-
-				if (mario.collidesWith(platform2)) {
-					if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() > mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-						if (mario.getyPosition() < platform2.getyPosition()) {
-							mario.setyPosition(platform2.getyPosition() - mario.getScaledHeight() - 1);
-							mario.setAirborne(false);
-							mario.setJump(false);
-							onPlat2 = true;
-						} else {
-							mario.setyPosition(platform2.getyPosition() + platform2.getScaledHeight() + 1);
-							mario.setyVelocity((int) (mario.getyVelocity() * (-1.5)));
-							mario.setJump(false);
-						}
-					}
-					if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-						if (mario.getxPosition() < platform2.getxPosition()) {
-							mario.setxPosition(platform2.getxPosition() - mario.getScaledWidth());
-							mario.setxVelocity((int) (mario.getxVelocity() * (-1.5)));
-						} else {
-							mario.setxPosition(platform2.getxPosition() + platform2.getScaledWidth());
-							mario.setxVelocity((int) (mario.getxVelocity() * (-1.5)));
-						}
-					}
-				}
-
-				if (onPlat1 && ((mario.getxPosition() >= platform1.getxPosition() + platform1.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform1.getxPosition()))) {
-					onPlat1 = false;
-					mario.setAirborne(true);
-				}
-
-				if (onPlat2 && ((mario.getxPosition() >= platform2.getxPosition() + platform2.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform2.getxPosition()))) {
-					onPlat2 = false;
-					mario.setAirborne(true);
-				}
+        } else if(placing) {
 
 
-				if (pressedKeys.size() > 0) {
+        } else if(play) {
+            frameCounter++;
+            if (frameCounter >= 2) {
 
-					if (pressedKeys.contains("right") && ((mario.getxPosition() + mario.getScaledWidth()) < 996)) {
-						mario.setRight(true);
-						mario.setLeft(false);
-						prevAnim = animation;
-						animation = "walk";
-					} else {
-						mario.setRight(false);
-					}
+                mario.update(pressedKeys);
+                coin.update(pressedKeys);
+                platform1.update(pressedKeys);
+                platform2.update(pressedKeys);
 
-					if (pressedKeys.contains("left") && (mario.getxPosition() > 0)) {
-						mario.setLeft(true);
-						mario.setRight(false);
-						prevAnim = animation;
-						animation = "walk";
-					} else {
-						mario.setLeft(false);
-					}
+                if (mario.getyPosition() >= 608) {
+                    mario.setAirborne(false);
+                    mario.setyPosition(607);
+                }
 
-					if (pressedKeys.contains("up") && (mario.getyPosition() > 10)) {
-						if (!mario.isAirborne()) {
-							mario.setJump(true);
-							mario.setAirborne(true);
-							onPlat1 = false;
-						} else {
-							mario.setJump(false);
-						}
-					}
 
-				} else {
-					mario.setRight(false);
-					mario.setLeft(false);
-					mario.setJump(false);
-					if(!mario.isAirborne()) {
-						prevAnim = animation;
-						animation = "idle";
-					}
-				}
+                if (mario != null) {
+                    if (marioFade.isComplete()) {
+                        tweenJuggler.remove(marioFade);
+                    }
 
-				if(mario.getyVelocity() > 0) {
-					prevAnim = animation;
-					animation = "falling";
-				}
+                    if (coinx.isComplete()) {
+                        coinFade.animate(TweenableParams.ALPHA, 1, 0, 400);
+                        tweenJuggler.add(coinFade);
+                    }
 
-				if(mario.getyVelocity() < 0) {
-					prevAnim = animation;
-					animation = "jump";
-				}
+                    if (coinFade.isComplete()) {
+                        //mySoundManager.setLoopMusic(false);
+                        //mySoundManager.stopMusic(mySoundManager.bkgmusic);
+                        //mySoundManager.playSound("smb_flag.mid");
+                        this.pause();
+                    }
 
-				if(!mySoundManager.bkgmusic.isRunning() && mySoundManager.loopMusic) {
-					mySoundManager.playMusic("smb_over.mid");
-				}
+                    if (mario.collidesWith(coin) && coin.isVisible() && !gotCoin) {
+                        gotCoin = true;
+                        coinx.animate(TweenableParams.X, coin.getxPosition(), 450, 100);
+                        coiny.animate(TweenableParams.Y, coin.getyPosition(), 200, 100);
+                        coinScaleX.animate(TweenableParams.SCALE_X, coin.getxScale(), coin.getxScale() * 3, 100);
+                        coinScaleY.animate(TweenableParams.SCALE_Y, coin.getyScale(), coin.getyScale() * 3, 100);
+                        tweenJuggler.add(coinx);
+                        tweenJuggler.add(coiny);
+                        tweenJuggler.add(coinScaleX);
+                        tweenJuggler.add(coinScaleY);
+                    }
 
-				mario.animate(animation);
+                    if (mario.collidesWith(platform1)) {
+                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() > mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
+                            if (mario.getyPosition() < platform1.getyPosition()) {
+                                mario.setyPosition(platform1.getyPosition() - mario.getScaledHeight() - 1);
+                                mario.setAirborne(false);
+                                mario.setJump(false);
+                                onPlat1 = true;
+                            } else {
+                                mario.setyPosition(platform1.getyPosition() + platform1.getScaledHeight() + 1);
+                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
+                                mario.setJump(false);
+                            }
+                        }
+                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
+                            if (mario.getxPosition() < platform1.getxPosition()) {
+                                mario.setxPosition(platform1.getxPosition() - mario.getScaledWidth());
+                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+                            } else {
+                                mario.setxPosition(platform1.getxPosition() + platform1.getScaledWidth());
+                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+                            }
+                        }
+                    }
 
-			}
-			tweenJuggler.update();
-		}
+                    if (mario.collidesWith(platform2)) {
+                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() > mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
+                            if (mario.getyPosition() < platform2.getyPosition()) {
+                                mario.setyPosition(platform2.getyPosition() - mario.getScaledHeight() - 1);
+                                mario.setAirborne(false);
+                                mario.setJump(false);
+                                onPlat2 = true;
+                            } else {
+                                mario.setyPosition(platform2.getyPosition() + platform2.getScaledHeight() + 1);
+                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
+                                mario.setJump(false);
+                            }
+                        }
+                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
+                            if (mario.getxPosition() < platform2.getxPosition()) {
+                                mario.setxPosition(platform2.getxPosition() - mario.getScaledWidth());
+                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+                            } else {
+                                mario.setxPosition(platform2.getxPosition() + platform2.getScaledWidth());
+                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+                            }
+                        }
+                    }
+
+                    if (onPlat1 && ((mario.getxPosition() >= platform1.getxPosition() + platform1.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform1.getxPosition()))) {
+                        onPlat1 = false;
+                        mario.setAirborne(true);
+                    }
+
+                    if (onPlat2 && ((mario.getxPosition() >= platform2.getxPosition() + platform2.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform2.getxPosition()))) {
+                        onPlat2 = false;
+                        mario.setAirborne(true);
+                    }
+
+
+                    if (pressedKeys.size() > 0) {
+
+                        if (pressedKeys.contains("right") && ((mario.getxPosition() + mario.getScaledWidth()) < 1250)) {
+                            mario.setRight(true);
+                            mario.setLeft(false);
+                            prevAnim = animation;
+                            animation = "walk";
+                        } else {
+                            mario.setRight(false);
+                        }
+
+                        if (pressedKeys.contains("left") && (mario.getxPosition() > 0)) {
+                            mario.setLeft(true);
+                            mario.setRight(false);
+                            prevAnim = animation;
+                            animation = "walk";
+                        } else {
+                            mario.setLeft(false);
+                        }
+
+                        if (pressedKeys.contains("up") && (mario.getyPosition() > 10)) {
+                            if (!mario.isAirborne()) {
+                                mario.setJump(true);
+                                mario.setAirborne(true);
+                                onPlat1 = false;
+                            } else {
+                                mario.setJump(false);
+                            }
+                        }
+
+                    } else {
+                        mario.setRight(false);
+                        mario.setLeft(false);
+                        mario.setJump(false);
+                        if (!mario.isAirborne()) {
+                            prevAnim = animation;
+                            animation = "idle";
+                        }
+                    }
+
+                    if (mario.getyVelocity() > 0) {
+                        prevAnim = animation;
+                        animation = "falling";
+                    }
+
+                    if (mario.getyVelocity() < 0) {
+                        prevAnim = animation;
+                        animation = "jump";
+                    }
+
+                    //if(!mySoundManager.bkgmusic.isRunning() && mySoundManager.loopMusic) {
+                    //	mySoundManager.playMusic("smb_over.mid");
+                    //}
+
+                    mario.animate(animation);
+
+                }
+                tweenJuggler.update();
+            }
+        }
 	}
 	
 	/**
@@ -274,6 +304,14 @@ public class LabOneGame extends Game {
 		if(platform2 != null) {
 			platform2.draw(g);
 		}
+
+		if(spike1.isVisible() && spike1 != null) {
+		    spike1.draw(g);
+        }
+
+        if(platform3.isVisible() && platform3 != null) {
+            platform3.draw(g);
+        }
 
 		if(coin != null && gotCoin) {
 
