@@ -272,8 +272,8 @@ public class DisplayObject extends EventDispatcher {
 		if(object != null) {
 			if (object.getHitbox().intersects(this.hitbox)) {
 				//event
-				this.dispatchEvent(new Event("collision", this));
-				object.dispatchEvent(new Event("collision", object));
+				this.dispatchEvent(new Event(Event.COLLISION, this));
+				object.dispatchEvent(new Event(Event.COLLISION, object));
 				return true;
 			}
 		}

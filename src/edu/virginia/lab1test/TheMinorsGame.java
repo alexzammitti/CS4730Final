@@ -58,8 +58,10 @@ public class TheMinorsGame extends Game {
 	public SoundManager mySoundManager = SoundManager.getInstance();
 
 	// EVENT MANAGERS
-	public QuestManager myQM = new QuestManager();
-	public CollisionManager myCM = new CollisionManager();
+	public EventManager eventManager = new EventManager();
+
+
+	// These variables should become fields of sprites
 	public boolean onPlat1 = false;
 	public boolean onPlat2 = false;
 	public boolean gotCoin = false;
