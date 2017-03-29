@@ -136,6 +136,23 @@ public class DisplayObject extends EventDispatcher {
 		this.alpha = alpha;
 	}
 
+	// Multiple argument setters
+	public void setPosition(int x, int y) {this.xPosition = x;this.yPosition = y;}
+	public void setPivotPoint(int x, int y) {this.xPivot = x;this.yPivot = y; }
+	public void setScale(double x, double y) {this.xScale = x; this.yScale = y;}
+
+
+	// alignment
+	public void alignCenterVertical(DisplayObject parent) {
+		int y = parent.getScaledHeight()/2 - this.getScaledHeight()/2;
+		this.setyPosition(y);
+	}
+	public void alignCenterHorizontal(DisplayObject parent) {
+		int x = parent.getScaledWidth()/2 - this.getScaledWidth()/2;
+		this.setxPosition(x);
+	}
+
+
 	public Rectangle getHitbox() { return hitbox; }
 
 	/**
@@ -252,9 +269,12 @@ public class DisplayObject extends EventDispatcher {
 	 * objects state before the draw occurs. Should be overridden if necessary
 	 * to update objects appropriately.
 	 * */
-	protected void update(ArrayList<String> pressedKeys) {
-		hitbox.setBounds(this.xPosition, this.yPosition, this.getScaledWidth(), this.getScaledHeight());
-		//System.out.println("Updating mario hitbox. loc = " + hitbox.getLocation() + " size = " + hitbox.getSize());
+	protected void update(ArrayList<Integer> pressedKeys) {
+		if(this != null) {
+			hitbox.setBounds(this.xPosition,this.yPosition,this.getScaledWidth(),this.getScaledHeight());
+			//System.out.println("setting " + this.getId());
+			//System.out.println("Setting hitbox to " + this.xPosition+" "+this.yPosition+" "+this.getWidth()+" "+this.getHeight());
+		}
 	}
 
 	/**

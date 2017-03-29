@@ -63,7 +63,7 @@ public class AnimatedSprite extends Sprite {
 		this.endIndex = endIndex;
 	}
 
-	public void update(ArrayList<String> pressedKeys) { super.update(pressedKeys); }
+	public void update(ArrayList<Integer> pressedKeys) { super.update(pressedKeys); }
 
 	public AnimatedSprite(String id) { super(id); }
 

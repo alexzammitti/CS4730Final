@@ -95,7 +95,7 @@ public class PhysicsSprite extends AnimatedSprite {
         super(id, filename);
     }
 
-    public void update(ArrayList<String> pressedKeys) {
+    public void update(ArrayList<Integer> pressedKeys) {
         super.update(pressedKeys);
         if(right) {
             xVelocity = 7;

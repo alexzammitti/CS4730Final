@@ -172,44 +172,18 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 		return scenePanel;
 	}
 
-	ArrayList<String> pressedKeys = new ArrayList<String>();
-	//@Override
+	ArrayList<Integer> pressedKeys = new ArrayList<Integer>();
+	@Override
 	public void keyPressed(KeyEvent e) {
-		if(!pressedKeys.contains(KeyEvent.getKeyText(e.getKeyCode()))) {
-			//System.out.println(e.getKeyCode());
-			if(e.getKeyCode() == 39) {
-				pressedKeys.add("right");}
-			else if(e.getKeyCode() == 37) {
-			pressedKeys.add("left");}
-			else if(e.getKeyCode() == 38) {
-				pressedKeys.add("up");}
-			else if(e.getKeyCode() == 40) {
-				pressedKeys.add("down");}
-			else {
-			pressedKeys.add(KeyEvent.getKeyText(e.getKeyCode()));
-			}
-			
-		}
+		if(!pressedKeys.contains((Integer)e.getKeyCode()))
+			pressedKeys.add((Integer)e.getKeyCode());
 	}
 
-
-	//@Override
+	@Override
 	public void keyReleased(KeyEvent e) {
-		if(pressedKeys.contains(KeyEvent.getKeyText(e.getKeyCode())))
-			pressedKeys.remove(KeyEvent.getKeyText(e.getKeyCode()));
-		while(pressedKeys.contains("right") && e.getKeyCode() == 39) {
-			pressedKeys.remove("right");
-		}
-		while(pressedKeys.contains("left") && e.getKeyCode() == 37) {
-			pressedKeys.remove("left");
-		}
-		while(pressedKeys.contains("up") && e.getKeyCode() == 38) {
-			pressedKeys.remove("up");
-		}
-		while(pressedKeys.contains("down") && e.getKeyCode() == 40) {
-			pressedKeys.remove("down");
-		}
-		
+		if(pressedKeys.contains((Integer)e.getKeyCode()))
+			pressedKeys.remove((Integer)e.getKeyCode());
+
 	}
 
 

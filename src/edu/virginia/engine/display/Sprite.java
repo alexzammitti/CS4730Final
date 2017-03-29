@@ -22,7 +22,7 @@ public class Sprite extends DisplayObjectContainer {
 	}
 	
 	@Override
-	public void update(ArrayList<String> pressedKeys) {
+	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
 	}
 

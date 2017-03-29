@@ -1,11 +1,6 @@
 package edu.virginia.lab1test;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import edu.virginia.engine.Tween.Tween;
@@ -20,20 +15,49 @@ import edu.virginia.engine.util.SoundManager;
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
  * although, for now, it won't be a very fun game :)
  * */
-public class LabOneGame extends Game {
+public class TheMinorsGame extends Game {
 
-	/* Create a sprite object for our game. We'll use mario */
-	public int frameCounter = 0;
-	public boolean selection = true;
-	public boolean placing = false;
-	public boolean play = false;
+    // GLOBAL CONSTANTS
+    public enum GameMode {
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU
+    }
+
+    public GameMode gameMode = GameMode.ITEM_SELECTION;
+    public final static int GAME_WIDTH = 1250;
+    public final static int GAME_HEIGHT = 700;
+    public final static int KEY_UP = 38;
+    public final static int KEY_DOWN = 40;
+    public final static int KEY_LEFT = 37;
+    public final static int KEY_RIGHT = 39;
+
+
+
+	// GLOBAL VARIABLES
+    public int frameCounter = 0;
+
+
+	// SET UP SPRITE ASSETS
+    // Characters
 	public PhysicsSprite mario = new PhysicsSprite("Mario", "SpriteSheet.png");
+	// Placeable items
 	public Sprite coin = new Sprite("Coin", "Coin.png");
+	public Sprite platform = new Sprite("Platform","Brick.png");
 	public Sprite platform1 = new Sprite("Platform1", "Brick.png");
 	public Sprite platform2 = new Sprite("Platform2", "Brick.png");
 	public Sprite platform3 = new Sprite("Platform3", "Brick.png");
 	public Sprite spike1 = new Sprite("Spike1", "SpikeRow.png");
+	// Backgrounds
+    public Sprite selectionBackground = new Sprite("SelectionBackground","item-selection-screen.png");
+    // Cursors
+    private Sprite cursor = new Sprite("Cursor","cursor.png");
+    // Item Lists
+    public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
+    public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
+
+	// AUDIO ASSETS
 	public SoundManager mySoundManager = SoundManager.getInstance();
+
+	// EVENT MANAGERS
 	public QuestManager myQM = new QuestManager();
 	public CollisionManager myCM = new CollisionManager();
 	public boolean onPlat1 = false;
@@ -41,7 +65,11 @@ public class LabOneGame extends Game {
 	public boolean gotCoin = false;
 	public String animation = "idle";
 	public String prevAnim = "idle";
+
+	// SINGLETON TWEEN JUGGLER
 	public TweenJuggler tweenJuggler = new TweenJuggler();
+
+	// tween stuff... not sure how this works  - Jaz
 	public TweenTransitions linear = new TweenTransitions("linear");
 	public TweenTransitions exponential = new TweenTransitions("exponential");
 	public TweenTransitions square = new TweenTransitions("square");
@@ -52,12 +80,40 @@ public class LabOneGame extends Game {
 	public Tween coinScaleY = new Tween(coin, linear);
 	public Tween coinFade = new Tween(coin, exponential);
 
+
+
+
+	// GAME CLOCKS
+    //item selection, item placement, play time
 	
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters given
 	 * */
-	public LabOneGame() {
-		super("Lab Four Test Game", 1250, 700);
+	public TheMinorsGame() {
+		super("The Minors Game", GAME_WIDTH, GAME_HEIGHT);
+
+		// SET SPRITE INITIAL POSITIONS
+        cursor.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
+        cursor.setScale(.5,.5);
+
+        selectionBackground.setPosition(300,80);
+        selectionBackground.setScale(1.2,1.3);
+
+        platform.setPosition(50,100);
+        platform.setScale(0.7,0.3);
+
+        spike1.setPosition(200,200);
+        spike1.setScale(0.3,0.3);
+
+        // BUILD DISPLAY TREES
+        selectionBackground.addChild(platform);
+        selectionBackground.addChild(spike1);
+
+        // ESTABLISH EVENT LISTENERS
+
+
+        // SET UP TWEENS
+
 		mario.setxPosition(0);
 		mario.setyPosition(130);
 		mario.setxScale(3.5);
@@ -80,18 +136,6 @@ public class LabOneGame extends Game {
 		platform2.setxPosition(1250 - platform2.getScaledWidth());
 		platform2.setyPosition(350);
 
-		spike1.setVisible(true);
-		spike1.setxScale(.3);
-		spike1.setyScale(.3);
-		spike1.setxPosition(650);
-		spike1.setyPosition(500);
-
-		platform3.setVisible(true);
-        platform3.setxScale(.7);
-        platform3.setyScale(.3);
-        platform3.setxPosition(300);
-        platform3.setyPosition(500);
-
 		coin.addEventListener(myQM, PickedUpEvent.COIN_PICKED_UP);
 		mario.addEventListener(myCM, CollisionEvent.COLLISION);
 		//mySoundManager.setLoopMusic(true);
@@ -101,23 +145,30 @@ public class LabOneGame extends Game {
 		tweenJuggler.add(marioFade);
 
 
+        gameMode = GameMode.ITEM_SELECTION;
+        placeableItemList.add(platform);
+        placeableItemList.add(spike1);
 	}
 	
-	/**
-	 * Engine will automatically call this update method once per frame and pass to us
-	 * the set of keys (as strings) that are currently being pressed down
-	 * */
+
+
 	@Override
-	public void update(ArrayList<String> pressedKeys){
+	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
-		/* Make sure mario is not null. Sometimes Swing can auto cause an extra frame to go before everything is initialized */
-		if(selection) {
 
+		switch(gameMode) {
+            case ITEM_SELECTION:
+                itemSelectionUpdate(pressedKeys);
+                break;
+            case ITEM_PLACEMENT:
+                break;
+            case GAMEPLAY:
+                break;
+            case MAIN_MENU:
+                break;
+        }
 
-        } else if(placing) {
-
-
-        } else if(play) {
+        if(false) {
             frameCounter++;
             if (frameCounter >= 2) {
 
@@ -281,17 +332,41 @@ public class LabOneGame extends Game {
             }
         }
 	}
-	
-	/**
-	 * Engine automatically invokes draw() every frame as well. If we want to make sure mario gets drawn to
-	 * the screen, we need to make sure to override this method and call mario's draw method.
-	 * */
+
+	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
+	    if(cursor != null) {
+            // SET CURSORS VISIBLE
+            cursor.setVisible(true);
+            // MOVE CURSOR BASED ON USER INPUT
+            if (pressedKeys.contains(KEY_UP)) {
+                cursor.setyPosition(cursor.getyPosition() - 5);
+            } else if (pressedKeys.contains(KEY_DOWN)) {
+                cursor.setyPosition(cursor.getyPosition() + 5);
+            }
+            if (pressedKeys.contains(KEY_LEFT)) {
+                cursor.setxPosition(cursor.getxPosition() - 5);
+            } else if (pressedKeys.contains(KEY_RIGHT)) {
+                cursor.setxPosition(cursor.getxPosition() + 5);
+            }
+            // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
+            for(Sprite s : placeableItemList) {
+
+            }
+            // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
+            //if colliding and a is pressed
+            //give item to player
+            //remove from selectable items
+            //set visibility
+
+            // CHECK IF SELECTION IS DONE OR TIMED OUT
+            //end selection phase and move into item phase
+        }
+    }
+
+
 	@Override
 	public void draw(Graphics g){
-
-		
 		super.draw(g);
-
 
 		if(mario != null && mario.isVisible()) {
 			mario.draw(g);
@@ -305,14 +380,6 @@ public class LabOneGame extends Game {
 			platform2.draw(g);
 		}
 
-		if(spike1.isVisible() && spike1 != null) {
-		    spike1.draw(g);
-        }
-
-        if(platform3.isVisible() && platform3 != null) {
-            platform3.draw(g);
-        }
-
 		if(coin != null && gotCoin) {
 
 			//coin.setVisible(false);
@@ -325,19 +392,32 @@ public class LabOneGame extends Game {
 		if(coin != null && coin.isVisible()) {
 			coin.draw(g);
 		}
-		
-		/* Same, just check for null in case a frame gets thrown in before Mario is initialized */
 
-		
-		
+        switch(gameMode) {
+            case ITEM_SELECTION:
+                itemSelectionDraw(g);
+                break;
+            case ITEM_PLACEMENT:
+                break;
+            case GAMEPLAY:
+                break;
+            case MAIN_MENU:
+                break;
+        }
 	}
 
-	/**
-	 * Quick main class that simply creates an instance of our game and starts the timer
-	 * that calls update() and draw() every frame
-	 * */
+    public void itemSelectionDraw(Graphics g) {
+	    if(cursor != null) { // everything????
+            selectionBackground.draw(g);
+//            for(Sprite s : placeableItemList) {
+//                if(s != null) s.draw(g);
+//            }
+            cursor.draw(g);
+	    }
+    }
+
 	public static void main(String[] args) {
-		LabOneGame game = new LabOneGame();
+		TheMinorsGame game = new TheMinorsGame();
 		game.start();
 
 	}
