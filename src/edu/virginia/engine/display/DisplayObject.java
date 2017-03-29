@@ -1,15 +1,15 @@
 package edu.virginia.engine.display;
 
-import edu.virginia.engine.event.CollisionEvent;
+import edu.virginia.engine.event.Event;
 import edu.virginia.engine.event.EventDispatcher;
-import edu.virginia.engine.event.IEventDispatcher;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import edu.virginia.engine.event.*;
+
 
 import javax.imageio.ImageIO;
 
@@ -254,13 +254,15 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public boolean collidesWith(DisplayObject object) {
-		if(this.hitbox.intersects(object.getHitbox())) {
-			CollisionEvent event = new CollisionEvent(this);
-			this.dispatchEvent(event);
-			return true;
-		} else {
-			return false;
+		if(object != null) {
+			if (object.getHitbox().intersects(this.hitbox)) {
+				//event
+				this.dispatchEvent(new Event("collision", this));
+				object.dispatchEvent(new Event("collision", object));
+				return true;
+			}
 		}
+		return false;
 	}
 
 

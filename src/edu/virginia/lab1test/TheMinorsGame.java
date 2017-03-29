@@ -3,10 +3,10 @@ package edu.virginia.lab1test;
 import java.awt.*;
 import java.util.ArrayList;
 
-import edu.virginia.engine.Tween.Tween;
-import edu.virginia.engine.Tween.TweenJuggler;
-import edu.virginia.engine.Tween.TweenTransitions;
-import edu.virginia.engine.Tween.TweenableParams;
+import edu.virginia.engine.tween.Tween;
+import edu.virginia.engine.tween.TweenJuggler;
+import edu.virginia.engine.tween.TweenTransition;
+import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.event.*;
 import edu.virginia.engine.util.SoundManager;
@@ -70,17 +70,9 @@ public class TheMinorsGame extends Game {
 	public TweenJuggler tweenJuggler = new TweenJuggler();
 
 	// tween stuff... not sure how this works  - Jaz
-	public TweenTransitions linear = new TweenTransitions("linear");
-	public TweenTransitions exponential = new TweenTransitions("exponential");
-	public TweenTransitions square = new TweenTransitions("square");
-	public Tween marioFade = new Tween(mario, linear);
-	public Tween coinx = new Tween(coin, exponential);
-	public Tween coiny = new Tween(coin, exponential);
-	public Tween coinScaleX = new Tween(coin, linear);
-	public Tween coinScaleY = new Tween(coin, linear);
-	public Tween coinFade = new Tween(coin, exponential);
 
 
+    public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
 
 
 	// GAME CLOCKS
@@ -114,12 +106,12 @@ public class TheMinorsGame extends Game {
 
         // SET UP TWEENS
 
-		mario.setxPosition(0);
-		mario.setyPosition(130);
-		mario.setxScale(3.5);
-		mario.setyScale(3.5);
-		mario.setAlpha(0);
-		mario.setAirborne(true);
+//		mario.setxPosition(0);
+//		mario.setyPosition(130);
+//		mario.setxScale(3.5);
+//		mario.setyScale(3.5);
+//		mario.setAlpha(0);
+//		mario.setAirborne(true);
 
 		coin.setxPosition(1150);
 		coin.setyPosition(290);
@@ -136,18 +128,16 @@ public class TheMinorsGame extends Game {
 		platform2.setxPosition(1250 - platform2.getScaledWidth());
 		platform2.setyPosition(350);
 
-		coin.addEventListener(myQM, PickedUpEvent.COIN_PICKED_UP);
-		mario.addEventListener(myCM, CollisionEvent.COLLISION);
-		//mySoundManager.setLoopMusic(true);
-		//mySoundManager.playMusic("smb_over.mid");
 
-		marioFade.animate(TweenableParams.ALPHA,0,1,100);
-		tweenJuggler.add(marioFade);
-
+        selectionBackgroundTween.animate(TweenableParam.ALPHA,0,1,1000);
+        tweenJuggler.add(selectionBackgroundTween);
 
         gameMode = GameMode.ITEM_SELECTION;
         placeableItemList.add(platform);
         placeableItemList.add(spike1);
+
+        // SET UP PHYSICS
+        //set gravity
 	}
 	
 
@@ -168,169 +158,170 @@ public class TheMinorsGame extends Game {
                 break;
         }
 
-        if(false) {
-            frameCounter++;
-            if (frameCounter >= 2) {
-
-                mario.update(pressedKeys);
-                coin.update(pressedKeys);
-                platform1.update(pressedKeys);
-                platform2.update(pressedKeys);
-
-                if (mario.getyPosition() >= 608) {
-                    mario.setAirborne(false);
-                    mario.setyPosition(607);
-                }
-
-
-                if (mario != null) {
-                    if (marioFade.isComplete()) {
-                        tweenJuggler.remove(marioFade);
-                    }
-
-                    if (coinx.isComplete()) {
-                        coinFade.animate(TweenableParams.ALPHA, 1, 0, 400);
-                        tweenJuggler.add(coinFade);
-                    }
-
-                    if (coinFade.isComplete()) {
-                        //mySoundManager.setLoopMusic(false);
-                        //mySoundManager.stopMusic(mySoundManager.bkgmusic);
-                        //mySoundManager.playSound("smb_flag.mid");
-                        this.pause();
-                    }
-
-                    if (mario.collidesWith(coin) && coin.isVisible() && !gotCoin) {
-                        gotCoin = true;
-                        coinx.animate(TweenableParams.X, coin.getxPosition(), 450, 100);
-                        coiny.animate(TweenableParams.Y, coin.getyPosition(), 200, 100);
-                        coinScaleX.animate(TweenableParams.SCALE_X, coin.getxScale(), coin.getxScale() * 3, 100);
-                        coinScaleY.animate(TweenableParams.SCALE_Y, coin.getyScale(), coin.getyScale() * 3, 100);
-                        tweenJuggler.add(coinx);
-                        tweenJuggler.add(coiny);
-                        tweenJuggler.add(coinScaleX);
-                        tweenJuggler.add(coinScaleY);
-                    }
-
-                    if (mario.collidesWith(platform1)) {
-                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() > mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-                            if (mario.getyPosition() < platform1.getyPosition()) {
-                                mario.setyPosition(platform1.getyPosition() - mario.getScaledHeight() - 1);
-                                mario.setAirborne(false);
-                                mario.setJump(false);
-                                onPlat1 = true;
-                            } else {
-                                mario.setyPosition(platform1.getyPosition() + platform1.getScaledHeight() + 1);
-                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
-                                mario.setJump(false);
-                            }
-                        }
-                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-                            if (mario.getxPosition() < platform1.getxPosition()) {
-                                mario.setxPosition(platform1.getxPosition() - mario.getScaledWidth());
-                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-                            } else {
-                                mario.setxPosition(platform1.getxPosition() + platform1.getScaledWidth());
-                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-                            }
-                        }
-                    }
-
-                    if (mario.collidesWith(platform2)) {
-                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() > mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-                            if (mario.getyPosition() < platform2.getyPosition()) {
-                                mario.setyPosition(platform2.getyPosition() - mario.getScaledHeight() - 1);
-                                mario.setAirborne(false);
-                                mario.setJump(false);
-                                onPlat2 = true;
-                            } else {
-                                mario.setyPosition(platform2.getyPosition() + platform2.getScaledHeight() + 1);
-                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
-                                mario.setJump(false);
-                            }
-                        }
-                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-                            if (mario.getxPosition() < platform2.getxPosition()) {
-                                mario.setxPosition(platform2.getxPosition() - mario.getScaledWidth());
-                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-                            } else {
-                                mario.setxPosition(platform2.getxPosition() + platform2.getScaledWidth());
-                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-                            }
-                        }
-                    }
-
-                    if (onPlat1 && ((mario.getxPosition() >= platform1.getxPosition() + platform1.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform1.getxPosition()))) {
-                        onPlat1 = false;
-                        mario.setAirborne(true);
-                    }
-
-                    if (onPlat2 && ((mario.getxPosition() >= platform2.getxPosition() + platform2.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform2.getxPosition()))) {
-                        onPlat2 = false;
-                        mario.setAirborne(true);
-                    }
-
-
-                    if (pressedKeys.size() > 0) {
-
-                        if (pressedKeys.contains("right") && ((mario.getxPosition() + mario.getScaledWidth()) < 1250)) {
-                            mario.setRight(true);
-                            mario.setLeft(false);
-                            prevAnim = animation;
-                            animation = "walk";
-                        } else {
-                            mario.setRight(false);
-                        }
-
-                        if (pressedKeys.contains("left") && (mario.getxPosition() > 0)) {
-                            mario.setLeft(true);
-                            mario.setRight(false);
-                            prevAnim = animation;
-                            animation = "walk";
-                        } else {
-                            mario.setLeft(false);
-                        }
-
-                        if (pressedKeys.contains("up") && (mario.getyPosition() > 10)) {
-                            if (!mario.isAirborne()) {
-                                mario.setJump(true);
-                                mario.setAirborne(true);
-                                onPlat1 = false;
-                            } else {
-                                mario.setJump(false);
-                            }
-                        }
-
-                    } else {
-                        mario.setRight(false);
-                        mario.setLeft(false);
-                        mario.setJump(false);
-                        if (!mario.isAirborne()) {
-                            prevAnim = animation;
-                            animation = "idle";
-                        }
-                    }
-
-                    if (mario.getyVelocity() > 0) {
-                        prevAnim = animation;
-                        animation = "falling";
-                    }
-
-                    if (mario.getyVelocity() < 0) {
-                        prevAnim = animation;
-                        animation = "jump";
-                    }
-
-                    //if(!mySoundManager.bkgmusic.isRunning() && mySoundManager.loopMusic) {
-                    //	mySoundManager.playMusic("smb_over.mid");
-                    //}
-
-                    mario.animate(animation);
-
-                }
-                tweenJuggler.update();
-            }
-        }
+//        if(false) {
+//            frameCounter++;
+//            if (frameCounter >= 2) {
+//
+//                mario.update(pressedKeys);
+//                coin.update(pressedKeys);
+//                platform1.update(pressedKeys);
+//                platform2.update(pressedKeys);
+//
+//                if (mario.getyPosition() >= 608) {
+//                    mario.setAirborne(false);
+//                    mario.setyPosition(607);
+//                }
+//
+//
+//                if (mario != null) {
+////                    if (marioFade.isComplete()) {
+////                        tweenJuggler.remove(marioFade);
+////                    }
+////
+////                    if (coinx.isComplete()) {
+////                        coinFade.animate(TweenableParams.ALPHA, 1, 0, 400);
+////                        tweenJuggler.add(coinFade);
+////                    }
+////
+////                    if (coinFade.isComplete()) {
+////                        //mySoundManager.setLoopMusic(false);
+////                        //mySoundManager.stopMusic(mySoundManager.bkgmusic);
+////                        //mySoundManager.playSound("smb_flag.mid");
+////                        this.pause();
+////                    }
+////
+////                    if (mario.collidesWith(coin) && coin.isVisible() && !gotCoin) {
+////                        gotCoin = true;
+////                        coinx.animate(TweenableParams.X, coin.getxPosition(), 450, 100);
+////                        coiny.animate(TweenableParams.Y, coin.getyPosition(), 200, 100);
+////                        coinScaleX.animate(TweenableParams.SCALE_X, coin.getxScale(), coin.getxScale() * 3, 100);
+////                        coinScaleY.animate(TweenableParams.SCALE_Y, coin.getyScale(), coin.getyScale() * 3, 100);
+////                        tweenJuggler.add(coinx);
+////                        tweenJuggler.add(coiny);
+////                        tweenJuggler.add(coinScaleX);
+////                        tweenJuggler.add(coinScaleY);
+////                    }
+//
+//                    if (mario.collidesWith(platform1)) {
+//                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() > mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
+//                            if (mario.getyPosition() < platform1.getyPosition()) {
+//                                mario.setyPosition(platform1.getyPosition() - mario.getScaledHeight() - 1);
+//                                mario.setAirborne(false);
+//                                mario.setJump(false);
+//                                onPlat1 = true;
+//                            } else {
+//                                mario.setyPosition(platform1.getyPosition() + platform1.getScaledHeight() + 1);
+//                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
+//                                mario.setJump(false);
+//                            }
+//                        }
+//                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
+//                            if (mario.getxPosition() < platform1.getxPosition()) {
+//                                mario.setxPosition(platform1.getxPosition() - mario.getScaledWidth());
+//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+//                            } else {
+//                                mario.setxPosition(platform1.getxPosition() + platform1.getScaledWidth());
+//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+//                            }
+//                        }
+//                    }
+//
+//                    if (mario.collidesWith(platform2)) {
+//                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() > mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
+//                            if (mario.getyPosition() < platform2.getyPosition()) {
+//                                mario.setyPosition(platform2.getyPosition() - mario.getScaledHeight() - 1);
+//                                mario.setAirborne(false);
+//                                mario.setJump(false);
+//                                onPlat2 = true;
+//                            } else {
+//                                mario.setyPosition(platform2.getyPosition() + platform2.getScaledHeight() + 1);
+//                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
+//                                mario.setJump(false);
+//                            }
+//                        }
+//                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
+//                            if (mario.getxPosition() < platform2.getxPosition()) {
+//                                mario.setxPosition(platform2.getxPosition() - mario.getScaledWidth());
+//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+//                            } else {
+//                                mario.setxPosition(platform2.getxPosition() + platform2.getScaledWidth());
+//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
+//                            }
+//                        }
+//                    }
+//
+//                    if (onPlat1 && ((mario.getxPosition() >= platform1.getxPosition() + platform1.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform1.getxPosition()))) {
+//                        onPlat1 = false;
+//                        mario.setAirborne(true);
+//                    }
+//
+//                    if (onPlat2 && ((mario.getxPosition() >= platform2.getxPosition() + platform2.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform2.getxPosition()))) {
+//                        onPlat2 = false;
+//                        mario.setAirborne(true);
+//                    }
+//
+//
+//                    if (pressedKeys.size() > 0) {
+//
+//                        if (pressedKeys.contains("right") && ((mario.getxPosition() + mario.getScaledWidth()) < 1250)) {
+//                            mario.setRight(true);
+//                            mario.setLeft(false);
+//                            prevAnim = animation;
+//                            animation = "walk";
+//                        } else {
+//                            mario.setRight(false);
+//                        }
+//
+//                        if (pressedKeys.contains("left") && (mario.getxPosition() > 0)) {
+//                            mario.setLeft(true);
+//                            mario.setRight(false);
+//                            prevAnim = animation;
+//                            animation = "walk";
+//                        } else {
+//                            mario.setLeft(false);
+//                        }
+//
+//                        if (pressedKeys.contains("up") && (mario.getyPosition() > 10)) {
+//                            if (!mario.isAirborne()) {
+//                                mario.setJump(true);
+//                                mario.setAirborne(true);
+//                                onPlat1 = false;
+//                            } else {
+//                                mario.setJump(false);
+//                            }
+//                        }
+//
+//                    } else {
+//                        mario.setRight(false);
+//                        mario.setLeft(false);
+//                        mario.setJump(false);
+//                        if (!mario.isAirborne()) {
+//                            prevAnim = animation;
+//                            animation = "idle";
+//                        }
+//                    }
+//
+//                    if (mario.getyVelocity() > 0) {
+//                        prevAnim = animation;
+//                        animation = "falling";
+//                    }
+//
+//                    if (mario.getyVelocity() < 0) {
+//                        prevAnim = animation;
+//                        animation = "jump";
+//                    }
+//
+//                    //if(!mySoundManager.bkgmusic.isRunning() && mySoundManager.loopMusic) {
+//                    //	mySoundManager.playMusic("smb_over.mid");
+//                    //}
+//
+//                    mario.animate(animation);
+//
+//                }
+//                //tweenJuggler.nextFrame();
+//            }
+//        }
+        tweenJuggler.nextFrame();
 	}
 
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {

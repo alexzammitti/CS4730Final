@@ -14,7 +14,7 @@ public class CollisionManager implements IEventListener {
     }
 
     public void handleEvent(Event event) {
-        if(event.getEventType().equals(CollisionEvent.COLLISION)) {
+        if(event.getEventType().equals(Event.COLLISION)) {
             System.out.println("Collision!");
             myEventTrigger = "Collision!";
         }

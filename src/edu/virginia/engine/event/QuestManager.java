@@ -17,7 +17,7 @@ public class QuestManager implements IEventListener {
     }
 
     public void handleEvent(Event event) {
-        if(event.getEventType().equals(PickedUpEvent.COIN_PICKED_UP)) {
+        if(event.getEventType().equals(Event.COIN_PICKED_UP)) {
             System.out.println("Quest Completed!");
             myEventTrigger = "Picked Up a Coin!";
         }
