@@ -165,6 +165,11 @@ public class TheMinorsGame extends Game {
                 break;
         }
 
+        frameCounter++;
+        if (frameCounter > 4) {
+            tweenJuggler.nextFrame();
+        }
+
 //        if(false) {
 //            frameCounter++;
 //            if (frameCounter >= 2) {
@@ -328,7 +333,7 @@ public class TheMinorsGame extends Game {
 //                //tweenJuggler.nextFrame();
 //            }
 //        }
-        tweenJuggler.nextFrame();
+
 	}
 
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
