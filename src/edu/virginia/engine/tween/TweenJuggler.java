@@ -19,7 +19,7 @@ public class TweenJuggler {
     }
     public void nextFrame() {
         for (Tween tween:tweens) {
-            tween.update();
+            if(tween != null && tween.object != null) tween.update();
         }
     }
 }

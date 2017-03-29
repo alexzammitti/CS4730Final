@@ -69,10 +69,12 @@ public class TheMinorsGame extends Game {
 	// SINGLETON TWEEN JUGGLER
 	public TweenJuggler tweenJuggler = new TweenJuggler();
 
-	// tween stuff... not sure how this works  - Jaz
+	// TWEENS
 
 
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween platformSelectionTween = new Tween(platform, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween spikeSelectionTween = new Tween(spike1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
 
 
 	// GAME CLOCKS
@@ -129,8 +131,13 @@ public class TheMinorsGame extends Game {
 		platform2.setyPosition(350);
 
 
-        selectionBackgroundTween.animate(TweenableParam.ALPHA,0,1,1000);
+        selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
         tweenJuggler.add(selectionBackgroundTween);
+
+        platformSelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
+        platformSelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
+        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
+        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
 
         gameMode = GameMode.ITEM_SELECTION;
         placeableItemList.add(platform);
@@ -326,6 +333,8 @@ public class TheMinorsGame extends Game {
 
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
 	    if(cursor != null) {
+	        cursor.update(pressedKeys);
+
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
@@ -341,13 +350,20 @@ public class TheMinorsGame extends Game {
             }
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
             for(Sprite s : placeableItemList) {
-
+                s.update(pressedKeys);
+                if(cursor.collidesWith(s)) {
+                    Tween selectionTween = new Tween(s, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                    selectionTween.animate(TweenableParam.SCALE_X, s.getxScale(), s.getxScale() + .4, 50);
+                    selectionTween.animate(TweenableParam.SCALE_Y, s.getyScale(), s.getyScale() + .4, 50);
+                    tweenJuggler.add(selectionTween);
+                }
             }
             // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
             //if colliding and a is pressed
+            //create new sprite based on selection
             //give item to player
             //remove from selectable items
-            //set visibility
+            //add item to display tree
 
             // CHECK IF SELECTION IS DONE OR TIMED OUT
             //end selection phase and move into item phase
@@ -404,6 +420,13 @@ public class TheMinorsGame extends Game {
 //                if(s != null) s.draw(g);
 //            }
             cursor.draw(g);
+
+            Rectangle test = platform.getHitbox();
+            g.fillRect(test.x, test.y, test.width, test.height);
+            test = spike1.getHitbox();
+            g.fillRect(test.x, test.y, test.width, test.height);
+            test = cursor.getHitbox();
+            g.fillRect(test.x, test.y, test.width, test.height);
 	    }
     }
 

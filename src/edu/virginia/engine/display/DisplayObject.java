@@ -153,6 +153,21 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 
+	// Absolute positioning
+	public int getxAbsolutePosition(int x) {
+		if(this.parent != null) {
+			this.parent.getxAbsolutePosition(x);
+		}
+		return this.getxPosition() + x;
+	}
+	public int getyAbsolutePosition(int y) {
+		if(this.parent != null) {
+			this.parent.getyAbsolutePosition(y);
+		}
+		return this.getyPosition() + y;
+	}
+
+
 	public Rectangle getHitbox() { return hitbox; }
 
 	/**
@@ -273,7 +288,7 @@ public class DisplayObject extends EventDispatcher {
 	 * */
 	protected void update(ArrayList<Integer> pressedKeys) {
 		if(this != null) {
-			hitbox.setBounds(this.xPosition,this.yPosition,this.getScaledWidth(),this.getScaledHeight());
+			hitbox.setBounds(this.getxAbsolutePosition(0),this.getyAbsolutePosition(0),this.getScaledWidth(),this.getScaledHeight());
 			//System.out.println("setting " + this.getId());
 			//System.out.println("Setting hitbox to " + this.xPosition+" "+this.yPosition+" "+this.getWidth()+" "+this.getHeight());
 		}
