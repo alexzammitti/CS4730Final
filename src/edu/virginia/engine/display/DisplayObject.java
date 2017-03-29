@@ -154,18 +154,31 @@ public class DisplayObject extends EventDispatcher {
 
 
 	// Absolute positioning
-	public int getxAbsolutePosition(int x) {
+	public int getxAbsolutePosition() {
 		if(this.parent != null) {
-			this.parent.getxAbsolutePosition(x);
+			return (this.parent.getxAbsolutePosition()+this.getxPosition());
 		}
-		return this.getxPosition() + x;
+		return this.getxPosition();
 	}
-	public int getyAbsolutePosition(int y) {
+	public int getyAbsolutePosition() {
 		if(this.parent != null) {
-			this.parent.getyAbsolutePosition(y);
+			return this.parent.getyAbsolutePosition()+this.getyPosition();
 		}
-		return this.getyPosition() + y;
+		return this.getyPosition();
 	}
+
+    public double getxAbsoluteScale() {
+        if(this.parent != null) {
+            return (this.parent.getxAbsoluteScale()*this.getxScale());
+        }
+        return this.getxScale();
+    }
+    public double getyAbsoluteScale() {
+        if(this.parent != null) {
+            return (this.parent.getyAbsoluteScale()*this.getyScale());
+        }
+        return this.getyScale();
+    }
 
 
 	public Rectangle getHitbox() { return hitbox; }
@@ -202,14 +215,13 @@ public class DisplayObject extends EventDispatcher {
 	 * */
 	public int getScaledWidth() {
 		if(displayImage == null) return 0;
-		int unscaled = this.getUnscaledWidth();
-		int answer = (int) (this.xScale*unscaled);
+		int answer = (int) (this.getxAbsoluteScale()*this.getUnscaledWidth());
 		return answer;
 	}
 
 	public int getScaledHeight() {
 		if(displayImage == null) return 0;
-		int answer = (int) (this.yScale*this.getUnscaledHeight());
+		int answer = (int) (this.getyAbsoluteScale()*this.getUnscaledHeight());
 		return answer;
 	}
 
@@ -288,7 +300,7 @@ public class DisplayObject extends EventDispatcher {
 	 * */
 	protected void update(ArrayList<Integer> pressedKeys) {
 		if(this != null) {
-			hitbox.setBounds(this.getxAbsolutePosition(0),this.getyAbsolutePosition(0),this.getScaledWidth(),this.getScaledHeight());
+			hitbox.setBounds(this.getxAbsolutePosition(),this.getyAbsolutePosition(),this.getScaledWidth(),this.getScaledHeight());
 			//System.out.println("setting " + this.getId());
 			//System.out.println("Setting hitbox to " + this.xPosition+" "+this.yPosition+" "+this.getWidth()+" "+this.getHeight());
 		}

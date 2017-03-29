@@ -38,18 +38,18 @@ public class TheMinorsGame extends Game {
 
 	// SET UP SPRITE ASSETS
     // Characters
-	public PhysicsSprite mario = new PhysicsSprite("Mario", "SpriteSheet.png");
+	public PhysicsSprite mario = new PhysicsSprite("mario", "SpriteSheet.png");
 	// Placeable items
-	public Sprite coin = new Sprite("Coin", "Coin.png");
-	public Sprite platform = new Sprite("Platform","Brick.png");
-	public Sprite platform1 = new Sprite("Platform1", "Brick.png");
-	public Sprite platform2 = new Sprite("Platform2", "Brick.png");
-	public Sprite platform3 = new Sprite("Platform3", "Brick.png");
-	public Sprite spike1 = new Sprite("Spike1", "SpikeRow.png");
+	public Sprite coin = new Sprite("coin", "Coin.png");
+	public Sprite platform = new Sprite("platform","Brick.png");
+	public Sprite platform1 = new Sprite("platform1", "Brick.png");
+	public Sprite platform2 = new Sprite("platform2", "Brick.png");
+	public Sprite platform3 = new Sprite("platform3", "Brick.png");
+	public Sprite spike1 = new Sprite("spike1", "SpikeRow.png");
 	// Backgrounds
-    public Sprite selectionBackground = new Sprite("SelectionBackground","item-selection-screen.png");
+    public Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     // Cursors
-    private Sprite cursor = new Sprite("Cursor","cursor.png");
+    private Sprite cursor = new Sprite("cursor","cursor.png");
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
@@ -59,6 +59,9 @@ public class TheMinorsGame extends Game {
 
 	// EVENT MANAGERS
 	public EventManager eventManager = new EventManager();
+	//this is just a sanity check to make sure I remember how managers/events work
+	//xCoinTween.addEventListener(eventManager, Event.TWEEN_COMPLETE_EVENT);
+    // the quest manager listens for events from the xCoinTween
 
 
 	// These variables should become fields of sprites
@@ -88,6 +91,10 @@ public class TheMinorsGame extends Game {
 	public TheMinorsGame() {
 		super("The Minors Game", GAME_WIDTH, GAME_HEIGHT);
 
+        // BUILD DISPLAY TREES
+        selectionBackground.addChild(platform);
+        selectionBackground.addChild(spike1);
+
 		// SET SPRITE INITIAL POSITIONS
         cursor.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
         cursor.setScale(.5,.5);
@@ -95,20 +102,30 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(300,80);
         selectionBackground.setScale(1.2,1.3);
 
-        platform.setPosition(50,100);
+        //platform.setPosition(50,100);
         platform.setScale(0.7,0.3);
+        platform.setPosition(150,100);
+        //platform.alignCenterHorizontal(selectionBackground);
+        //platform.alignCenterVertical(selectionBackground);
 
         spike1.setPosition(200,200);
         spike1.setScale(0.3,0.3);
 
-        // BUILD DISPLAY TREES
-        selectionBackground.addChild(platform);
-        selectionBackground.addChild(spike1);
+        // code from Alex's game
+        coin.setxPosition(1150);
+        coin.setyPosition(290);
+        coin.setxScale(.17);
+        coin.setyScale(.17);
 
-        // ESTABLISH EVENT LISTENERS
+        platform1.setxPosition(0);
+        platform1.setyPosition(350);
+        platform1.setxScale(.7);
+        platform1.setyScale(.3);
 
-
-        // SET UP TWEENS
+        platform2.setxScale(.7);
+        platform2.setyScale(.3);
+        platform2.setxPosition(1250 - platform2.getScaledWidth());
+        platform2.setyPosition(350);
 
 //		mario.setxPosition(0);
 //		mario.setyPosition(130);
@@ -117,24 +134,12 @@ public class TheMinorsGame extends Game {
 //		mario.setAlpha(0);
 //		mario.setAirborne(true);
 
-		coin.setxPosition(1150);
-		coin.setyPosition(290);
-		coin.setxScale(.17);
-		coin.setyScale(.17);
-
-		platform1.setxPosition(0);
-		platform1.setyPosition(350);
-		platform1.setxScale(.7);
-		platform1.setyScale(.3);
-
-		platform2.setxScale(.7);
-		platform2.setyScale(.3);
-		platform2.setxPosition(1250 - platform2.getScaledWidth());
-		platform2.setyPosition(350);
+        // ESTABLISH EVENT LISTENERS
 
 
+        // SET UP TWEENS
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
-        tweenJuggler.add(selectionBackgroundTween);
+        //tweenJuggler.add(selectionBackgroundTween);
 
         platformSelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
         platformSelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
@@ -427,13 +432,13 @@ public class TheMinorsGame extends Game {
 //                if(s != null) s.draw(g);
 //            }
             cursor.draw(g);
-
             Rectangle test = platform.getHitbox();
             g.fillRect(test.x, test.y, test.width, test.height);
             test = spike1.getHitbox();
             g.fillRect(test.x, test.y, test.width, test.height);
             test = cursor.getHitbox();
             g.fillRect(test.x, test.y, test.width, test.height);
+
 	    }
     }
 
