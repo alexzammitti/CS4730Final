@@ -39,6 +39,7 @@ public class DisplayObject extends EventDispatcher {
 	protected int yRef;
 	protected DisplayObjectContainer parent;
 	protected Rectangle hitbox = new Rectangle(0, 0, 0, 0);
+    public boolean isPlaced = false;
 
 	public DisplayObjectContainer getParent() {
 		return parent;

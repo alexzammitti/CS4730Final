@@ -33,6 +33,8 @@ public class TheMinorsGame extends Game {
     public final static int KEY_LEFT = 37;
     public final static int KEY_RIGHT = 39;
     public final static int KEY_SPACE = 32;
+    public final static int KEY_ENTER = 16;
+
     // SPEEDS ETC
     public final static int CURSOR_SPEED = 10;
 
@@ -380,16 +382,7 @@ public class TheMinorsGame extends Game {
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
-            if (pressedKeys.contains(KEY_UP)) {
-                cursor.setyPosition(cursor.getyPosition() - CURSOR_SPEED);
-            } else if (pressedKeys.contains(KEY_DOWN)) {
-                cursor.setyPosition(cursor.getyPosition() + CURSOR_SPEED);
-            }
-            if (pressedKeys.contains(KEY_LEFT)) {
-                cursor.setxPosition(cursor.getxPosition() - CURSOR_SPEED);
-            } else if (pressedKeys.contains(KEY_RIGHT)) {
-                cursor.setxPosition(cursor.getxPosition() + CURSOR_SPEED);
-            }
+            handleMoveInput(cursor,CURSOR_SPEED,pressedKeys);
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
             for(Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext();) {
                 Sprite s = iterator.next();
@@ -425,19 +418,27 @@ public class TheMinorsGame extends Game {
 	    if(levelContainer != null) {
 	        levelContainer.update(pressedKeys);
 	        // Move sprite based on user input
-            if (pressedKeys.contains(KEY_UP)) {
-                cursor.setyPosition(cursor.getyPosition() - CURSOR_SPEED);
-            } else if (pressedKeys.contains(KEY_DOWN)) {
-                cursor.setyPosition(cursor.getyPosition() + CURSOR_SPEED);
+            if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {
+                handleMoveInput(levelContainer.getByIndex(levelContainer.getNumberOfChildren() - 1), CURSOR_SPEED, pressedKeys);
             }
-            if (pressedKeys.contains(KEY_LEFT)) {
-                cursor.setxPosition(cursor.getxPosition() - CURSOR_SPEED);
-            } else if (pressedKeys.contains(KEY_RIGHT)) {
-                cursor.setxPosition(cursor.getxPosition() + CURSOR_SPEED);
+            if(pressedKeys.contains(KEY_ENTER)) {
+                (levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced = true;
             }
-
         }
 
+    }
+
+    public void handleMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
+        if (pressedKeys.contains(KEY_UP)) {
+            displayObject.setyPosition(displayObject.getyPosition() - speed);
+        } else if (pressedKeys.contains(KEY_DOWN)) {
+            displayObject.setyPosition(displayObject.getyPosition() + speed);
+        }
+        if (pressedKeys.contains(KEY_LEFT)) {
+            displayObject.setxPosition(displayObject.getxPosition() - speed);
+        } else if (pressedKeys.contains(KEY_RIGHT)) {
+            displayObject.setxPosition(displayObject.getxPosition() + speed);
+        }
     }
 
 	@Override

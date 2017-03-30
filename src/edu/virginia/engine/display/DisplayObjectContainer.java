@@ -65,6 +65,10 @@ public class DisplayObjectContainer extends DisplayObject {
 	public DisplayObjectContainer getByIndex(int index) {
 		return children.get(index);
 	}
+
+	public int getNumberOfChildren() {
+		return children.size();
+	}
 	
 	public ArrayList<DisplayObjectContainer> getChildren() {
 		return children;
