@@ -226,9 +226,7 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public int getUnscaledWidth() {
-		//System.out.println("getUnscaledWidth() just got called");
 		if(displayImage == null) {
-			//System.out.println("I just printed 0");
 			return 0;
 		}
 		return displayImage.getWidth();

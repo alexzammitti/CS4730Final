@@ -99,12 +99,12 @@ public class TheMinorsGame extends Game {
         cursor.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
         cursor.setScale(.5,.5);
 
-        selectionBackground.setPosition(300,80);
-        selectionBackground.setScale(1.2,1.3);
+        selectionBackground.setPosition(300,80);        //TODO - fix this stupid bug!
+        selectionBackground.setScale(1,1);      //NOTE!!! The children's position within the parent seem to be affected by the parent's scale!!!
 
         //platform.setPosition(50,100);
         platform.setScale(0.7,0.3);
-        platform.setPosition(150,100);
+        platform.setPosition(50,50);
         //platform.alignCenterHorizontal(selectionBackground);
         //platform.alignCenterVertical(selectionBackground);
 
@@ -346,6 +346,7 @@ public class TheMinorsGame extends Game {
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
 	    if(cursor != null) {
 	        cursor.update(pressedKeys);
+	        selectionBackground.update(pressedKeys);
 
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
