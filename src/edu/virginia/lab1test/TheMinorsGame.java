@@ -2,7 +2,9 @@ package edu.virginia.lab1test;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import edu.virginia.engine.event.Event;
 import edu.virginia.engine.tween.Tween;
 import edu.virginia.engine.tween.TweenJuggler;
 import edu.virginia.engine.tween.TweenTransition;
@@ -25,10 +27,14 @@ public class TheMinorsGame extends Game {
     public GameMode gameMode = GameMode.ITEM_SELECTION;
     public final static int GAME_WIDTH = 1250;
     public final static int GAME_HEIGHT = 700;
+    // KEYS
     public final static int KEY_UP = 38;
     public final static int KEY_DOWN = 40;
     public final static int KEY_LEFT = 37;
     public final static int KEY_RIGHT = 39;
+    public final static int KEY_SPACE = 32;
+    // SPEEDS ETC
+    public final static int CURSOR_SPEED = 10;
 
 
 
@@ -46,6 +52,12 @@ public class TheMinorsGame extends Game {
 	public Sprite platform2 = new Sprite("platform2", "Brick.png");
 	public Sprite platform3 = new Sprite("platform3", "Brick.png");
 	public Sprite spike1 = new Sprite("spike1", "SpikeRow.png");
+	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
+    private Sprite item1 = new Sprite("item1");
+    private Sprite item2 = new Sprite("item2");
+    private Sprite item3 = new Sprite("item3");
+    private Sprite item4 = new Sprite("item4");
+    private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     public Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     // Cursors
@@ -53,6 +65,8 @@ public class TheMinorsGame extends Game {
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
+    // Display Object Containers
+    private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
 
 	// AUDIO ASSETS
 	public SoundManager mySoundManager = SoundManager.getInstance();
@@ -95,21 +109,35 @@ public class TheMinorsGame extends Game {
         selectionBackground.addChild(platform);
         selectionBackground.addChild(spike1);
 
-		// SET SPRITE INITIAL POSITIONS
+        levelContainer.addChild(platform1);
+        levelContainer.addChild(coin);
+        levelContainer.addChild(platform2);
+
+        // POPULATE ITEM LISTS
+        placeableItemList.add(item1);
+        placeableItemList.add(item2);
+        placeableItemList.add(item3);
+        placeableItemList.add(item4);
+        placeableItemList.add(item5);
+
+
+		// SET SPRITE INITIAL POSITIONS - TODO - may want to move all of this to a method to make it easier to read
         cursor.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
         cursor.setScale(.5,.5);
 
-        selectionBackground.setPosition(300,80);        //TODO - fix this stupid bug!
+        selectionBackground.setPosition(350,100);        //TODO - fix this stupid bug!
         selectionBackground.setScale(1,1);      //NOTE!!! The children's position within the parent seem to be affected by the parent's scale!!!
 
-        //platform.setPosition(50,100);
+        platform.setPosition(50,100);
         platform.setScale(0.7,0.3);
-        platform.setPosition(50,50);
-        //platform.alignCenterHorizontal(selectionBackground);
-        //platform.alignCenterVertical(selectionBackground);
+        //platform.setPosition(50,50);
+        platform.alignCenterVertical(selectionBackground);
+        platform.alignFractionHorizontal(selectionBackground,5,2);
 
-        spike1.setPosition(200,200);
+        spike1.setPosition(50,50);
         spike1.setScale(0.3,0.3);
+        spike1.alignCenterVertical(selectionBackground);
+        platform.alignFractionHorizontal(selectionBackground,5,4);
 
         // code from Alex's game
         coin.setxPosition(1150);
@@ -118,14 +146,14 @@ public class TheMinorsGame extends Game {
         coin.setyScale(.17);
 
         platform1.setxPosition(0);
-        platform1.setyPosition(350);
+        platform1.setyPosition(GAME_HEIGHT/2);
         platform1.setxScale(.7);
         platform1.setyScale(.3);
 
         platform2.setxScale(.7);
         platform2.setyScale(.3);
-        platform2.setxPosition(1250 - platform2.getScaledWidth());
-        platform2.setyPosition(350);
+        platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+        platform2.setyPosition(GAME_HEIGHT/2);
 
 //		mario.setxPosition(0);
 //		mario.setyPosition(130);
@@ -135,9 +163,9 @@ public class TheMinorsGame extends Game {
 //		mario.setAirborne(true);
 
         // ESTABLISH EVENT LISTENERS
+        cursor.addEventListener(eventManager, Event.COLLISION);
 
-
-        // SET UP TWEENS
+        // SET UP TWEENS - TODO - might also be good to methodize
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
         //tweenJuggler.add(selectionBackgroundTween);
 
@@ -150,7 +178,7 @@ public class TheMinorsGame extends Game {
         placeableItemList.add(platform);
         placeableItemList.add(spike1);
 
-        // SET UP PHYSICS
+        // SET UP PHYSICS - TODO - might also be good to methodize
         //set gravity
 	}
 	
@@ -165,6 +193,7 @@ public class TheMinorsGame extends Game {
                 itemSelectionUpdate(pressedKeys);
                 break;
             case ITEM_PLACEMENT:
+                itemPlacementUpdate(pressedKeys);
                 break;
             case GAMEPLAY:
                 break;
@@ -352,23 +381,32 @@ public class TheMinorsGame extends Game {
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
             if (pressedKeys.contains(KEY_UP)) {
-                cursor.setyPosition(cursor.getyPosition() - 5);
+                cursor.setyPosition(cursor.getyPosition() - CURSOR_SPEED);
             } else if (pressedKeys.contains(KEY_DOWN)) {
-                cursor.setyPosition(cursor.getyPosition() + 5);
+                cursor.setyPosition(cursor.getyPosition() + CURSOR_SPEED);
             }
             if (pressedKeys.contains(KEY_LEFT)) {
-                cursor.setxPosition(cursor.getxPosition() - 5);
+                cursor.setxPosition(cursor.getxPosition() - CURSOR_SPEED);
             } else if (pressedKeys.contains(KEY_RIGHT)) {
-                cursor.setxPosition(cursor.getxPosition() + 5);
+                cursor.setxPosition(cursor.getxPosition() + CURSOR_SPEED);
             }
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
-            for(Sprite s : placeableItemList) {
+            for(Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext();) {
+                Sprite s = iterator.next();
                 s.update(pressedKeys);
+                // if the cursor overlaps with a selectable items
                 if(cursor.collidesWith(s)) {
-                    Tween selectionTween = new Tween(s, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-                    selectionTween.animate(TweenableParam.SCALE_X, s.getxScale(), s.getxScale() + .4, 50);
-                    selectionTween.animate(TweenableParam.SCALE_Y, s.getyScale(), s.getyScale() + .4, 50);
-                    tweenJuggler.add(selectionTween);
+//                    Tween selectionTween = new Tween(s, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+//                    selectionTween.animate(TweenableParam.SCALE_X, s.getxScale(), s.getxScale() + .4, 50);
+//                    selectionTween.animate(TweenableParam.SCALE_Y, s.getyScale(), s.getyScale() + .4, 50);
+//                    tweenJuggler.add(selectionTween);
+                    // and the player presses the select button over it
+                    if(pressedKeys.contains(KEY_SPACE)) {
+                        levelContainer.addChild(s);
+                        iterator.remove();
+                        s.setVisible(false);
+                        gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
+                    }
                 }
             }
             // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
@@ -383,6 +421,24 @@ public class TheMinorsGame extends Game {
         }
     }
 
+    public void itemPlacementUpdate(ArrayList<Integer> pressedKeys) {
+	    if(levelContainer != null) {
+	        levelContainer.update(pressedKeys);
+	        // Move sprite based on user input
+            if (pressedKeys.contains(KEY_UP)) {
+                cursor.setyPosition(cursor.getyPosition() - CURSOR_SPEED);
+            } else if (pressedKeys.contains(KEY_DOWN)) {
+                cursor.setyPosition(cursor.getyPosition() + CURSOR_SPEED);
+            }
+            if (pressedKeys.contains(KEY_LEFT)) {
+                cursor.setxPosition(cursor.getxPosition() - CURSOR_SPEED);
+            } else if (pressedKeys.contains(KEY_RIGHT)) {
+                cursor.setxPosition(cursor.getxPosition() + CURSOR_SPEED);
+            }
+
+        }
+
+    }
 
 	@Override
 	public void draw(Graphics g){
@@ -418,6 +474,7 @@ public class TheMinorsGame extends Game {
                 itemSelectionDraw(g);
                 break;
             case ITEM_PLACEMENT:
+                itemPlacementDraw(g);
                 break;
             case GAMEPLAY:
                 break;
@@ -433,14 +490,22 @@ public class TheMinorsGame extends Game {
 //                if(s != null) s.draw(g);
 //            }
             cursor.draw(g);
-            Rectangle test = platform.getHitbox();
-            g.fillRect(test.x, test.y, test.width, test.height);
-            test = spike1.getHitbox();
-            g.fillRect(test.x, test.y, test.width, test.height);
-            test = cursor.getHitbox();
-            g.fillRect(test.x, test.y, test.width, test.height);
+
+            //Debugging hitboxes
+//            Rectangle test = platform.getHitbox();
+//            g.fillRect(test.x, test.y, test.width, test.height);
+//            test = spike1.getHitbox();
+//            g.fillRect(test.x, test.y, test.width, test.height);
+//            test = cursor.getHitbox();
+//            g.fillRect(test.x, test.y, test.width, test.height);
 
 	    }
+    }
+
+    public void itemPlacementDraw(Graphics g) {
+	    if(levelContainer != null) {
+	        levelContainer.draw(g);
+        }
     }
 
 	public static void main(String[] args) {

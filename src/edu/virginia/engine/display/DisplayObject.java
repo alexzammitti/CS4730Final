@@ -151,6 +151,14 @@ public class DisplayObject extends EventDispatcher {
 		int x = parent.getScaledWidth()/2 - this.getScaledWidth()/2;
 		this.setxPosition(x);
 	}
+	public void alignFractionVertical(DisplayObject parent, int fraction, int position) {
+		int y = position*parent.getScaledHeight()/fraction - this.getScaledHeight()/2;
+		this.setyPosition(y);
+	}
+	public void alignFractionHorizontal(DisplayObject parent, int fraction, int position) {
+		int x = position*parent.getScaledWidth()/fraction - this.getScaledWidth()/2;
+		this.setxPosition(x);
+	}
 
 
 	// Absolute positioning
