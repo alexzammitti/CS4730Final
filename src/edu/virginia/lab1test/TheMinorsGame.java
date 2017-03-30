@@ -27,21 +27,22 @@ public class TheMinorsGame extends Game {
     public GameMode gameMode = GameMode.ITEM_SELECTION;
     public final static int GAME_WIDTH = 1250;
     public final static int GAME_HEIGHT = 700;
-    // KEYS
+    // keys
     public final static int KEY_UP = 38;
     public final static int KEY_DOWN = 40;
     public final static int KEY_LEFT = 37;
     public final static int KEY_RIGHT = 39;
     public final static int KEY_SPACE = 32;
-    public final static int KEY_ENTER = 16;
+    public final static int KEY_SHIFT = 16;
 
-    // SPEEDS ETC
+    // speeds etc
     public final static int CURSOR_SPEED = 10;
 
 
 
 	// GLOBAL VARIABLES
     public int frameCounter = 0;
+    public boolean itemSelectionInitialized = false;
 
 
 	// SET UP SPRITE ASSETS
@@ -108,8 +109,6 @@ public class TheMinorsGame extends Game {
 		super("The Minors Game", GAME_WIDTH, GAME_HEIGHT);
 
         // BUILD DISPLAY TREES
-        selectionBackground.addChild(platform);
-        selectionBackground.addChild(spike1);
 
         levelContainer.addChild(platform1);
         levelContainer.addChild(coin);
@@ -130,16 +129,6 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(350,100);        //TODO - fix this stupid bug!
         selectionBackground.setScale(1,1);      //NOTE!!! The children's position within the parent seem to be affected by the parent's scale!!!
 
-        platform.setPosition(50,100);
-        platform.setScale(0.7,0.3);
-        //platform.setPosition(50,50);
-        platform.alignCenterVertical(selectionBackground);
-        platform.alignFractionHorizontal(selectionBackground,5,2);
-
-        spike1.setPosition(50,50);
-        spike1.setScale(0.3,0.3);
-        spike1.alignCenterVertical(selectionBackground);
-        platform.alignFractionHorizontal(selectionBackground,5,4);
 
         // code from Alex's game
         coin.setxPosition(1150);
@@ -171,19 +160,41 @@ public class TheMinorsGame extends Game {
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
         //tweenJuggler.add(selectionBackgroundTween);
 
-        platformSelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
-        platformSelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
-        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
-        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
+//        platformSelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
+//        platformSelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
+//        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
+//        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
 
         gameMode = GameMode.ITEM_SELECTION;
-        placeableItemList.add(platform);
-        placeableItemList.add(spike1);
+
 
         // SET UP PHYSICS - TODO - might also be good to methodize
         //set gravity
 	}
-	
+
+	public void itemSelectionInitialize() {
+	    selectionBackground.removeAll();
+        selectionBackground.addChild(item1);
+        selectionBackground.addChild(item2);
+
+        // GIVE ITEMS IMAGES - will be randomized later
+        item1.setImage("Brick.png");
+        item2.setImage("SpikeRow.png");
+
+        item1.setScale(0.7,0.3);
+        item1.alignCenterVertical(selectionBackground);
+        item1.alignFractionHorizontal(selectionBackground,7,2);
+
+        item2.setScale(0.3,0.3);
+        item2.alignCenterVertical(selectionBackground);
+        item2.alignFractionHorizontal(selectionBackground,7,5);
+
+        placeableItemList.clear();
+        placeableItemList.add(item1);
+        placeableItemList.add(item2);
+
+        itemSelectionInitialized = true;
+    }
 
 
 	@Override
@@ -375,6 +386,9 @@ public class TheMinorsGame extends Game {
 	}
 
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
+	    if(! itemSelectionInitialized && frameCounter > 3) {
+	        itemSelectionInitialize();
+        }
 	    if(cursor != null) {
 	        cursor.update(pressedKeys);
 	        selectionBackground.update(pressedKeys);
@@ -395,9 +409,10 @@ public class TheMinorsGame extends Game {
 //                    tweenJuggler.add(selectionTween);
                     // and the player presses the select button over it
                     if(pressedKeys.contains(KEY_SPACE)) {
-                        levelContainer.addChild(s);
+                        Sprite newSprite = new Sprite("copy",s.getFileName());
+                        levelContainer.addChild(newSprite);
                         iterator.remove();
-                        s.setVisible(false);
+                        //s.setVisible(false);
                         gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
                     }
                 }
@@ -421,8 +436,10 @@ public class TheMinorsGame extends Game {
             if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {
                 handleMoveInput(levelContainer.getByIndex(levelContainer.getNumberOfChildren() - 1), CURSOR_SPEED, pressedKeys);
             }
-            if(pressedKeys.contains(KEY_ENTER)) {
+            if(pressedKeys.contains(KEY_SHIFT)) {
                 (levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced = true;
+                gameMode = GameMode.ITEM_SELECTION;
+                itemSelectionInitialized = false;
             }
         }
 

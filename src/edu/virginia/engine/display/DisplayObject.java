@@ -40,6 +40,11 @@ public class DisplayObject extends EventDispatcher {
 	protected DisplayObjectContainer parent;
 	protected Rectangle hitbox = new Rectangle(0, 0, 0, 0);
     public boolean isPlaced = false;
+    protected String fileName = "";
+
+	public String getFileName(){return fileName;}
+
+	public void setFileName(String fileName) {this.fileName = fileName;}
 
 	public DisplayObjectContainer getParent() {
 		return parent;
@@ -203,11 +208,13 @@ public class DisplayObject extends EventDispatcher {
 	public DisplayObject(String id, String fileName) {
 		this.setId(id);
 		this.setImage(fileName);
+		this.fileName = fileName;
 	}
 	
 	public DisplayObject(String id, String fileName, DisplayObjectContainer dad) {
 		this.setId(id);
 		this.setImage(fileName);
+		this.fileName = fileName;
 		this.parent = dad;
 	}
 
@@ -250,14 +257,14 @@ public class DisplayObject extends EventDispatcher {
 		return this.displayImage;
 	}
 
-	protected void setImage(String imageName) {
+	public void setImage(String imageName) {
 		if (imageName == null) {
 			return;
 		}
 		displayImage = readImage(imageName);
 		if (displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
-		}
+		} else this.fileName = imageName;
 	}
 
 
