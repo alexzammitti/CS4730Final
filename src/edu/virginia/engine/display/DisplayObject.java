@@ -132,8 +132,8 @@ public class DisplayObject extends EventDispatcher {
 		return rotation;
 	}
 
-	public void setRotation(double rotation) {
-		this.rotation = rotation;
+	public void setRotation(double radians) {
+		this.rotation = radians;
 	}
 
 	public float getAlpha() {

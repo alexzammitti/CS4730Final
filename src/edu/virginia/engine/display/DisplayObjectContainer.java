@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class DisplayObjectContainer extends DisplayObject {
 	
-	protected ArrayList<DisplayObjectContainer> children = new ArrayList<DisplayObjectContainer>();
+	protected ArrayList<DisplayObjectContainer> children = new ArrayList<DisplayObjectContainer>(0);
 	protected boolean visible;
 
 	public DisplayObjectContainer(String id) {
@@ -73,10 +73,17 @@ public class DisplayObjectContainer extends DisplayObject {
 	public ArrayList<DisplayObjectContainer> getChildren() {
 		return children;
 	}
+
+	public DisplayObjectContainer getLastChild() {
+		return this.getByIndex(this.getNumberOfChildren()-1);	// we sometimes want the most recently added child
+	}
 	
 	@Override
 	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
+		for(DisplayObjectContainer c : children) {
+			c.update(pressedKeys);								// each call to update should affect the whole display tree
+		}
 	}
 	
 	@Override
