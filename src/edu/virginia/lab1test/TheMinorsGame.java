@@ -410,6 +410,8 @@ public class TheMinorsGame extends Game {
                     // and the player presses the select button over it
                     if(pressedKeys.contains(KEY_SPACE)) {
                         Sprite newSprite = new Sprite("copy",s.getFileName());
+                        newSprite.setScale(s.getxAbsoluteScale(),s.getyAbsoluteScale());
+                        newSprite.setPosition(s.getxAbsolutePosition(),s.getyAbsolutePosition());
                         levelContainer.addChild(newSprite);
                         iterator.remove();
                         //s.setVisible(false);
