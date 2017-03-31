@@ -1,9 +1,11 @@
 # CS4730Final
 
-##Instructions:
--arrow keys move cursor
--spacebar selects an item
--shift places an item on the map
+<h1>Instructions:</h1>
+<ul>
+<li>-arrow keys move cursor</li>
+<li>-spacebar selects an item</li>
+<li>-shift places an item on the map</li>
+</ul>
 
 GUI to place obj - prototype|
 3 obstacles, is playable - alpha|
