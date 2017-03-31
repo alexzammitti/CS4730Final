@@ -2,9 +2,10 @@
 
 <h1>Instructions:</h1>
 <ul>
-<li>-arrow keys move cursor</li>
-<li>-spacebar selects an item</li>
-<li>-shift places an item on the map</li>
+<li>arrow keys move cursor</li>
+<li>spacebar selects an item</li>
+<li>spacebar places an item on the map</li>
+<li>r rotates selected items 90 degrees</li>
 </ul>
 
 GUI to place obj - prototype|

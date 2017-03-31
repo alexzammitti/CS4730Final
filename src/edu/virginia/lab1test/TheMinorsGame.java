@@ -11,6 +11,7 @@ import edu.virginia.engine.tween.TweenTransition;
 import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.event.*;
+import edu.virginia.engine.util.GameClock;
 import edu.virginia.engine.util.SoundManager;
 
 /**
@@ -28,12 +29,16 @@ public class TheMinorsGame extends Game {
     public final static int GAME_WIDTH = 1250;
     public final static int GAME_HEIGHT = 700;
     // keys
+    public final static int KEY_DELAY = 200;
     public final static int KEY_UP = 38;
     public final static int KEY_DOWN = 40;
     public final static int KEY_LEFT = 37;
     public final static int KEY_RIGHT = 39;
     public final static int KEY_SPACE = 32;
     public final static int KEY_SHIFT = 16;
+    public final static int KEY_R = 82;
+
+
 
     // speeds etc
     public final static int CURSOR_SPEED = 10;
@@ -104,6 +109,9 @@ public class TheMinorsGame extends Game {
 
 	// GAME CLOCKS
     //item selection, item placement, play time
+    public GameClock rKeyClock = new GameClock();
+    public GameClock spaceKeyClock = new GameClock();
+
 	
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters given
@@ -409,14 +417,16 @@ public class TheMinorsGame extends Game {
                 if(cursor.collidesWith(s)) {
                     // add tween stuff here for polish if desired
                     // and the player presses the select button over it
-                    if(pressedKeys.contains(KEY_SPACE)) {
+                    if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                         Sprite newSprite = new Sprite("copy",s.getFileName());          //duplicate the sprite and add it to our level
                         newSprite.setScale(s.getxAbsoluteScale(),s.getyAbsoluteScale());
                         newSprite.setPosition(s.getxAbsolutePosition(),s.getyAbsolutePosition());
                         levelContainer.addChild(newSprite);
+                        newSprite.setPivotCenter();
                         iterator.remove();                                                  // the item can no longer be selected
                         //s.setVisible(false);
                         gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
+                        spaceKeyClock.resetGameClock();
                     }
                 }
             }
@@ -439,10 +449,14 @@ public class TheMinorsGame extends Game {
             if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {                     //TODO make this give each player the item they chose
                 handleMoveInput(levelContainer.getByIndex(levelContainer.getNumberOfChildren() - 1), CURSOR_SPEED, pressedKeys);
             }
-            if(pressedKeys.contains(KEY_SHIFT)) {
+            if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                 (levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced = true;
                 gameMode = GameMode.ITEM_SELECTION;
                 itemSelectionInitialized = false;
+                spaceKeyClock.resetGameClock();
+            } else if(pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY){
+                (levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).setRotation((levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).getRotation()+Math.PI/2);
+                rKeyClock.resetGameClock();
             }
         }
 

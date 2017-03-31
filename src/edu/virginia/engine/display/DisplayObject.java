@@ -25,6 +25,8 @@ public class DisplayObject extends EventDispatcher {
 	/* The image that is displayed by this object */
 	private BufferedImage displayImage;
 
+    ArrayList<Integer> previousPressedKeys = new ArrayList<>(0);
+
 
 	protected boolean visible = true;
 	protected int xPosition = 0;
@@ -166,6 +168,11 @@ public class DisplayObject extends EventDispatcher {
 		this.setxPosition(x);
 	}
 
+	public void setPivotCenter() {
+        this.setxPivot(this.getScaledWidth()/2);
+        this.setyPivot(this.getScaledHeight()/2);
+    }
+
 
 	// Absolute positioning
 	public int getxAbsolutePosition() {
@@ -264,7 +271,9 @@ public class DisplayObject extends EventDispatcher {
 		displayImage = readImage(imageName);
 		if (displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
-		} else this.fileName = imageName;
+		} else {
+		    this.fileName = imageName;
+        }
 	}
 
 

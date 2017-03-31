@@ -37,9 +37,11 @@ public class EventDispatcher implements IEventDispatcher {
         //System.out.println("Listener map size: " + listenerMap.size());
         if(listenerMap.size() > 0) {
             ArrayList<IEventListener> list = listenerMap.get(event.getEventType());
-            int listSize = list.size();
-            for (int i = 0; i < listSize; i++) {
-                list.get(i).handleEvent(event);
+            if(list != null) {
+                int listSize = list.size();
+                for (int i = 0; i < listSize; i++) {
+                    list.get(i).handleEvent(event);
+                }
             }
         }
     }

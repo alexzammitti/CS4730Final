@@ -10,8 +10,10 @@ public class Event {
     public final static String COLLISION = "collision";
     public final static String COIN_PICKED_UP = "coin picked up";
 
+
     public String eventType;
     public EventDispatcher source;
+    public int data;
 
     public Event(String type, DisplayObject src) {
         this.eventType = type;
@@ -35,5 +37,9 @@ public class Event {
 
     public void setSource(EventDispatcher source) {
         this.source = source;
+    }
+
+    public void setData(int d) {
+        this.data = d;
     }
 }
