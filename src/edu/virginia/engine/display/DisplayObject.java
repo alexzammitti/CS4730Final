@@ -357,8 +357,10 @@ public class DisplayObject extends EventDispatcher {
 	 * object
 	 * */
 	protected void applyTransformations(Graphics2D g2d) {
+		//System.out.print("x position = " + this.getxPosition() + ", y position = " + this.getyPosition() + " ");
+		//System.out.println("x absolute position = " + this.getxAbsolutePosition() + ", y absolute position = " + this.getyAbsolutePosition() + "  Drawing " + this.getId());
+
 		g2d.translate(this.xPosition, this.yPosition);
-		//System.out.println(xPosition + " + " + yPosition);
 		g2d.rotate(this.rotation, this.xPivot, this.yPivot);
 		g2d.scale(this.xScale, this.yScale);
 		g2d.setComposite(makeComposite(this.alpha));

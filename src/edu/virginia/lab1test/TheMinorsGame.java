@@ -95,8 +95,11 @@ public class TheMinorsGame extends Game {
 
 
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween platformSelectionTween = new Tween(platform, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween spikeSelectionTween = new Tween(spike1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween item1SelectionTween = new Tween(item1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween item2SelectionTween = new Tween(item2, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween item3SelectionTween = new Tween(item3, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween item4SelectionTween = new Tween(item4, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+    public Tween item5SelectionTween = new Tween(item5, new TweenTransition(TweenTransition.TransitionType.LINEAR));
 
 
 	// GAME CLOCKS
@@ -154,16 +157,16 @@ public class TheMinorsGame extends Game {
 //		mario.setAirborne(true);
 
         // ESTABLISH EVENT LISTENERS
-        cursor.addEventListener(eventManager, Event.COLLISION);
+        item1.addEventListener(eventManager, Event.COLLISION);
 
         // SET UP TWEENS - TODO - might also be good to methodize
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
         //tweenJuggler.add(selectionBackgroundTween);
 
-//        platformSelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
-//        platformSelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
-//        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
-//        spikeSelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
+        item1SelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
+        item2SelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
+        item1SelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
+        item2SelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
 
         gameMode = GameMode.ITEM_SELECTION;
 
@@ -200,18 +203,19 @@ public class TheMinorsGame extends Game {
 	@Override
 	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
-
-		switch(gameMode) {
-            case ITEM_SELECTION:
-                itemSelectionUpdate(pressedKeys);
-                break;
-            case ITEM_PLACEMENT:
-                itemPlacementUpdate(pressedKeys);
-                break;
-            case GAMEPLAY:
-                break;
-            case MAIN_MENU:
-                break;
+        if(gameMode != null) {
+            switch (gameMode) {
+                case ITEM_SELECTION:
+                    itemSelectionUpdate(pressedKeys);
+                    break;
+                case ITEM_PLACEMENT:
+                    itemPlacementUpdate(pressedKeys);
+                    break;
+                case GAMEPLAY:
+                    break;
+                case MAIN_MENU:
+                    break;
+            }
         }
 
         frameCounter++;
@@ -403,17 +407,14 @@ public class TheMinorsGame extends Game {
                 s.update(pressedKeys);
                 // if the cursor overlaps with a selectable items
                 if(cursor.collidesWith(s)) {
-//                    Tween selectionTween = new Tween(s, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-//                    selectionTween.animate(TweenableParam.SCALE_X, s.getxScale(), s.getxScale() + .4, 50);
-//                    selectionTween.animate(TweenableParam.SCALE_Y, s.getyScale(), s.getyScale() + .4, 50);
-//                    tweenJuggler.add(selectionTween);
+                    // add tween stuff here for polish if desired
                     // and the player presses the select button over it
                     if(pressedKeys.contains(KEY_SPACE)) {
-                        Sprite newSprite = new Sprite("copy",s.getFileName());
+                        Sprite newSprite = new Sprite("copy",s.getFileName());          //duplicate the sprite and add it to our level
                         newSprite.setScale(s.getxAbsoluteScale(),s.getyAbsoluteScale());
                         newSprite.setPosition(s.getxAbsolutePosition(),s.getyAbsolutePosition());
                         levelContainer.addChild(newSprite);
-                        iterator.remove();
+                        iterator.remove();                                                  // the item can no longer be selected
                         //s.setVisible(false);
                         gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
                     }
@@ -435,7 +436,7 @@ public class TheMinorsGame extends Game {
 	    if(levelContainer != null) {
 	        levelContainer.update(pressedKeys);
 	        // Move sprite based on user input
-            if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {
+            if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {                     //TODO make this give each player the item they chose
                 handleMoveInput(levelContainer.getByIndex(levelContainer.getNumberOfChildren() - 1), CURSOR_SPEED, pressedKeys);
             }
             if(pressedKeys.contains(KEY_SHIFT)) {
@@ -512,9 +513,9 @@ public class TheMinorsGame extends Game {
             cursor.draw(g);
 
             //Debugging hitboxes
-//            Rectangle test = platform.getHitbox();
+//            Rectangle test = item1.getHitbox();
 //            g.fillRect(test.x, test.y, test.width, test.height);
-//            test = spike1.getHitbox();
+//            test = item2.getHitbox();
 //            g.fillRect(test.x, test.y, test.width, test.height);
 //            test = cursor.getHitbox();
 //            g.fillRect(test.x, test.y, test.width, test.height);
