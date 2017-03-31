@@ -449,6 +449,15 @@ public class TheMinorsGame extends Game {
             if(!(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced) {                     //TODO make this give each player the item they chose
                 handleMoveInput(levelContainer.getByIndex(levelContainer.getNumberOfChildren() - 1), CURSOR_SPEED, pressedKeys);
             }
+            // Preventing overlaps - not working
+//            for(DisplayObjectContainer child : levelContainer.getChildren()) {
+//                if((levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).collidesWith(child)  //if there's a collision with something in the level and its not itself
+//                        && !child.getId().equals(levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1).getId())){
+//                    child.setImage("Brick-error.png");          //TODO chop png and add -error.png to filename
+//                } else {
+//                    child.setImage("Brick.png");
+//                }
+//            }
             if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                 (levelContainer.getByIndex(levelContainer.getNumberOfChildren()-1)).isPlaced = true;
                 gameMode = GameMode.ITEM_SELECTION;
