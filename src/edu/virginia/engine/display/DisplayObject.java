@@ -203,6 +203,23 @@ public class DisplayObject extends EventDispatcher {
 
 
 	public Rectangle getHitbox() { return hitbox; }
+	public void setHitbox(Rectangle r) {this.hitbox = r;}
+
+	public void setImageNormal() {
+		String normalImageFileName = this.getFileName();
+		normalImageFileName = normalImageFileName.substring(0,normalImageFileName.indexOf("-"));	// IF YOUR FILENAME HAS ANOTHER DASH THIS WILL GET CONFUSED
+		normalImageFileName += ".png";
+		this.setImage(normalImageFileName);
+	}
+
+	public void setImageError() {
+		if(!this.getFileName().contains("-error")) {
+			String errorImageFileName = this.getFileName().substring(0, this.getFileName().length() - 4);
+			errorImageFileName += "-error.png";
+			this.setImage(errorImageFileName);
+		}
+	}
+
 
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and

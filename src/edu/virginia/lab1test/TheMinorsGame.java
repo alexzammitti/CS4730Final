@@ -49,6 +49,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
+    public boolean debugHitboxes = false;
 
 
 	// SET UP SPRITE ASSETS
@@ -60,7 +61,7 @@ public class TheMinorsGame extends Game {
 	public Sprite platform1 = new Sprite("platform1", "brick.png");
 	public Sprite platform2 = new Sprite("platform2", "brick.png");
 	public Sprite platform3 = new Sprite("platform3", "brick.png");
-	public Sprite spike1 = new Sprite("spike1", "spike-row.png");
+	public Sprite spike1 = new Sprite("spike1", "spikerow.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
@@ -70,7 +71,7 @@ public class TheMinorsGame extends Game {
 	// Backgrounds
     public Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     // Cursors
-    private Sprite cursor = new Sprite("cursor","cursor.png");
+    private Sprite cursor = new Sprite("cursor","cursor-orange.png");
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
@@ -191,7 +192,7 @@ public class TheMinorsGame extends Game {
 
         // GIVE ITEMS IMAGES - will be randomized later
         item1.setImage("brick.png");
-        item2.setImage("spike-row.png");
+        item2.setImage("spikerow.png");
 
         item1.setScale(0.7,0.3);
         item1.alignCenterVertical(selectionBackground);
@@ -455,30 +456,30 @@ public class TheMinorsGame extends Game {
             // Allow user to rotate image
             if(pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY){
                 levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation()+Math.PI/2);
+                levelContainer.getLastChild().setHitbox(rotateHitbox90(levelContainer.getLastChild().getHitbox()));
                 rKeyClock.resetGameClock();
             }
             // Preventing overlaps - image changes to imageName + "-error.png"
             for(DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
                 DisplayObjectContainer DOCbeingPlaced = levelContainer.getLastChild();
                 if(!levelItem.getId().equals(DOCbeingPlaced.getId())) {                                  // if it's not itself
-                    if(levelItem.getFileName().contains("-error")) {
-                        if(!DOCbeingPlaced.collidesWith(levelItem)){                                     //if there NOT a collision
-                            String normalImageFileName = levelItem.getFileName();
-                            normalImageFileName = normalImageFileName.substring(0,normalImageFileName.indexOf("-"));
-                            normalImageFileName += ".png";
-                            levelItem.setImage(normalImageFileName);
+                    if(DOCbeingPlaced.getFileName().contains("-error") && levelItem.getFileName().contains("-error")) {
+                        if(!levelItem.collidesWith(DOCbeingPlaced)){                                     //if there NOT a collision
+                            DOCbeingPlaced.setImageNormal();
+                            levelItem.setImageNormal();
+                            break;
                         }
                     } else {
-                        if(DOCbeingPlaced.collidesWith(levelItem)){                                      //if there IS a collision
-                            String errorImageFileName = levelItem.getFileName().substring(0,levelItem.getFileName().length()-4);
-                            errorImageFileName += "-error.png";
-                            levelItem.setImage(errorImageFileName);
+                        if(levelItem.collidesWith(DOCbeingPlaced)){                                      //if there IS a collision
+                            DOCbeingPlaced.setImageError();
+                            levelItem.setImageError();
+                            break;
                         }
                     }
                 }
             }
             if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
-                if(levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
+                if(!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
                     levelContainer.getLastChild().isPlaced = true;
                     gameMode = GameMode.ITEM_SELECTION;
                     itemSelectionInitialized = false;
@@ -501,6 +502,18 @@ public class TheMinorsGame extends Game {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
     }
+
+    public Rectangle rotateHitbox90(Rectangle hitbox) {
+	    Rectangle r = new Rectangle(0,0,0,0);
+	    if(hitbox.width > hitbox.height) {
+            r.setBounds(hitbox.x + hitbox.width/2-hitbox.height/2,hitbox.y - hitbox.height/2+hitbox.height/2, hitbox.height,hitbox.width);
+        } else {
+            r.setBounds(hitbox.x + hitbox.width/2-hitbox.height/2,hitbox.y - hitbox.height/2+hitbox.height/2, hitbox.height,hitbox.width);
+        }
+
+        return r;
+    }
+
 
 	@Override
 	public void draw(Graphics g){
@@ -547,6 +560,9 @@ public class TheMinorsGame extends Game {
 	}
 
     public void itemSelectionDraw(Graphics g) {
+        if(levelContainer != null) {
+            levelContainer.draw(g);
+        }
 	    if(cursor != null) { // everything????
             selectionBackground.draw(g);
 //            for(Sprite s : placeableItemList) {
@@ -554,17 +570,20 @@ public class TheMinorsGame extends Game {
 //            }
             cursor.draw(g);
 
-            //Debugging hitboxes
-//            Rectangle test = item1.getHitbox();
-//            g.fillRect(test.x, test.y, test.width, test.height);
-//            test = item2.getHitbox();
-//            g.fillRect(test.x, test.y, test.width, test.height);
-//            test = cursor.getHitbox();
-//            g.fillRect(test.x, test.y, test.width, test.height);
 
-            for(DisplayObjectContainer c : levelContainer.getChildren()) {
-                Rectangle test = c.getHitbox();
+
+            if(debugHitboxes) {
+                //Debugging hitboxes
+                Rectangle test = item1.getHitbox();
                 g.fillRect(test.x, test.y, test.width, test.height);
+                test = item2.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
+                test = cursor.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
+                for(DisplayObjectContainer c : levelContainer.getChildren()) {
+                    test = c.getHitbox();
+                    g.fillRect(test.x, test.y, test.width, test.height);
+                }
             }
 	    }
     }
