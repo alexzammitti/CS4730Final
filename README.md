@@ -1,4 +1,9 @@
-# CS4730Final
+# CS4730Final The Minors
+<ul>
+<li>Jasbir Harnal JLH2AV</li>
+<li>Watson Spivey WAS9P</li>
+<li>Alex Zammitti ADZ2PA</li>
+</ul>
 
 <h1>Instructions:</h1>
 <ul>
