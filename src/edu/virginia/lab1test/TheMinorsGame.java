@@ -49,7 +49,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
-    public boolean debugHitboxes = false;
+    public boolean debugHitboxes = true;
 
 
 	// SET UP SPRITE ASSETS
@@ -456,7 +456,6 @@ public class TheMinorsGame extends Game {
             // Allow user to rotate image
             if(pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY){
                 levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation()+Math.PI/2);
-                levelContainer.getLastChild().setHitbox(rotateHitbox90(levelContainer.getLastChild().getHitbox()));
                 rKeyClock.resetGameClock();
             }
             // Preventing overlaps - image changes to imageName + "-error.png"
@@ -502,18 +501,6 @@ public class TheMinorsGame extends Game {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
     }
-
-    public Rectangle rotateHitbox90(Rectangle hitbox) {
-	    Rectangle r = new Rectangle(0,0,0,0);
-	    if(hitbox.width > hitbox.height) {
-            r.setBounds(hitbox.x + hitbox.width/2-hitbox.height/2,hitbox.y - hitbox.height/2+hitbox.height/2, hitbox.height,hitbox.width);
-        } else {
-            r.setBounds(hitbox.x + hitbox.width/2-hitbox.height/2,hitbox.y - hitbox.height/2+hitbox.height/2, hitbox.height,hitbox.width);
-        }
-
-        return r;
-    }
-
 
 	@Override
 	public void draw(Graphics g){
@@ -591,6 +578,13 @@ public class TheMinorsGame extends Game {
     public void itemPlacementDraw(Graphics g) {
 	    if(levelContainer != null) {
 	        levelContainer.draw(g);
+        }
+
+        if(debugHitboxes) {
+            for(DisplayObjectContainer c : levelContainer.getChildren()) {
+                Rectangle test = c.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
+            }
         }
     }
 

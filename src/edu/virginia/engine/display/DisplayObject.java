@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+
 import edu.virginia.engine.event.*;
 
 
@@ -339,10 +341,12 @@ public class DisplayObject extends EventDispatcher {
 	 * to update objects appropriately.
 	 * */
 	protected void update(ArrayList<Integer> pressedKeys) {
-		if(this != null) {
-			hitbox.setBounds(this.getxAbsolutePosition(),this.getyAbsolutePosition(),this.getScaledWidth(),this.getScaledHeight());
-			//System.out.println("setting " + this.getId());
-			//System.out.println("Setting hitbox to " + this.xPosition+" "+this.yPosition+" "+this.getWidth()+" "+this.getHeight());
+		if(this.rotation%(Math.PI) < 1){
+			hitbox.setBounds(this.getxAbsolutePosition(), this.getyAbsolutePosition(), this.getScaledWidth(), this.getScaledHeight());
+		} else if(this.rotation%Math.PI/2 < 1) {
+			hitbox.setBounds(this.getxAbsolutePosition()+this.getScaledWidth()/2-this.getScaledHeight()/2,
+					this.getyAbsolutePosition()-this.getScaledWidth()/2+this.getScaledHeight()/2,
+					this.getScaledHeight(), this.getScaledWidth());
 		}
 	}
 
