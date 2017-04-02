@@ -13,7 +13,16 @@
 <li>r rotates selected items 90 degrees</li>
 </ul>
 
-GUI to place obj - prototype|
-3 obstacles, is playable - alpha|
-Cleanup and get good art/ music. Feature polish, add more obstacles? Implement multiplayer - beta|
-Debug make it good - final
+
+<ul>
+    <li>GUI to place obj - prototype </li>
+    <li>3 obstacles, is playable - alpha </li>
+        <ul>
+            <li>manage collisions between players and placed objects</li>
+            <li>add player death upon hitting spikes etc</li>
+            <li>add gamepad support</li>
+            <li>keep multiplayer considerations in mind</li>
+        </ul>
+    <li>Cleanup and get good art/ music. Feature polish, add more obstacles? Implement multiplayer - beta </li>
+    <li>Debug make it good - final </li>
+</ul>
