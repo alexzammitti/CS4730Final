@@ -37,6 +37,7 @@ public class TheMinorsGame extends Game {
     public final static int KEY_SPACE = 32;
     public final static int KEY_SHIFT = 16;
     public final static int KEY_R = 82;
+    public final static int KEY_ESC = 27;
 
 
 
@@ -54,6 +55,7 @@ public class TheMinorsGame extends Game {
 
 	// SET UP SPRITE ASSETS
     // Characters
+    private ArrayList<PhysicsSprite> players = new ArrayList<>(0);
 	public PhysicsSprite mario = new PhysicsSprite("mario", "sprite-sheet.png");
 	// Placeable items
 	public Sprite coin = new Sprite("coin", "coin.png");
@@ -113,6 +115,7 @@ public class TheMinorsGame extends Game {
     //item selection, item placement, play time
     public GameClock rKeyClock = new GameClock();
     public GameClock spaceKeyClock = new GameClock();
+    public GameClock escKeyClock = new GameClock();
 
 	
 	/**
@@ -126,6 +129,9 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(platform1);
         levelContainer.addChild(coin);
         levelContainer.addChild(platform2);
+
+        // PLAYER ORGANIZATION
+        players.add(mario);
 
         // POPULATE ITEM LISTS
         placeableItemList.add(item1);
@@ -159,12 +165,11 @@ public class TheMinorsGame extends Game {
         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
         platform2.setyPosition(GAME_HEIGHT/2);
 
-//		mario.setxPosition(0);
-//		mario.setyPosition(130);
-//		mario.setxScale(3.5);
-//		mario.setyScale(3.5);
-//		mario.setAlpha(0);
-//		mario.setAirborne(true);
+		mario.setxPosition(0);
+		mario.setyPosition(130);
+		mario.setxScale(3.5);
+		mario.setyScale(3.5);
+		mario.setAlpha(1);
 
         // ESTABLISH EVENT LISTENERS
         item1.addEventListener(eventManager, Event.COLLISION);
@@ -222,6 +227,7 @@ public class TheMinorsGame extends Game {
                     itemPlacementUpdate(pressedKeys);
                     break;
                 case GAMEPLAY:
+                    gameplayUpdate(pressedKeys);
                     break;
                 case MAIN_MENU:
                     break;
@@ -444,32 +450,35 @@ public class TheMinorsGame extends Game {
             // CHECK IF SELECTION IS DONE OR TIMED OUT
             //end selection phase and move into item phase
         }
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
+            gameMode = GameMode.GAMEPLAY;
+        }
     }
 
     public void itemPlacementUpdate(ArrayList<Integer> pressedKeys) {
 	    if(levelContainer != null) {
-	        levelContainer.update(pressedKeys);
-	        // Move sprite based on user input
-            if(!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
+            levelContainer.update(pressedKeys);
+            // Move sprite based on user input
+            if (!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
                 handleMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys);
             }
             // Allow user to rotate image
-            if(pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY){
-                levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation()+Math.PI/2);
+            if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
+                levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                 rKeyClock.resetGameClock();
             }
             // Preventing overlaps - image changes to imageName + "-error.png"
-            for(DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
+            for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
                 DisplayObjectContainer DOCbeingPlaced = levelContainer.getLastChild();
-                if(!levelItem.getId().equals(DOCbeingPlaced.getId())) {                                  // if it's not itself
-                    if(DOCbeingPlaced.getFileName().contains("-error") && levelItem.getFileName().contains("-error")) {
-                        if(!levelItem.collidesWith(DOCbeingPlaced)){                                     //if there NOT a collision
+                if (!levelItem.getId().equals(DOCbeingPlaced.getId())) {                                  // if it's not itself
+                    if (DOCbeingPlaced.getFileName().contains("-error") && levelItem.getFileName().contains("-error")) {
+                        if (!levelItem.collidesWith(DOCbeingPlaced)) {                                     //if there NOT a collision
                             DOCbeingPlaced.setImageNormal();
                             levelItem.setImageNormal();
                             break;
                         }
                     } else {
-                        if(levelItem.collidesWith(DOCbeingPlaced)){                                      //if there IS a collision
+                        if (levelItem.collidesWith(DOCbeingPlaced)) {                                      //if there IS a collision
                             DOCbeingPlaced.setImageError();
                             levelItem.setImageError();
                             break;
@@ -477,8 +486,8 @@ public class TheMinorsGame extends Game {
                     }
                 }
             }
-            if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
-                if(!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
+            if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
+                if (!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
                     levelContainer.getLastChild().isPlaced = true;
                     gameMode = GameMode.ITEM_SELECTION;
                     itemSelectionInitialized = false;
@@ -486,7 +495,9 @@ public class TheMinorsGame extends Game {
                 }
             }
         }
-
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
+            gameMode = GameMode.GAMEPLAY;
+        }
     }
 
     public void handleMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
@@ -502,31 +513,25 @@ public class TheMinorsGame extends Game {
         }
     }
 
+    public void gameplayUpdate(ArrayList<Integer> pressedKeys){
+        for(PhysicsSprite sprite : players) {
+            sprite.update(pressedKeys);
+            handleMoveInput(sprite,10,pressedKeys);
+        }
+    }
+
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
-
 		if(mario != null && mario.isVisible()) {
 			mario.draw(g);
 		}
-
 		if(platform1 != null) {
 			platform1.draw(g);
 		}
-
 		if(platform2 != null) {
 			platform2.draw(g);
 		}
-
-		if(coin != null && gotCoin) {
-
-			//coin.setVisible(false);
-			g.drawString("Coin Quest Completed!", 425, 20);
-
-			//this.pause();
-
-		}
-
 		if(coin != null && coin.isVisible()) {
 			coin.draw(g);
 		}
@@ -539,6 +544,7 @@ public class TheMinorsGame extends Game {
                     itemPlacementDraw(g);
                     break;
                 case GAMEPLAY:
+                    gameplayDraw(g);
                     break;
                 case MAIN_MENU:
                     break;
@@ -584,6 +590,15 @@ public class TheMinorsGame extends Game {
             for(DisplayObjectContainer c : levelContainer.getChildren()) {
                 Rectangle test = c.getHitbox();
                 g.fillRect(test.x, test.y, test.width, test.height);
+            }
+        }
+    }
+
+    public void gameplayDraw(Graphics g) {
+        if(levelContainer != null) {
+            levelContainer.draw(g);
+            for(PhysicsSprite sprite : players) {
+                sprite.draw(g);
             }
         }
     }
