@@ -21,15 +21,9 @@ import javax.imageio.ImageIO;
  * */
 public class DisplayObject extends EventDispatcher {
 
-	/* All DisplayObject have a unique id */
+	// ALL FIELDS ------------------------------------------------------------------------------------------------------
 	private String id;
-
-	/* The image that is displayed by this object */
 	private BufferedImage displayImage;
-
-    ArrayList<Integer> previousPressedKeys = new ArrayList<>(0);
-
-
 	protected boolean visible = true;
 	protected int xPosition = 0;
 	protected int yPosition = 0;
@@ -46,111 +40,98 @@ public class DisplayObject extends EventDispatcher {
     public boolean isPlaced = false;
     protected String fileName = "";
 
-	public String getFileName(){return fileName;}
 
+    // ALL METHODS -----------------------------------------------------------------------------------------------------
+
+	// getters and setters:
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getId() {
+		return id;
+	}
+    public String getFileName(){return fileName;}
 	public void setFileName(String fileName) {this.fileName = fileName;}
-
 	public DisplayObjectContainer getParent() {
 		return parent;
 	}
-
 	public void setParent(DisplayObjectContainer parent) {
 		this.parent = parent;
 	}
-
 	public int getxRef() {
 		return xRef;
 	}
-
 	public void setxRef(int xRef) {
 		this.xRef = xRef;
 	}
-
 	public int getyRef() {
 		return yRef;
 	}
-
 	public void setyRef(int yRef) {
 		this.yRef = yRef;
 	}
-
 	public boolean isVisible() {
 		return visible;
 	}
-
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-
 	public int getxPosition() {
 		return xPosition;
 	}
-
 	public void setxPosition(int xPosition) {
 		this.xPosition = xPosition;
 	}
-
 	public int getyPosition() {
 		return yPosition;
 	}
-
 	public void setyPosition(int yPosition) {
 		this.yPosition = yPosition;
 	}
-
 	public int getxPivot() {
 		return xPivot;
 	}
-
 	public void setxPivot(int xPivot) {
 		this.xPivot = xPivot;
 	}
-
 	public int getyPivot() {
 		return yPivot;
 	}
-
 	public void setyPivot(int yPivot) {
 		this.yPivot = yPivot;
 	}
-
 	public double getxScale() {
 		return xScale;
 	}
-
 	public void setxScale(double xScale) {
 		this.xScale = xScale;
 	}
-
 	public double getyScale() {
 		return yScale;
 	}
-
 	public void setyScale(double yScale) {
 		this.yScale = yScale;
 	}
-
 	public double getRotation() {
 		return rotation;
 	}
-
 	public void setRotation(double radians) {
 		this.rotation = radians;
 	}
-
 	public float getAlpha() {
 		return alpha;
 	}
-
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
 
-	// Multiple argument setters
+	// Multiple argument setters:
 	public void setPosition(int x, int y) {this.xPosition = x;this.yPosition = y;}
 	public void setPivotPoint(int x, int y) {this.xPivot = x;this.yPivot = y; }
 	public void setScale(double x, double y) {this.xScale = x; this.yScale = y;}
 
+
+	// POSITIONING METHODS ---------------------------------------------------------------------------------------------
 
 	// alignment
 	public void alignCenterVertical(DisplayObject parent) {
@@ -169,12 +150,10 @@ public class DisplayObject extends EventDispatcher {
 		int x = position*parent.getScaledWidth()/fraction - this.getScaledWidth()/2;
 		this.setxPosition(x);
 	}
-
 	public void setPivotCenter() {
         this.setxPivot(this.getScaledWidth()/2);
         this.setyPivot(this.getScaledHeight()/2);
     }
-
 
 	// Absolute positioning
 	public int getxAbsolutePosition() {
@@ -189,7 +168,6 @@ public class DisplayObject extends EventDispatcher {
 		}
 		return this.getyPosition();
 	}
-
     public double getxAbsoluteScale() {
         if(this.parent != null) {
             return (this.parent.getxAbsoluteScale()*this.getxScale());
@@ -204,57 +182,26 @@ public class DisplayObject extends EventDispatcher {
     }
 
 
+	// HITBOXES & BOUNDS CHECKING --------------------------------------------------------------------------------------
+
+	public boolean collidesWith(DisplayObject object) {
+		if(object != null) {
+			if (object.getHitbox().intersects(this.hitbox)) {
+				//event
+				this.dispatchEvent(new Event(Event.COLLISION, this));
+				object.dispatchEvent(new Event(Event.COLLISION, object));
+				return true;
+			}
+		}
+		return false;
+	}
 	public Rectangle getHitbox() { return hitbox; }
 	public void setHitbox(Rectangle r) {this.hitbox = r;}
+	public int getBottom() {return this.getyAbsolutePosition()+this.getScaledHeight();}
+	public int getTop() {return this.getyAbsolutePosition();}
+	public int getLeft() {return this.getxAbsolutePosition();}
+	public int getRight() {return this.getxAbsolutePosition()+this.getScaledWidth();}
 
-	public void setImageNormal() {
-		String normalImageFileName = this.getFileName();
-		normalImageFileName = normalImageFileName.substring(0,normalImageFileName.indexOf("-"));	// IF YOUR FILENAME HAS ANOTHER DASH THIS WILL GET CONFUSED
-		normalImageFileName += ".png";
-		this.setImage(normalImageFileName);
-	}
-
-	public void setImageError() {
-		if(!this.getFileName().contains("-error")) {
-			String errorImageFileName = this.getFileName().substring(0, this.getFileName().length() - 4);
-			errorImageFileName += "-error.png";
-			this.setImage(errorImageFileName);
-		}
-	}
-
-
-	/**
-	 * Constructors: can pass in the id OR the id and image's file path and
-	 * position OR the id and a buffered image and position
-	 */
-	public DisplayObject(String id) {
-		this.setId(id);
-	}
-
-	public DisplayObject(String id, String fileName) {
-		this.setId(id);
-		this.setImage(fileName);
-		this.fileName = fileName;
-	}
-	
-	public DisplayObject(String id, String fileName, DisplayObjectContainer dad) {
-		this.setId(id);
-		this.setImage(fileName);
-		this.fileName = fileName;
-		this.parent = dad;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Returns the unscaled width and height of this display object
-	 * */
 	public int getScaledWidth() {
 		if(displayImage == null) return 0;
 		int answer = (int) (this.getxAbsoluteScale()*this.getUnscaledWidth());
@@ -279,6 +226,9 @@ public class DisplayObject extends EventDispatcher {
 		return displayImage.getHeight();
 	}
 
+
+	// IMAGES & FILENAMES ----------------------------------------------------------------------------------------------
+
 	public BufferedImage getDisplayImage() {
 		return this.displayImage;
 	}
@@ -291,11 +241,9 @@ public class DisplayObject extends EventDispatcher {
 		if (displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
 		} else {
-		    this.fileName = imageName;
-        }
+			this.fileName = imageName;
+		}
 	}
-
-
 	/**
 	 * Helper function that simply reads an image from the given image name
 	 * (looks in resources\\) and returns the bufferedimage for that filename
@@ -317,23 +265,46 @@ public class DisplayObject extends EventDispatcher {
 		displayImage = image;
 	}
 
-	public AlphaComposite makeComposite(float alpha) {
-		int type = AlphaComposite.SRC_OVER;
-		return (AlphaComposite.getInstance(type,alpha));
+	public void setImageNormal() {
+		String normalImageFileName = this.getFileName();
+		normalImageFileName = normalImageFileName.substring(0,normalImageFileName.indexOf("-"));	// IF YOUR FILENAME HAS ANOTHER DASH THIS WILL GET CONFUSED
+		normalImageFileName += ".png";
+		this.setImage(normalImageFileName);
 	}
-
-	public boolean collidesWith(DisplayObject object) {
-		if(object != null) {
-			if (object.getHitbox().intersects(this.hitbox)) {
-				//event
-				this.dispatchEvent(new Event(Event.COLLISION, this));
-				object.dispatchEvent(new Event(Event.COLLISION, object));
-				return true;
-			}
+	public void setImageError() {
+		if(!this.getFileName().contains("-error")) {
+			String errorImageFileName = this.getFileName().substring(0, this.getFileName().length() - 4);
+			errorImageFileName += "-error.png";
+			this.setImage(errorImageFileName);
 		}
-		return false;
 	}
 
+
+	// CONSTRUCTORS ----------------------------------------------------------------------------------------------------
+
+	/**
+	 * Constructors: can pass in the id OR the id and image's file path and
+	 * position OR the id and a buffered image and position
+	 */
+	public DisplayObject(String id) {
+		this.setId(id);
+	}
+
+	public DisplayObject(String id, String fileName) {
+		this.setId(id);
+		this.setImage(fileName);
+		this.fileName = fileName;
+	}
+	
+	public DisplayObject(String id, String fileName, DisplayObjectContainer dad) {
+		this.setId(id);
+		this.setImage(fileName);
+		this.fileName = fileName;
+		this.parent = dad;
+	}
+
+
+	// UPDATE ----------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Invoked on every frame before drawing. Used to update this display
@@ -349,6 +320,9 @@ public class DisplayObject extends EventDispatcher {
 					this.getScaledHeight(), this.getScaledWidth());
 		}
 	}
+
+
+	// DRAWING METHODS -------------------------------------------------------------------------------------------------
 
 	/**
 	 * Draws this image. This should be overloaded if a display object should
@@ -405,6 +379,11 @@ public class DisplayObject extends EventDispatcher {
 		g2d.scale(1/this.xScale,1/this.yScale);
 		g2d.rotate(-this.rotation, this.xPivot, this.yPivot);
 		g2d.translate(-this.xPosition, -this.yPosition);
+	}
+
+	public AlphaComposite makeComposite(float alpha) {
+		int type = AlphaComposite.SRC_OVER;
+		return (AlphaComposite.getInstance(type,alpha));
 	}
 
 }

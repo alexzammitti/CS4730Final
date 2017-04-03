@@ -188,6 +188,7 @@ public class TheMinorsGame extends Game {
 
         // SET UP PHYSICS - TODO - might also be good to methodize
         //set gravity
+        mario.setyAcceleration(1);
 	}
 
 	public void itemSelectionInitialize() {
