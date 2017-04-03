@@ -406,6 +406,8 @@ public class TheMinorsGame extends Game {
 
 	}
 
+	// UPDATE METHODS FOR MODES
+
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
 	    if(! itemSelectionInitialized && frameCounter > 3) {
 	        itemSelectionInitialize();
@@ -501,6 +503,16 @@ public class TheMinorsGame extends Game {
         }
     }
 
+    public void gameplayUpdate(ArrayList<Integer> pressedKeys){
+        for(PhysicsSprite physicsSprite : players) {
+            physicsSprite.update(pressedKeys);
+            handleMoveInput(physicsSprite,10,pressedKeys);
+            constrainToLevel(physicsSprite);
+        }
+    }
+
+    // METHODIZED UPDATE SEGMENTS
+
     public void handleMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
         if (pressedKeys.contains(KEY_UP)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
@@ -514,10 +526,17 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void gameplayUpdate(ArrayList<Integer> pressedKeys){
-        for(PhysicsSprite sprite : players) {
-            sprite.update(pressedKeys);
-            handleMoveInput(sprite,10,pressedKeys);
+    public void constrainToLevel(Sprite sprite) {
+        if(sprite.getBottom() > GAME_HEIGHT) {
+            //TODO there is not currently a way for us to set the global position of a sprite if it is a child
+            sprite.setyPosition(GAME_HEIGHT-sprite.getScaledHeight());
+        } else if(sprite.getTop() < 0) {
+            sprite.setyPosition(0);
+        }
+        if(sprite.getRight() > GAME_WIDTH) {
+            sprite.setxPosition(GAME_WIDTH-sprite.getScaledWidth());
+        } else if(sprite.getLeft() < 0) {
+            sprite.setxPosition(0);
         }
     }
 
