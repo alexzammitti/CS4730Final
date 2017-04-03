@@ -43,6 +43,7 @@ public class TheMinorsGame extends Game {
 
     // speeds etc
     public final static int CURSOR_SPEED = 10;
+    public final static int PLAYER_SPEED = 5;
 
 
 
@@ -419,7 +420,7 @@ public class TheMinorsGame extends Game {
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
-            handleMoveInput(cursor,CURSOR_SPEED,pressedKeys);
+            handleCursorMoveInput(cursor,CURSOR_SPEED,pressedKeys);
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
             for(Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext();) {
                 Sprite s = iterator.next();
@@ -463,7 +464,7 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys);
             // Move sprite based on user input
             if (!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
-                handleMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys);
+                handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys);
             }
             // Allow user to rotate image
             if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
@@ -506,14 +507,17 @@ public class TheMinorsGame extends Game {
     public void gameplayUpdate(ArrayList<Integer> pressedKeys){
         for(PhysicsSprite physicsSprite : players) {
             physicsSprite.update(pressedKeys);
-            handleMoveInput(physicsSprite,10,pressedKeys);
+            handlePlayerMoveInput(physicsSprite,pressedKeys);
             constrainToLevel(physicsSprite);
+            for(DisplayObjectContainer object : levelContainer.getChildren()) {
+                physicsSprite.collidesWith(object);
+            }
         }
     }
 
     // METHODIZED UPDATE SEGMENTS
 
-    public void handleMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
+    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
         if (pressedKeys.contains(KEY_UP)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
         } else if (pressedKeys.contains(KEY_DOWN)) {
@@ -523,6 +527,19 @@ public class TheMinorsGame extends Game {
             displayObject.setxPosition(displayObject.getxPosition() - speed);
         } else if (pressedKeys.contains(KEY_RIGHT)) {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
+        }
+    }
+
+    public void handlePlayerMoveInput(PhysicsSprite physicsSprite, ArrayList<Integer> pressedKeys) {
+        if(pressedKeys.contains(KEY_LEFT)){
+            physicsSprite.setxPosition(physicsSprite.getxPosition()-PLAYER_SPEED);
+        }
+        else if(pressedKeys.contains(KEY_RIGHT)){
+            physicsSprite.setxPosition(physicsSprite.getxPosition()+PLAYER_SPEED);
+        }
+        if(pressedKeys.contains(KEY_UP) && !physicsSprite.airborne){
+            //physicsSprite.airborne = true;
+            physicsSprite.setyVelocity(-15);
         }
     }
 
