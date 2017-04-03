@@ -51,7 +51,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
-    public boolean debugHitboxes = true;
+    public boolean debugHitboxes = false;
 
 
 	// SET UP SPRITE ASSETS
@@ -146,8 +146,8 @@ public class TheMinorsGame extends Game {
         cursor.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
         cursor.setScale(.5,.5);
 
-        selectionBackground.setPosition(350,100);        //TODO - fix this stupid bug!
-        selectionBackground.setScale(1,1);      //NOTE!!! The children's position within the parent seem to be affected by the parent's scale!!!
+        selectionBackground.setPosition(350,100);
+        selectionBackground.setScale(1.2,1.2);
 
 
         // code from Alex's game

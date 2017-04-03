@@ -158,13 +158,13 @@ public class DisplayObject extends EventDispatcher {
 	// Absolute positioning
 	public int getxAbsolutePosition() {
 		if(this.parent != null) {
-			return (this.parent.getxAbsolutePosition()+this.getxPosition());
+			return (this.parent.getxAbsolutePosition()+(int)(this.getxPosition()*this.parent.xScale));
 		}
 		return this.getxPosition();
 	}
 	public int getyAbsolutePosition() {
 		if(this.parent != null) {
-			return this.parent.getyAbsolutePosition()+this.getyPosition();
+			return this.parent.getyAbsolutePosition()+(int)(this.getyPosition()*this.parent.yScale);
 		}
 		return this.getyPosition();
 	}
