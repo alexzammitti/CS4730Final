@@ -37,13 +37,14 @@ public class EventManager implements IEventListener {
             if(character.getyPosition() < platform.getTop()) {
                 character.setyPosition(platform.getHitbox().y-(character.getScaledHeight()+1));
                 character.airborne = false;
-                character.onPlatform = true;
+                character.isOnPlatform = true;
+                character.platformPlayerIsOn = platform;
                 character.setyVelocity(0);
             }
             else if(character.getyPosition() > platform.getTop()) {
                 character.setyPosition(platform.getHitbox().y+platform.getHitbox().height);
                 character.airborne = true;
-                character.onPlatform = false;
+                character.isOnPlatform = false;
                 character.setyVelocity(0);
             }
         } else {

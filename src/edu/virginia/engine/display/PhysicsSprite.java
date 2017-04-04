@@ -17,8 +17,9 @@ public class PhysicsSprite extends AnimatedSprite {
     public int xForce;
     public int yForce;
     public boolean airborne = true;
-    public boolean onPlatform = false;
+    public boolean isOnPlatform = false;
     public boolean alive = true;
+    public DisplayObject platformPlayerIsOn;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}

@@ -515,6 +515,7 @@ public class TheMinorsGame extends Game {
             //TODO check if player is alive
             handlePlayerMoveInput(player,pressedKeys);
             constrainToLevel(player);
+            fallOffPlatforms(player,player.platformPlayerIsOn);
             for(DisplayObjectContainer object : levelContainer.getChildren()) {
                 player.collidesWith(object);
             }
@@ -568,12 +569,12 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void fallOffPlatforms(PhysicsSprite player) {
-        if (player.onPlatform) {
-            if (player.getRight() < platform.getLeft() || mario.getLeft() > platform.getRight()) {
-                if (mario.getBottom() > platform.getTop() - 2 && mario.getBottom() < platform.getTop() + 2) {
-                    mario.airborne = true;
-                    mario.onPlatform = false;
+    public void fallOffPlatforms(PhysicsSprite player, DisplayObject platform) {
+        if (player.isOnPlatform) {
+            if (player.getRight() < platform.getLeft() || player.getLeft() > platform.getRight()) {
+                if (player.getBottom() > platform.getTop() - 2 && mario.getBottom() < platform.getTop() + 2) {
+                    player.airborne = true;
+                    player.isOnPlatform = false;
                 }
             }
         }
