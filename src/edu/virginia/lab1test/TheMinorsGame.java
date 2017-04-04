@@ -22,7 +22,7 @@ public class TheMinorsGame extends Game {
 
     // GLOBAL CONSTANTS
     public enum GameMode {
-        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE;
     }
 
     public GameMode gameMode = GameMode.ITEM_SELECTION;
@@ -63,6 +63,7 @@ public class TheMinorsGame extends Game {
 	public Sprite platform2 = new Sprite("platform2", "brick.png");
 	public Sprite platform3 = new Sprite("platform3", "brick.png");
 	public Sprite spike1 = new Sprite("spike1", "spikerow.png");
+	public Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
@@ -124,8 +125,9 @@ public class TheMinorsGame extends Game {
         // BUILD DISPLAY TREES
 
         levelContainer.addChild(platform1);
-        levelContainer.addChild(coin);
+        //levelContainer.addChild(coin);
         levelContainer.addChild(platform2);
+        levelContainer.addChild(portal);
 
         // PLAYER ORGANIZATION
         players.add(mario);
@@ -147,10 +149,10 @@ public class TheMinorsGame extends Game {
 
 
         // code from Alex's game
-        coin.setxPosition(1150);
-        coin.setyPosition(290);
-        coin.setxScale(.17);
-        coin.setyScale(.17);
+//        coin.setxPosition(1150);
+//        coin.setyPosition(290);
+//        coin.setxScale(.17);
+//        coin.setyScale(.17);
 
         platform1.setxPosition(0);
         platform1.setyPosition(GAME_HEIGHT/2);
@@ -161,6 +163,9 @@ public class TheMinorsGame extends Game {
         platform2.setyScale(.3);
         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
         platform2.setyPosition(GAME_HEIGHT/2);
+
+        portal.setScale(0.2,0.2);
+        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
 
 		mario.setxPosition(5);
 		mario.setyPosition(130);
@@ -173,6 +178,7 @@ public class TheMinorsGame extends Game {
             player.addEventListener(eventManager, Event.SAFE_COLLISION);
             player.addEventListener(eventManager, Event.UNSAFE_COLLISION);
             player.addEventListener(eventManager, Event.DEATH);
+            player.addEventListener(eventManager, Event.GOAL);
         }
 
 
@@ -515,14 +521,20 @@ public class TheMinorsGame extends Game {
     public void gameplayUpdate(ArrayList<Integer> pressedKeys){
         for(PhysicsSprite player : players) {
             player.update(pressedKeys);
-            if(player.alive) {
+            if(player.alive && !player.courseCompleted) {
                 handlePlayerMoveInput(player, pressedKeys);
                 constrainToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
                 for (DisplayObjectContainer object : levelContainer.getChildren()) {
-                    player.collidesWith(object);
+                    if(player.collidesWith(object)) {
+                        if(object.getId().equals("portal")){
+                            player.dispatchEvent(new Event(Event.GOAL, player));
+                        }
+                    }
+
                 }
             }
+            if(player.courseCompleted) gameMode = GameMode.ROUND_COMPLETE;
         }
     }
 
@@ -587,15 +599,6 @@ public class TheMinorsGame extends Game {
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
-		if(platform1 != null) {
-			platform1.draw(g);
-		}
-		if(platform2 != null) {
-			platform2.draw(g);
-		}
-		if(coin != null && coin.isVisible()) {
-			coin.draw(g);
-		}
         if(gameMode != null) {
             switch(gameMode) {
                 case ITEM_SELECTION:
@@ -608,6 +611,9 @@ public class TheMinorsGame extends Game {
                     gameplayDraw(g);
                     break;
                 case MAIN_MENU:
+                    break;
+                case ROUND_COMPLETE:
+                    roundCompleteDraw(g);
                     break;
             }
         }
@@ -673,6 +679,16 @@ public class TheMinorsGame extends Game {
                 g.fillRect(test.x, test.y, test.width, test.height);
             }
         }
+    }
+
+    public void roundCompleteDraw(Graphics g) {
+        if(levelContainer != null) {
+            levelContainer.draw(g);
+            for(PhysicsSprite player : players) {
+                if(player.isVisible()) player.draw(g);
+            }
+        }
+        g.drawString("Level Completed!",GAME_WIDTH/2,GAME_HEIGHT/2);
     }
 
 	public static void main(String[] args) {

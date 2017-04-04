@@ -31,6 +31,9 @@ public class EventManager implements IEventListener {
             case Event.DEATH:
                 deathAnimation(event);
                 break;
+            case Event.GOAL:
+                event.player.courseCompleted = true;
+                break;
         }
 
     }

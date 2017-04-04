@@ -20,6 +20,7 @@ public class PhysicsSprite extends AnimatedSprite {
     public boolean isOnPlatform = false;
     public boolean alive = true;
     public DisplayObject platformPlayerIsOn;
+    public boolean courseCompleted = false;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}

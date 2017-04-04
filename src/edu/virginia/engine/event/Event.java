@@ -14,6 +14,7 @@ public class Event {
     public final static String SAFE_COLLISION = "safe collision";
     public final static String UNSAFE_COLLISION = "unsafe collision";
     public final static String DEATH = "death";
+    public final static String GOAL = "goal";
 
 
 
