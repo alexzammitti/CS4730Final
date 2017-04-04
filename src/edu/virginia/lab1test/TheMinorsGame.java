@@ -64,6 +64,8 @@ public class TheMinorsGame extends Game {
 	public Sprite platform3 = new Sprite("platform3", "brick.png");
 	public Sprite spike1 = new Sprite("spike1", "spikerow.png");
 	public Sprite portal = new Sprite("portal","portal.png");
+	public Sprite laserGun = new Sprite("gun", "LaserGun.png");
+	public Sprite laserBeam = new Sprite("laser", "LaserBeam.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
@@ -203,22 +205,29 @@ public class TheMinorsGame extends Game {
 	    selectionBackground.removeAll();
         selectionBackground.addChild(item1);
         selectionBackground.addChild(item2);
+        selectionBackground.addChild(item3);
 
         // GIVE ITEMS IMAGES - will be randomized later
         item1.setImage("brick.png");
         item2.setImage("spikerow.png");
+        item3.setImage("LaserGun.png");
 
         item1.setScale(0.7,0.3);
-        item1.alignCenterVertical(selectionBackground);
-        item1.alignFractionHorizontal(selectionBackground,7,2);
+        item1.alignCenterHorizontal(selectionBackground);
+        item1.alignFractionVertical(selectionBackground,100,30);
 
         item2.setScale(0.3,0.3);
-        item2.alignCenterVertical(selectionBackground);
-        item2.alignFractionHorizontal(selectionBackground,7,5);
+        item2.alignCenterHorizontal(selectionBackground);
+        item2.alignFractionVertical(selectionBackground,100,52);
+
+        item3.setScale(0.07,0.07);
+        item3.alignCenterHorizontal(selectionBackground);
+        item3.alignFractionVertical(selectionBackground,100,75);
 
         placeableItemList.clear();
         placeableItemList.add(item1);
         placeableItemList.add(item2);
+        placeableItemList.add(item3);
 
         itemSelectionInitialized = true;
     }

@@ -127,8 +127,8 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	// Multiple argument setters:
-	public void setPosition(int x, int y) {this.xPosition = x;this.yPosition = y;}
-	public void setPivotPoint(int x, int y) {this.xPivot = x;this.yPivot = y; }
+	public void setPosition(int x, int y) {this.xPosition = x; this.yPosition = y;}
+	public void setPivotPoint(int x, int y) {this.xPivot = x; this.yPivot = y; }
 	public void setScale(double x, double y) {this.xScale = x; this.yScale = y;}
 
 
