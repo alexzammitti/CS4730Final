@@ -45,6 +45,9 @@ public class Tween extends EventDispatcher {
                 event.setSource(this);
                 this.dispatchEvent(event);
                 this.completed = true;
+                if(object.getAlpha() < 0.05) {
+                    object.setVisible(false);
+                }
                 return;
             }
             switch (param.getParam()) {
