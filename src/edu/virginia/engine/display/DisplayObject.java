@@ -39,6 +39,7 @@ public class DisplayObject extends EventDispatcher {
 	protected Rectangle hitbox = new Rectangle(0, 0, 0, 0);
     public boolean isPlaced = false;
     protected String fileName = "";
+	public boolean dangerous = false;
 
 
     // ALL METHODS -----------------------------------------------------------------------------------------------------
@@ -197,10 +198,10 @@ public class DisplayObject extends EventDispatcher {
 	}
 	public Rectangle getHitbox() { return hitbox; }
 	public void setHitbox(Rectangle r) {this.hitbox = r;}
-	public int getBottom() {return this.getyAbsolutePosition()+this.getScaledHeight();}
-	public int getTop() {return this.getyAbsolutePosition();}
-	public int getLeft() {return this.getxAbsolutePosition();}
-	public int getRight() {return this.getxAbsolutePosition()+this.getScaledWidth();}
+	public int getBottom() {return this.getHitbox().y+this.getHitbox().height;}
+	public int getTop() {return this.getHitbox().y;}
+	public int getLeft() {return this.getHitbox().x;}
+	public int getRight() {return this.getHitbox().x+this.getHitbox().width;}
 
 	public int getScaledWidth() {
 		if(displayImage == null) return 0;

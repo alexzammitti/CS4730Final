@@ -1,5 +1,7 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.event.Event;
+
 import java.util.ArrayList;
 
 /**
@@ -14,8 +16,9 @@ public class PhysicsSprite extends AnimatedSprite {
     public int yVelocity;
     public int xForce;
     public int yForce;
-    public boolean airborne;
-    public boolean onPlatform;
+    public boolean airborne = true;
+    public boolean onPlatform = false;
+    public boolean alive = true;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}
@@ -45,11 +48,30 @@ public class PhysicsSprite extends AnimatedSprite {
 
     public void update(ArrayList<Integer> pressedKeys) {
         super.update(pressedKeys);
-        if(this != null) {
+        if(alive) {
             this.setxPosition(this.getxPosition()+xVelocity);
             this.setyPosition(this.getyPosition()+yVelocity);
-            this.setyVelocity(this.getyVelocity()+yAcceleration);
+            if(airborne) {
+                this.setyVelocity(this.getyVelocity()+yAcceleration);
+            }
+        } else {
+            this.visible = false;
         }
+    }
+
+    @Override
+    public boolean collidesWith(DisplayObject object) {
+        if(object != null) {
+            if (object.getHitbox().intersects(this.hitbox)) {
+                if(object.dangerous) {
+                    this.dispatchEvent(new Event(this,object,Event.UNSAFE_COLLISION));
+                } else {
+                    this.dispatchEvent(new Event(this,object,Event.SAFE_COLLISION));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
 }

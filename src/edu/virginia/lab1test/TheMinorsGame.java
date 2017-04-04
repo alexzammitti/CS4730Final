@@ -51,7 +51,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
-    public boolean debugHitboxes = false;
+    public boolean debugHitboxes = true;
 
 
 	// SET UP SPRITE ASSETS
@@ -119,7 +119,7 @@ public class TheMinorsGame extends Game {
     public GameClock escKeyClock = new GameClock();
 
 	
-	/**
+    /**
 	 * Constructor. See constructor in Game.java for details on the parameters given
 	 * */
 	public TheMinorsGame() {
@@ -147,7 +147,7 @@ public class TheMinorsGame extends Game {
         cursor.setScale(.5,.5);
 
         selectionBackground.setPosition(350,100);
-        selectionBackground.setScale(1.2,1.2);
+        selectionBackground.setScale(1,1);
 
 
         // code from Alex's game
@@ -173,7 +173,11 @@ public class TheMinorsGame extends Game {
 		mario.setAlpha(1);
 
         // ESTABLISH EVENT LISTENERS
-        item1.addEventListener(eventManager, Event.COLLISION);
+        for(PhysicsSprite player : players) {
+            player.addEventListener(eventManager, Event.SAFE_COLLISION);
+            player.addEventListener(eventManager, Event.UNSAFE_COLLISION);
+        }
+
 
         // SET UP TWEENS - TODO - might also be good to methodize
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
@@ -505,12 +509,13 @@ public class TheMinorsGame extends Game {
     }
 
     public void gameplayUpdate(ArrayList<Integer> pressedKeys){
-        for(PhysicsSprite physicsSprite : players) {
-            physicsSprite.update(pressedKeys);
-            handlePlayerMoveInput(physicsSprite,pressedKeys);
-            constrainToLevel(physicsSprite);
+        for(PhysicsSprite player : players) {
+            player.update(pressedKeys);
+            //TODO check if player is alive
+            handlePlayerMoveInput(player,pressedKeys);
+            constrainToLevel(player);
             for(DisplayObjectContainer object : levelContainer.getChildren()) {
-                physicsSprite.collidesWith(object);
+                player.collidesWith(object);
             }
         }
     }
@@ -538,31 +543,44 @@ public class TheMinorsGame extends Game {
             physicsSprite.setxPosition(physicsSprite.getxPosition()+PLAYER_SPEED);
         }
         if(pressedKeys.contains(KEY_UP) && !physicsSprite.airborne){
-            //physicsSprite.airborne = true;
+            physicsSprite.airborne = true;
             physicsSprite.setyVelocity(-15);
         }
     }
 
-    public void constrainToLevel(Sprite sprite) {
-        if(sprite.getBottom() > GAME_HEIGHT) {
+    public void constrainToLevel(PhysicsSprite player) {
+        if(player.getBottom() > GAME_HEIGHT) {
             //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-            sprite.setyPosition(GAME_HEIGHT-sprite.getScaledHeight());
-        } else if(sprite.getTop() < 0) {
-            sprite.setyPosition(0);
+            player.setyPosition(GAME_HEIGHT-player.getScaledHeight());
+            player.airborne = false;
+            player.setyVelocity(0);
+        } else if(player.getTop() < 0) {
+            player.setyPosition(0);
+            player.airborne = true;
         }
-        if(sprite.getRight() > GAME_WIDTH) {
-            sprite.setxPosition(GAME_WIDTH-sprite.getScaledWidth());
-        } else if(sprite.getLeft() < 0) {
-            sprite.setxPosition(0);
+        if(player.getRight() > GAME_WIDTH) {
+            player.setxPosition(GAME_WIDTH-player.getScaledWidth());
+            player.setxVelocity(0);
+        } else if(player.getLeft() < 0) {
+            player.setxPosition(0);
+            player.setxVelocity(0);
+        }
+    }
+
+    public void fallOffPlatforms(PhysicsSprite player) {
+        if (player.onPlatform) {
+            if (player.getRight() < platform.getLeft() || mario.getLeft() > platform.getRight()) {
+                if (mario.getBottom() > platform.getTop() - 2 && mario.getBottom() < platform.getTop() + 2) {
+                    mario.airborne = true;
+                    mario.onPlatform = false;
+                }
+            }
         }
     }
 
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
-		if(mario != null && mario.isVisible()) {
-			mario.draw(g);
-		}
 		if(platform1 != null) {
 			platform1.draw(g);
 		}
@@ -636,6 +654,19 @@ public class TheMinorsGame extends Game {
             levelContainer.draw(g);
             for(PhysicsSprite sprite : players) {
                 sprite.draw(g);
+            }
+        }
+        if(mario != null) {
+            mario.draw(g);
+        }
+        if(debugHitboxes) {
+            for(DisplayObjectContainer c : levelContainer.getChildren()) {
+                Rectangle test = c.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
+            }
+            for(PhysicsSprite p : players) {
+                Rectangle test = p.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
             }
         }
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class DisplayObjectContainer extends DisplayObject {
 	
 	protected ArrayList<DisplayObjectContainer> children = new ArrayList<DisplayObjectContainer>(0);
-	protected boolean visible;
+	protected boolean visible = true;
 
 	public DisplayObjectContainer(String id) {
 		super(id);
