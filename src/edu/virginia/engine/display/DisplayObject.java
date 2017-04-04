@@ -332,7 +332,7 @@ public class DisplayObject extends EventDispatcher {
 	 * */
 	public void draw(Graphics g) {
 		
-		if (displayImage != null) {
+		if (displayImage != null && this.visible) {
 			/*
 			 * Get the graphics and apply this objects transformations
 			 * (rotation, etc.)

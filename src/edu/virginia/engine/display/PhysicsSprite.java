@@ -55,7 +55,7 @@ public class PhysicsSprite extends AnimatedSprite {
                 this.setyVelocity(this.getyVelocity()+yAcceleration);
             }
         } else {
-            this.visible = false;
+            this.setVisible(false);
         }
     }
 

@@ -51,7 +51,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
-    public boolean debugHitboxes = true;
+    public boolean debugHitboxes = false;
 
 
 	// SET UP SPRITE ASSETS
@@ -166,7 +166,7 @@ public class TheMinorsGame extends Game {
         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
         platform2.setyPosition(GAME_HEIGHT/2);
 
-		mario.setxPosition(0);
+		mario.setxPosition(5);
 		mario.setyPosition(130);
 		mario.setxScale(3.5);
 		mario.setyScale(3.5);
@@ -441,6 +441,7 @@ public class TheMinorsGame extends Game {
                         newSprite.setPosition(s.getxAbsolutePosition(),s.getyAbsolutePosition());
                         levelContainer.addChild(newSprite);                                 // the level container will hold everything in the level
                         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
+                        newSprite.dangerous = s.getFileName().contains("spike");            // if its spiky, it kills us
                         iterator.remove();                                                  // the item can no longer be selected
                         //s.setVisible(false);
                         gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
@@ -652,13 +653,11 @@ public class TheMinorsGame extends Game {
     public void gameplayDraw(Graphics g) {
         if(levelContainer != null) {
             levelContainer.draw(g);
-            for(PhysicsSprite sprite : players) {
-                sprite.draw(g);
+            for(PhysicsSprite player : players) {
+                if(player.isVisible()) player.draw(g);
             }
         }
-        if(mario != null) {
-            mario.draw(g);
-        }
+
         if(debugHitboxes) {
             for(DisplayObjectContainer c : levelContainer.getChildren()) {
                 Rectangle test = c.getHitbox();
