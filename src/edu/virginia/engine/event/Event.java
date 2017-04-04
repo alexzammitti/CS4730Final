@@ -2,6 +2,7 @@ package edu.virginia.engine.event;
 
 import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.PhysicsSprite;
+import edu.virginia.engine.display.Sprite;
 
 /**
  * Created by jaz on 2/17/17.
@@ -12,6 +13,8 @@ public class Event {
     public final static String COIN_PICKED_UP = "coin picked up";
     public final static String SAFE_COLLISION = "safe collision";
     public final static String UNSAFE_COLLISION = "unsafe collision";
+    public final static String DEATH = "death";
+
 
 
     public String eventType;
@@ -29,7 +32,10 @@ public class Event {
     public Event(String type) {
         this.eventType = type;
     }
-
+    public Event(String type, PhysicsSprite player) {
+        this.eventType = type;
+        this.player = player;
+    }
     public Event(PhysicsSprite player, DisplayObject object, String type) {
         this.eventType = type;
         this.player = player;

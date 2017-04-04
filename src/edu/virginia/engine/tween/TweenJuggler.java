@@ -9,7 +9,7 @@ public class TweenJuggler {
     ArrayList<Tween> tweens = new ArrayList<>(0);
     private static TweenJuggler ourInstance = new TweenJuggler();
     public static TweenJuggler getInstance() {return ourInstance;}
-    public TweenJuggler() {
+    private TweenJuggler() {
 
     }
     public void add(Tween tween) {

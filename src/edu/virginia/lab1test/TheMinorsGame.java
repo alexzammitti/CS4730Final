@@ -39,8 +39,6 @@ public class TheMinorsGame extends Game {
     public final static int KEY_R = 82;
     public final static int KEY_ESC = 27;
 
-
-
     // speeds etc
     public final static int CURSOR_SPEED = 10;
     public final static int PLAYER_SPEED = 5;
@@ -99,11 +97,9 @@ public class TheMinorsGame extends Game {
 	public String prevAnim = "idle";
 
 	// SINGLETON TWEEN JUGGLER
-	public TweenJuggler tweenJuggler = new TweenJuggler();
+	//public TweenJuggler tweenJuggler = new TweenJuggler();
 
 	// TWEENS
-
-
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
     public Tween item1SelectionTween = new Tween(item1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
     public Tween item2SelectionTween = new Tween(item2, new TweenTransition(TweenTransition.TransitionType.LINEAR));
@@ -176,6 +172,7 @@ public class TheMinorsGame extends Game {
         for(PhysicsSprite player : players) {
             player.addEventListener(eventManager, Event.SAFE_COLLISION);
             player.addEventListener(eventManager, Event.UNSAFE_COLLISION);
+            player.addEventListener(eventManager, Event.DEATH);
         }
 
 
@@ -242,7 +239,7 @@ public class TheMinorsGame extends Game {
 
         frameCounter++;
         if (frameCounter > 4) {
-            tweenJuggler.nextFrame();
+            TweenJuggler.getInstance().nextFrame();
         }
 
 //        if(false) {
@@ -504,7 +501,13 @@ public class TheMinorsGame extends Game {
                 }
             }
         }
-        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY) {
+            if (!levelContainer.getLastChild().isPlaced) {
+                levelContainer.removeChild(levelContainer.getLastChild());
+            }
+            for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {
+                if(levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
+            }
             gameMode = GameMode.GAMEPLAY;
         }
     }
@@ -512,12 +515,13 @@ public class TheMinorsGame extends Game {
     public void gameplayUpdate(ArrayList<Integer> pressedKeys){
         for(PhysicsSprite player : players) {
             player.update(pressedKeys);
-            //TODO check if player is alive
-            handlePlayerMoveInput(player,pressedKeys);
-            constrainToLevel(player);
-            fallOffPlatforms(player,player.platformPlayerIsOn);
-            for(DisplayObjectContainer object : levelContainer.getChildren()) {
-                player.collidesWith(object);
+            if(player.alive) {
+                handlePlayerMoveInput(player, pressedKeys);
+                constrainToLevel(player);
+                fallOffPlatforms(player, player.platformPlayerIsOn);
+                for (DisplayObjectContainer object : levelContainer.getChildren()) {
+                    player.collidesWith(object);
+                }
             }
         }
     }

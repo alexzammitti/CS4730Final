@@ -2,6 +2,7 @@ package edu.virginia.engine.event;
 
 import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.PhysicsSprite;
+import edu.virginia.engine.tween.*;
 
 import java.awt.*;
 
@@ -22,9 +23,22 @@ public class EventManager implements IEventListener {
                 break;
             case Event.UNSAFE_COLLISION:
                 event.player.alive = false;
+                event.player.dispatchEvent(new Event(Event.DEATH,event.player));
                 break;
             case Event.SAFE_COLLISION:
                 handlePlatformCollision(event.player,event.object);
+                break;
+            case Event.DEATH:
+                Tween deathTweenY = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                Tween deathTweenAlpha = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                Tween deathTweenRotate = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                deathTweenY.animate(TweenableParam.Y,event.player.getyPosition(),event.player.getyPosition()-100,100);
+                deathTweenAlpha.animate(TweenableParam.ALPHA,1,0,100);
+                deathTweenRotate.animate(TweenableParam.ROTATION,0,5,100);
+                event.player.setPivotCenter();
+                TweenJuggler.getInstance().add(deathTweenAlpha);
+                TweenJuggler.getInstance().add(deathTweenY);
+                TweenJuggler.getInstance().add(deathTweenRotate);
                 break;
         }
 
