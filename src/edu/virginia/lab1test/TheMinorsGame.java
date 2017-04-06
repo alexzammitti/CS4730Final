@@ -57,15 +57,9 @@ public class TheMinorsGame extends Game {
     private ArrayList<PhysicsSprite> players = new ArrayList<>(0);
 	public PhysicsSprite mario = new PhysicsSprite("mario", "sprite-sheet.png");
 	// Placeable items
-	public Sprite coin = new Sprite("coin", "coin.png");
-	public Sprite platform = new Sprite("platform","brick.png");
 	public Sprite platform1 = new Sprite("platform1", "brick.png");
 	public Sprite platform2 = new Sprite("platform2", "brick.png");
-	public Sprite platform3 = new Sprite("platform3", "brick.png");
-	public Sprite spike1 = new Sprite("spike1", "spikerow.png");
 	public Sprite portal = new Sprite("portal","portal.png");
-	public Sprite laserGun = new Sprite("gun", "LaserGun.png");
-	public Sprite laserBeam = new Sprite("laser", "LaserBeam.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
@@ -187,11 +181,6 @@ public class TheMinorsGame extends Game {
         // SET UP TWEENS - TODO - might also be good to methodize
         selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
         //tweenJuggler.add(selectionBackgroundTween);
-
-        item1SelectionTween.animate(TweenableParam.SCALE_X,platform.getxScale(),platform.getxScale()+.4,50);
-        item2SelectionTween.animate(TweenableParam.SCALE_Y,platform.getyScale(),platform.getyScale()+.4,50);
-        item1SelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
-        item2SelectionTween.animate(TweenableParam.SCALE_Y,spike1.getyScale(),spike1.getyScale()+.4,50);
 
         gameMode = GameMode.ITEM_SELECTION;
 
