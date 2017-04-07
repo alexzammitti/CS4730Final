@@ -43,7 +43,7 @@ public class TheMinorsGame extends Game {
     // speeds etc
     public final static int CURSOR_SPEED = 10;
     public final static int PLAYER_SPEED = 5;
-    public final static int BEAM_SPEED = 3;
+    public final static int BEAM_SPEED = 15;
 
 
 
