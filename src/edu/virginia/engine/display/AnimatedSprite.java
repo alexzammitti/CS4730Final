@@ -1,5 +1,7 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.controller.GamePad;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +65,7 @@ public class AnimatedSprite extends Sprite {
 		this.endIndex = endIndex;
 	}
 
-	public void update(ArrayList<Integer> pressedKeys) { super.update(pressedKeys); }
+	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) { super.update(pressedKeys,gamePads); }
 
 	public AnimatedSprite(String id) { super(id); }
 

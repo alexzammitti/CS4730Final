@@ -1,5 +1,6 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
 
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ public class PhysicsSprite extends AnimatedSprite {
         yForce=0;
     }
 
-    public void update(ArrayList<Integer> pressedKeys) {
-        super.update(pressedKeys);
+    public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+        super.update(pressedKeys,gamePads);
         if(alive) {
             this.setxPosition(this.getxPosition()+xVelocity);
             this.setyPosition(this.getyPosition()+yVelocity);

@@ -1,5 +1,7 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.controller.GamePad;
+
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -22,8 +24,8 @@ public class Sprite extends DisplayObjectContainer {
 	}
 	
 	@Override
-	public void update(ArrayList<Integer> pressedKeys) {
-		super.update(pressedKeys);
+	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+		super.update(pressedKeys,gamePads);
 	}
 
 	}

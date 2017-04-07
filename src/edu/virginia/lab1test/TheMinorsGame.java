@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
 import edu.virginia.engine.tween.Tween;
 import edu.virginia.engine.tween.TweenJuggler;
@@ -225,18 +226,18 @@ public class TheMinorsGame extends Game {
 
 
 	@Override
-	public void update(ArrayList<Integer> pressedKeys){
-		super.update(pressedKeys);
+	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+		super.update(pressedKeys,gamePads);
         if(gameMode != null) {
             switch (gameMode) {
                 case ITEM_SELECTION:
-                    itemSelectionUpdate(pressedKeys);
+                    itemSelectionUpdate(pressedKeys,gamePads);
                     break;
                 case ITEM_PLACEMENT:
-                    itemPlacementUpdate(pressedKeys);
+                    itemPlacementUpdate(pressedKeys,gamePads);
                     break;
                 case GAMEPLAY:
-                    gameplayUpdate(pressedKeys);
+                    gameplayUpdate(pressedKeys,gamePads);
                     break;
                 case MAIN_MENU:
                     break;
@@ -416,27 +417,27 @@ public class TheMinorsGame extends Game {
 
 	// UPDATE METHODS FOR MODES
 
-	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys) {
+	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
 	    if(! itemSelectionInitialized && frameCounter > 3) {
 	        itemSelectionInitialize();
         }
 	    if(cursor != null) {
-	        cursor.update(pressedKeys);
-	        selectionBackground.update(pressedKeys);
+	        cursor.update(pressedKeys,gamePads);
+	        selectionBackground.update(pressedKeys,gamePads);
 
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
-            handleCursorMoveInput(cursor,CURSOR_SPEED,pressedKeys);
+            handleCursorMoveInput(cursor,CURSOR_SPEED,pressedKeys,gamePads);
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
             for(Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext();) {
                 Sprite s = iterator.next();
-                s.update(pressedKeys);
+                s.update(pressedKeys,gamePads);
                 // if the cursor overlaps with a selectable items
                 if(cursor.collidesWith(s)) {
                     // add tween stuff here for polish if desired
                     // and the player presses the select button over it
-                    if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
+                    if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY ||gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY ) {
                         String spriteId = "copy" + Integer.toString(placedSpriteCounter);   // we need to make a unique spriteId to make sure that --
                         placedSpriteCounter++;                                              // --> new sprites don't have the same id for checks later
                         Sprite newSprite = new Sprite(spriteId,s.getFileName());          //duplicate the sprite and add it to our level
@@ -465,20 +466,24 @@ public class TheMinorsGame extends Game {
             // CHECK IF SELECTION IS DONE OR TIMED OUT
             //end selection phase and move into item phase
         }
-        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY||gamePads.get(0).isButtonPressed(GamePad.BUTTON_START)&& escKeyClock.getElapsedTime() > KEY_DELAY){
             gameMode = GameMode.GAMEPLAY;
         }
     }
 
-    public void itemPlacementUpdate(ArrayList<Integer> pressedKeys) {
+    public void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
 	    if(levelContainer != null) {
-            levelContainer.update(pressedKeys);
+            levelContainer.update(pressedKeys,gamePads);
             // Move sprite based on user input
             if (!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
-                handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys);
+                handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys, gamePads);
             }
             // Allow user to rotate image
             if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
+                levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
+                rKeyClock.resetGameClock();
+            }
+            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_R1) && rKeyClock.getElapsedTime() > KEY_DELAY) {
                 levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                 rKeyClock.resetGameClock();
             }
@@ -509,8 +514,16 @@ public class TheMinorsGame extends Game {
                     spaceKeyClock.resetGameClock();
                 }
             }
+            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
+                if (!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
+                    levelContainer.getLastChild().isPlaced = true;
+                    gameMode = GameMode.ITEM_SELECTION;
+                    itemSelectionInitialized = false;
+                    spaceKeyClock.resetGameClock();
+                }
+            }
         }
-        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY) {
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY || gamePads.get(0).isButtonPressed(GamePad.BUTTON_START)&& escKeyClock.getElapsedTime() > KEY_DELAY) {
             if (!levelContainer.getLastChild().isPlaced) {
                 levelContainer.removeChild(levelContainer.getLastChild());
             }
@@ -521,11 +534,11 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void gameplayUpdate(ArrayList<Integer> pressedKeys){
+    public void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         for(PhysicsSprite player : players) {
-            player.update(pressedKeys);
+            player.update(pressedKeys,gamePads);
             if(player.alive && !player.courseCompleted) {
-                handlePlayerMoveInput(player, pressedKeys);
+                handlePlayerMoveInput(player, pressedKeys, gamePads);
                 constrainToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
                 shootGuns();
@@ -536,9 +549,9 @@ public class TheMinorsGame extends Game {
                         }
                     }
                 }
-                levelContainer.update(pressedKeys); //TODO theres an issue with the update method with beams, figure out why the positions of beams are off
+                levelContainer.update(pressedKeys, gamePads); //TODO theres an issue with the update method with beams, figure out why the positions of beams are off
                 for (DisplayObjectContainer guns : gunList) {
-                    guns.update(pressedKeys);
+                    guns.update(pressedKeys, gamePads);
                     for(DisplayObjectContainer beams : guns.getChildren()) {
                         if(player.collidesWith(beams)) {
 
@@ -552,7 +565,7 @@ public class TheMinorsGame extends Game {
 
     // METHODIZED UPDATE SEGMENTS
 
-    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
+    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if (pressedKeys.contains(KEY_UP)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
         } else if (pressedKeys.contains(KEY_DOWN)) {
@@ -563,9 +576,19 @@ public class TheMinorsGame extends Game {
         } else if (pressedKeys.contains(KEY_RIGHT)) {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
+        if (gamePads.get(0).getLeftStickYAxis()<0) {
+            displayObject.setyPosition(displayObject.getyPosition() - speed);
+        } else if (gamePads.get(0).getLeftStickYAxis()>0) {
+            displayObject.setyPosition(displayObject.getyPosition() + speed);
+        }
+        if (gamePads.get(0).getLeftStickXAxis()<0) { //Left
+            displayObject.setxPosition(displayObject.getxPosition() - speed);
+        } else if (gamePads.get(0).getLeftStickXAxis()>0) { //Right
+            displayObject.setxPosition(displayObject.getxPosition() + speed);
+        }
     }
 
-    public void handlePlayerMoveInput(PhysicsSprite physicsSprite, ArrayList<Integer> pressedKeys) {
+    public void handlePlayerMoveInput(PhysicsSprite physicsSprite, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(pressedKeys.contains(KEY_LEFT)){
             physicsSprite.setxPosition(physicsSprite.getxPosition()-PLAYER_SPEED);
         }
@@ -576,6 +599,17 @@ public class TheMinorsGame extends Game {
             physicsSprite.airborne = true;
             physicsSprite.setyVelocity(-15);
         }
+        if(gamePads.get(0).getLeftStickXAxis()<0){ //Left
+            physicsSprite.setxPosition(physicsSprite.getxPosition()-PLAYER_SPEED);
+        }
+        else if(gamePads.get(0).getLeftStickXAxis()>0){ //Right
+            physicsSprite.setxPosition(physicsSprite.getxPosition()+PLAYER_SPEED);
+        }
+        if(gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && !physicsSprite.airborne){
+            physicsSprite.airborne = true;
+            physicsSprite.setyVelocity(-15);
+        }
+
     }
 
     public void constrainToLevel(PhysicsSprite player) {
@@ -629,7 +663,7 @@ public class TheMinorsGame extends Game {
                 if((beam.getxAbsolutePosition() + beam.getScaledWidth() < 0 && gun.getRotation() == 0) || (beam.getxAbsolutePosition() < 0 && gun.getRotation() == Math.PI/2)
                         || (beam.getxAbsolutePosition() + beam.getScaledWidth() < 0 && gun.getRotation() == Math.PI) || (beam.getxAbsolutePosition() < 0 && gun.getRotation() == Math.PI*3/2)) {
                         iterator.remove();
-                        System.out.println("removed beam");
+                        //System.out.println("removed beam");
                     }
                 }
 //            if(gun.getRotation() == 0) {

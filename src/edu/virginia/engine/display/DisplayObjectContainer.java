@@ -1,5 +1,7 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.controller.GamePad;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -93,10 +95,10 @@ public class DisplayObjectContainer extends DisplayObject {
 	}
 	
 	@Override
-	public void update(ArrayList<Integer> pressedKeys) {
-		super.update(pressedKeys);
+	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+		super.update(pressedKeys,gamePads);
 		for(DisplayObjectContainer c : children) {
-			c.update(pressedKeys);								// each call to update should affect the whole display tree
+			c.update(pressedKeys,gamePads);								// each call to update should affect the whole display tree
 		}
 	}
 	

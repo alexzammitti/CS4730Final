@@ -1,5 +1,6 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
 import edu.virginia.engine.event.EventDispatcher;
 
@@ -312,7 +313,7 @@ public class DisplayObject extends EventDispatcher {
 	 * objects state before the draw occurs. Should be overridden if necessary
 	 * to update objects appropriately.
 	 * */
-	protected void update(ArrayList<Integer> pressedKeys) {
+	protected void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
 		if(this.rotation%(Math.PI) < 1){
 			hitbox.setBounds(this.getxAbsolutePosition(), this.getyAbsolutePosition(), this.getScaledWidth(), this.getScaledHeight());
 		} else if(this.rotation%Math.PI/2 < 1) {

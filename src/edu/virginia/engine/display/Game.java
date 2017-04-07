@@ -13,6 +13,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import edu.virginia.engine.controller.GamePad;
+import edu.virginia.engine.controller.GamePadComponent;
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -36,6 +40,9 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 	/* The JPanel for this game */
 	private GameScenePanel scenePanel;
 
+	/* Connected Game Controllers */
+	private ArrayList<GamePad> controllers;
+
 	public Game(String gameId, int width, int height) {
 		super(gameId);
 		
@@ -45,6 +52,24 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 		
 		/* Use an absolute layout */
 		scenePanel.setLayout(null);
+
+		/* Search for and add any controllers that are connected */
+		controllers = new ArrayList<GamePad>();
+		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment();
+		Controller[] cs = ce.getControllers();
+		for (int i = 0; i < cs.length; i++) {
+			Controller controller = cs[i];
+			if (
+					controller.getType() == Controller.Type.STICK ||
+							controller.getType() == Controller.Type.GAMEPAD ||
+							controller.getType() == Controller.Type.WHEEL ||
+							controller.getType() == Controller.Type.FINGERSTICK
+					)
+			{
+				System.out.println("Found Controller: " + controller.getName() + ", " + controller.getType() );
+				controllers.add(new GamePad(controller));
+			}
+		}
 	}
 	
 	
@@ -135,8 +160,11 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 	protected void nextFrame(Graphics g) {
 
 		try {
+			/* Poll for any wireless controller buttons that are pressed down */
+			pollControllers();
+
 			/* Update all objects on the stage */
-			this.update(pressedKeys);
+			this.update(pressedKeys,controllers);
 
 			/* Draw everything on the screen */
 			this.draw(g);
@@ -145,6 +173,12 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 					.println("Exception in nextFrame of game. Stopping game (no frames will be drawn anymore");
 			stop();
 			e.printStackTrace();
+		}
+	}
+
+	private void pollControllers(){
+		for(GamePad controller : controllers){
+			controller.update();
 		}
 	}
 	
