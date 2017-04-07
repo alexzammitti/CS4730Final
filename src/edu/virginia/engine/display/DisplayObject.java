@@ -183,6 +183,14 @@ public class DisplayObject extends EventDispatcher {
         return this.getyScale();
     }
 
+	public double getAbsoluteRotation() {
+		if(this.parent != null) {
+			return (this.parent.getAbsoluteRotation()+this.getRotation());
+		}
+		return this.getRotation();
+	}
+
+
 
 	// HITBOXES & BOUNDS CHECKING --------------------------------------------------------------------------------------
 
@@ -314,9 +322,9 @@ public class DisplayObject extends EventDispatcher {
 	 * to update objects appropriately.
 	 * */
 	protected void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
-		if(this.rotation%(Math.PI) < 1){
+		if(this.getAbsoluteRotation()%(Math.PI) < 1){
 			hitbox.setBounds(this.getxAbsolutePosition(), this.getyAbsolutePosition(), this.getScaledWidth(), this.getScaledHeight());
-		} else if(this.rotation%Math.PI/2 < 1) {
+		} else if(this.getAbsoluteRotation()%Math.PI/2 < 1) {
 			hitbox.setBounds(this.getxAbsolutePosition()+this.getScaledWidth()/2-this.getScaledHeight()/2,
 					this.getyAbsolutePosition()-this.getScaledWidth()/2+this.getScaledHeight()/2,
 					this.getScaledHeight(), this.getScaledWidth());

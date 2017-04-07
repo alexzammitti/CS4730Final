@@ -68,7 +68,7 @@ public class GamePad {
 		return false;
 	}
 	
-	private final double threshold = 0.1;
+	private final double threshold = 0.5;
 	public double getLeftStickXAxis(){
 		if(this.components.containsKey("x")){
 			double toReturn = this.components.get("x").getData();
