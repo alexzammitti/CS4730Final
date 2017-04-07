@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class DisplayObjectContainer extends DisplayObject {
 	
 	protected ArrayList<DisplayObjectContainer> children = new ArrayList<DisplayObjectContainer>(0);
+	public ArrayList<DisplayObjectContainer> allChildren = new ArrayList<>();
 	protected boolean visible = true;
 
 	public DisplayObjectContainer(String id) {
@@ -70,9 +71,22 @@ public class DisplayObjectContainer extends DisplayObject {
 		return children.size();
 	}
 	
-	public ArrayList<DisplayObjectContainer> getChildren() {
-		return children;
+	public ArrayList<DisplayObjectContainer> getChildren() { return children; }
+
+	public ArrayList<DisplayObjectContainer> getAllChildren() {
+		if (children.size() == 0) {
+			return children;
+		} else {
+			allChildren.addAll(children);
+			for (DisplayObjectContainer c : children) {
+				allChildren.addAll(c.getAllChildren());
+			}
+			return allChildren;
+		}
 	}
+
+
+
 
 	public DisplayObjectContainer getLastChild() {
 		return this.getByIndex(this.getNumberOfChildren()-1);	// we sometimes want the most recently added child

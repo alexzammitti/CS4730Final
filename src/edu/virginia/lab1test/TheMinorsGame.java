@@ -42,6 +42,7 @@ public class TheMinorsGame extends Game {
     // speeds etc
     public final static int CURSOR_SPEED = 10;
     public final static int PLAYER_SPEED = 5;
+    public final static int BEAM_SPEED = 30;
 
 
 
@@ -73,6 +74,7 @@ public class TheMinorsGame extends Game {
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
+    public ArrayList<Sprite> gunList = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
 
@@ -209,7 +211,7 @@ public class TheMinorsGame extends Game {
         item2.alignCenterHorizontal(selectionBackground);
         item2.alignFractionVertical(selectionBackground,100,52);
 
-        item3.setScale(0.07,0.07);
+        item3.setScale(.5,.5);
         item3.alignCenterHorizontal(selectionBackground);
         item3.alignFractionVertical(selectionBackground,100,75);
 
@@ -441,6 +443,9 @@ public class TheMinorsGame extends Game {
                         newSprite.setScale(s.getxAbsoluteScale(),s.getyAbsoluteScale());
                         newSprite.setPosition(s.getxAbsolutePosition(),s.getyAbsolutePosition());
                         levelContainer.addChild(newSprite);                                 // the level container will hold everything in the level
+                        if(s.getFileName().contains("Laser")) {
+                          gunList.add(newSprite);
+                        }
                         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
                         newSprite.dangerous = s.getFileName().contains("spike");            // if its spiky, it kills us
                         iterator.remove();                                                  // the item can no longer be selected
@@ -523,13 +528,22 @@ public class TheMinorsGame extends Game {
                 handlePlayerMoveInput(player, pressedKeys);
                 constrainToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
+                shootGuns();
                 for (DisplayObjectContainer object : levelContainer.getChildren()) {
                     if(player.collidesWith(object)) {
                         if(object.getId().equals("portal")){
                             player.dispatchEvent(new Event(Event.GOAL, player));
                         }
                     }
+                }
+                levelContainer.update(pressedKeys); //TODO theres an issue with the update method with beams, figure out why the positions of beams are off
+                for (DisplayObjectContainer guns : gunList) {
+                    guns.update(pressedKeys);
+                    for(DisplayObjectContainer beams : guns.getChildren()) {
+                        if(player.collidesWith(beams)) {
 
+                        }
+                    }
                 }
             }
             if(player.courseCompleted) gameMode = GameMode.ROUND_COMPLETE;
@@ -591,6 +605,66 @@ public class TheMinorsGame extends Game {
                     player.isOnPlatform = false;
                 }
             }
+        }
+    }
+
+    public void shootGuns() {
+        if(frameCounter % 100 == 0) {
+            for(Sprite gun : gunList) {
+                Sprite beam = new Sprite("laserBeam", "LaserBeam.png");
+                beam.dangerous = true;
+                beam.setPivotCenter();
+                gun.addChild(beam);
+                beam.setxScale(1/gun.getxScale());
+                beam.setyScale(1/gun.getyScale());
+                beam.setxPosition(gun.getxPivot() );
+                beam.setyPosition(gun.getyPivot());
+            }
+        }
+        for(Sprite gun : gunList) {
+            for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
+                DisplayObjectContainer beam = iterator.next();
+                beam.dangerous = true;
+                beam.setxPosition(beam.getxPosition() - BEAM_SPEED);
+                if((beam.getxAbsolutePosition() + beam.getScaledWidth() < 0 && gun.getRotation() == 0) || (beam.getxAbsolutePosition() < 0 && gun.getRotation() == Math.PI/2)
+                        || (beam.getxAbsolutePosition() + beam.getScaledWidth() < 0 && gun.getRotation() == Math.PI) || (beam.getxAbsolutePosition() < 0 && gun.getRotation() == Math.PI*3/2)) {
+                        iterator.remove();
+                        System.out.println("removed beam");
+                    }
+                }
+//            if(gun.getRotation() == 0) {
+//                for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
+//                    DisplayObjectContainer beam = iterator.next();
+//                    beam.setxPosition(beam.getxPosition() - BEAM_SPEED);
+//                    if(beam.getxAbsolutePosition() < 0) {
+//                        iterator.remove();
+//                    }
+//                }
+//            } else if (gun.getRotation() == Math.PI/2) {
+//                for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
+//                    DisplayObjectContainer beam = iterator.next();
+//                    beam.setxPosition(beam.getxPosition() - BEAM_SPEED);
+//                    if(beam.getyAbsolutePosition() < 0) {
+//                        iterator.remove();
+//                    }
+//                }
+//            } else if (gun.getRotation() == Math.PI) {
+//                for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
+//                    DisplayObjectContainer beam = iterator.next();
+//                    beam.setxPosition(beam.getxPosition() + BEAM_SPEED);
+//                    if(beam.getxAbsolutePosition() > GAME_WIDTH) {
+//                        iterator.remove();
+//                    }
+//                }
+//            } else {
+//                for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
+//                    DisplayObjectContainer beam = iterator.next();
+//                    beam.setyPosition(beam.getyPosition() + BEAM_SPEED);
+//                    if (beam.getyAbsolutePosition() > GAME_HEIGHT) {
+//                        iterator.remove();
+//                    }
+//                }
+//            }
         }
     }
 
