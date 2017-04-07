@@ -686,7 +686,7 @@ public class TheMinorsGame extends Game {
                 if(player.isVisible()) player.draw(g);
             }
         }
-        g.drawString("Level Completed!",GAME_WIDTH/2,GAME_HEIGHT/2);
+        g.drawString("Level Completed!",GAME_WIDTH/2,GAME_HEIGHT/2+50);
     }
 
 	public static void main(String[] args) {
