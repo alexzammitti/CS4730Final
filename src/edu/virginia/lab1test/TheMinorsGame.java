@@ -437,7 +437,7 @@ public class TheMinorsGame extends Game {
                 if(cursor.collidesWith(s)) {
                     // add tween stuff here for polish if desired
                     // and the player presses the select button over it
-                    if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY ||gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY ) {
+                    if(pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY ) {
                         String spriteId = "copy" + Integer.toString(placedSpriteCounter);   // we need to make a unique spriteId to make sure that --
                         placedSpriteCounter++;                                              // --> new sprites don't have the same id for checks later
                         Sprite newSprite = new Sprite(spriteId,s.getFileName());          //duplicate the sprite and add it to our level
@@ -454,6 +454,25 @@ public class TheMinorsGame extends Game {
                         gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
                         spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
                     }
+                    if(gamePads.size()>=1) {
+                        if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
+                            String spriteId = "copy" + Integer.toString(placedSpriteCounter);   // we need to make a unique spriteId to make sure that --
+                            placedSpriteCounter++;                                              // --> new sprites don't have the same id for checks later
+                            Sprite newSprite = new Sprite(spriteId, s.getFileName());          //duplicate the sprite and add it to our level
+                            newSprite.setScale(s.getxAbsoluteScale(), s.getyAbsoluteScale());
+                            newSprite.setPosition(s.getxAbsolutePosition(), s.getyAbsolutePosition());
+                            levelContainer.addChild(newSprite);                                 // the level container will hold everything in the level
+                            if (s.getFileName().contains("Laser")) {
+                                gunList.add(newSprite);
+                            }
+                            newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
+                            newSprite.dangerous = s.getFileName().contains("spike");            // if its spiky, it kills us
+                            iterator.remove();                                                  // the item can no longer be selected
+                            //s.setVisible(false);
+                            gameMode = GameMode.ITEM_PLACEMENT;     //TODO make this check to see if all players have made a selection before changing mode
+                            spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
+                        }
+                    }
                 }
             }
             // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
@@ -466,14 +485,19 @@ public class TheMinorsGame extends Game {
             // CHECK IF SELECTION IS DONE OR TIMED OUT
             //end selection phase and move into item phase
         }
-        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY||gamePads.get(0).isButtonPressed(GamePad.BUTTON_START)&& escKeyClock.getElapsedTime() > KEY_DELAY){
+        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
             gameMode = GameMode.GAMEPLAY;
+        }
+        if( gamePads.size()>=1) {
+            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_START) && escKeyClock.getElapsedTime() > KEY_DELAY) {
+                gameMode = GameMode.GAMEPLAY;
+            }
         }
     }
 
     public void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
-	    if(levelContainer != null) {
-            levelContainer.update(pressedKeys,gamePads);
+        if (levelContainer != null) {
+            levelContainer.update(pressedKeys, gamePads);
             // Move sprite based on user input
             if (!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
                 handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys, gamePads);
@@ -483,9 +507,11 @@ public class TheMinorsGame extends Game {
                 levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                 rKeyClock.resetGameClock();
             }
-            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_R1) && rKeyClock.getElapsedTime() > KEY_DELAY) {
-                levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
-                rKeyClock.resetGameClock();
+            if (gamePads.size() >= 1) {
+                if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_R1) && rKeyClock.getElapsedTime() > KEY_DELAY) {
+                    levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
+                    rKeyClock.resetGameClock();
+                }
             }
             // Preventing overlaps - image changes to imageName + "-error.png"
             for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
@@ -514,23 +540,36 @@ public class TheMinorsGame extends Game {
                     spaceKeyClock.resetGameClock();
                 }
             }
-            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
-                if (!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
-                    levelContainer.getLastChild().isPlaced = true;
-                    gameMode = GameMode.ITEM_SELECTION;
-                    itemSelectionInitialized = false;
-                    spaceKeyClock.resetGameClock();
+            if (gamePads.size() >= 1) {
+                if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
+                    if (!levelContainer.getLastChild().getFileName().contains("-error")) {                // and placement is allowed
+                        levelContainer.getLastChild().isPlaced = true;
+                        gameMode = GameMode.ITEM_SELECTION;
+                        itemSelectionInitialized = false;
+                        spaceKeyClock.resetGameClock();
+                    }
                 }
             }
         }
-        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY || gamePads.get(0).isButtonPressed(GamePad.BUTTON_START)&& escKeyClock.getElapsedTime() > KEY_DELAY) {
+        if (pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY) {
             if (!levelContainer.getLastChild().isPlaced) {
                 levelContainer.removeChild(levelContainer.getLastChild());
             }
             for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {
-                if(levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
+                if (levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
             }
             gameMode = GameMode.GAMEPLAY;
+        }
+        if (gamePads.size() >= 1) {
+            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_START) && escKeyClock.getElapsedTime() > KEY_DELAY) {
+                if (!levelContainer.getLastChild().isPlaced) {
+                    levelContainer.removeChild(levelContainer.getLastChild());
+                }
+                for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {
+                    if (levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
+                }
+                gameMode = GameMode.GAMEPLAY;
+            }
         }
     }
 
@@ -576,15 +615,17 @@ public class TheMinorsGame extends Game {
         } else if (pressedKeys.contains(KEY_RIGHT)) {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
-        if (gamePads.get(0).getLeftStickYAxis()<0) {
-            displayObject.setyPosition(displayObject.getyPosition() - speed);
-        } else if (gamePads.get(0).getLeftStickYAxis()>0) {
-            displayObject.setyPosition(displayObject.getyPosition() + speed);
-        }
-        if (gamePads.get(0).getLeftStickXAxis()<0) { //Left
-            displayObject.setxPosition(displayObject.getxPosition() - speed);
-        } else if (gamePads.get(0).getLeftStickXAxis()>0) { //Right
-            displayObject.setxPosition(displayObject.getxPosition() + speed);
+        if(gamePads.size()>=1) {
+            if (gamePads.get(0).getLeftStickYAxis() < 0) {
+                displayObject.setyPosition(displayObject.getyPosition() - speed);
+            } else if (gamePads.get(0).getLeftStickYAxis() > 0) {
+                displayObject.setyPosition(displayObject.getyPosition() + speed);
+            }
+            if (gamePads.get(0).getLeftStickXAxis() < 0) { //Left
+                displayObject.setxPosition(displayObject.getxPosition() - speed);
+            } else if (gamePads.get(0).getLeftStickXAxis() > 0) { //Right
+                displayObject.setxPosition(displayObject.getxPosition() + speed);
+            }
         }
     }
 
@@ -599,17 +640,17 @@ public class TheMinorsGame extends Game {
             physicsSprite.airborne = true;
             physicsSprite.setyVelocity(-15);
         }
-        if(gamePads.get(0).getLeftStickXAxis()<0){ //Left
-            physicsSprite.setxPosition(physicsSprite.getxPosition()-PLAYER_SPEED);
+        if(gamePads.size()>=1) {
+            if (gamePads.get(0).getLeftStickXAxis() < 0) { //Left
+                physicsSprite.setxPosition(physicsSprite.getxPosition() - PLAYER_SPEED);
+            } else if (gamePads.get(0).getLeftStickXAxis() > 0) { //Right
+                physicsSprite.setxPosition(physicsSprite.getxPosition() + PLAYER_SPEED);
+            }
+            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && !physicsSprite.airborne) {
+                physicsSprite.airborne = true;
+                physicsSprite.setyVelocity(-15);
+            }
         }
-        else if(gamePads.get(0).getLeftStickXAxis()>0){ //Right
-            physicsSprite.setxPosition(physicsSprite.getxPosition()+PLAYER_SPEED);
-        }
-        if(gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && !physicsSprite.airborne){
-            physicsSprite.airborne = true;
-            physicsSprite.setyVelocity(-15);
-        }
-
     }
 
     public void constrainToLevel(PhysicsSprite player) {
