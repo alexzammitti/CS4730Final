@@ -21,11 +21,11 @@ public class GamePad {
 	public static final String BUTTON_SQUARE = "2"; //Square on ps3 | X on X360
 	public static final String BUTTON_TRIANGLE = "3"; //Triangle on ps3 | Y on X360
 	
-	public static final String BUTTON_L1 = "4"; //L1 hammer on ps3
-	public static final String BUTTON_R1 = "5"; //R1 hammer on ps3
+	public static final String LEFT_TRIGGER = "4"; //L1 hammer on ps3
+	public static final String RIGHT_TRIGGER = "5"; //R1 hammer on ps3
 	
-	public static final String BUTTON_L3 = "8";
-	public static final String BUTTON_R3 = "9";
+	public static final String LEFT_BUMPER = "8"; //Left bumper
+	public static final String RIGHT_BUMPER = "9"; //Right bumper
 	
 	public static final String BUTTON_SELECT = "6";
 	public static final String BUTTON_START = "7";

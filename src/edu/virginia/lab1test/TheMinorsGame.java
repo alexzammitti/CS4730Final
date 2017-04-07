@@ -248,171 +248,6 @@ public class TheMinorsGame extends Game {
         if (frameCounter > 4) {
             TweenJuggler.getInstance().nextFrame();
         }
-
-//        if(false) {
-//            frameCounter++;
-//            if (frameCounter >= 2) {
-//
-//                mario.update(pressedKeys);
-//                coin.update(pressedKeys);
-//                platform1.update(pressedKeys);
-//                platform2.update(pressedKeys);
-//
-//                if (mario.getyPosition() >= 608) {
-//                    mario.setAirborne(false);
-//                    mario.setyPosition(607);
-//                }
-//
-//
-//                if (mario != null) {
-////                    if (marioFade.isComplete()) {
-////                        tweenJuggler.remove(marioFade);
-////                    }
-////
-////                    if (coinx.isComplete()) {
-////                        coinFade.animate(TweenableParams.ALPHA, 1, 0, 400);
-////                        tweenJuggler.add(coinFade);
-////                    }
-////
-////                    if (coinFade.isComplete()) {
-////                        //mySoundManager.setLoopMusic(false);
-////                        //mySoundManager.stopMusic(mySoundManager.bkgmusic);
-////                        //mySoundManager.playSound("smb_flag.mid");
-////                        this.pause();
-////                    }
-////
-////                    if (mario.collidesWith(coin) && coin.isVisible() && !gotCoin) {
-////                        gotCoin = true;
-////                        coinx.animate(TweenableParams.X, coin.getxPosition(), 450, 100);
-////                        coiny.animate(TweenableParams.Y, coin.getyPosition(), 200, 100);
-////                        coinScaleX.animate(TweenableParams.SCALE_X, coin.getxScale(), coin.getxScale() * 3, 100);
-////                        coinScaleY.animate(TweenableParams.SCALE_Y, coin.getyScale(), coin.getyScale() * 3, 100);
-////                        tweenJuggler.add(coinx);
-////                        tweenJuggler.add(coiny);
-////                        tweenJuggler.add(coinScaleX);
-////                        tweenJuggler.add(coinScaleY);
-////                    }
-//
-//                    if (mario.collidesWith(platform1)) {
-//                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() > mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-//                            if (mario.getyPosition() < platform1.getyPosition()) {
-//                                mario.setyPosition(platform1.getyPosition() - mario.getScaledHeight() - 1);
-//                                mario.setAirborne(false);
-//                                mario.setJump(false);
-//                                onPlat1 = true;
-//                            } else {
-//                                mario.setyPosition(platform1.getyPosition() + platform1.getScaledHeight() + 1);
-//                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
-//                                mario.setJump(false);
-//                            }
-//                        }
-//                        if (mario.getHitbox().intersection(platform1.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform1.getHitbox()).getHeight()) {
-//                            if (mario.getxPosition() < platform1.getxPosition()) {
-//                                mario.setxPosition(platform1.getxPosition() - mario.getScaledWidth());
-//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-//                            } else {
-//                                mario.setxPosition(platform1.getxPosition() + platform1.getScaledWidth());
-//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-//                            }
-//                        }
-//                    }
-//
-//                    if (mario.collidesWith(platform2)) {
-//                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() > mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-//                            if (mario.getyPosition() < platform2.getyPosition()) {
-//                                mario.setyPosition(platform2.getyPosition() - mario.getScaledHeight() - 1);
-//                                mario.setAirborne(false);
-//                                mario.setJump(false);
-//                                onPlat2 = true;
-//                            } else {
-//                                mario.setyPosition(platform2.getyPosition() + platform2.getScaledHeight() + 1);
-//                                mario.setyVelocity((int) (mario.getyVelocity() * (-1)));
-//                                mario.setJump(false);
-//                            }
-//                        }
-//                        if (mario.getHitbox().intersection(platform2.getHitbox()).getWidth() <= mario.getHitbox().intersection(platform2.getHitbox()).getHeight()) {
-//                            if (mario.getxPosition() < platform2.getxPosition()) {
-//                                mario.setxPosition(platform2.getxPosition() - mario.getScaledWidth());
-//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-//                            } else {
-//                                mario.setxPosition(platform2.getxPosition() + platform2.getScaledWidth());
-//                                mario.setxVelocity((int) (mario.getxVelocity() * (-1)));
-//                            }
-//                        }
-//                    }
-//
-//                    if (onPlat1 && ((mario.getxPosition() >= platform1.getxPosition() + platform1.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform1.getxPosition()))) {
-//                        onPlat1 = false;
-//                        mario.setAirborne(true);
-//                    }
-//
-//                    if (onPlat2 && ((mario.getxPosition() >= platform2.getxPosition() + platform2.getScaledWidth()) || (mario.getxPosition() + mario.getScaledWidth() <= platform2.getxPosition()))) {
-//                        onPlat2 = false;
-//                        mario.setAirborne(true);
-//                    }
-//
-//
-//                    if (pressedKeys.size() > 0) {
-//
-//                        if (pressedKeys.contains("right") && ((mario.getxPosition() + mario.getScaledWidth()) < 1250)) {
-//                            mario.setRight(true);
-//                            mario.setLeft(false);
-//                            prevAnim = animation;
-//                            animation = "walk";
-//                        } else {
-//                            mario.setRight(false);
-//                        }
-//
-//                        if (pressedKeys.contains("left") && (mario.getxPosition() > 0)) {
-//                            mario.setLeft(true);
-//                            mario.setRight(false);
-//                            prevAnim = animation;
-//                            animation = "walk";
-//                        } else {
-//                            mario.setLeft(false);
-//                        }
-//
-//                        if (pressedKeys.contains("up") && (mario.getyPosition() > 10)) {
-//                            if (!mario.isAirborne()) {
-//                                mario.setJump(true);
-//                                mario.setAirborne(true);
-//                                onPlat1 = false;
-//                            } else {
-//                                mario.setJump(false);
-//                            }
-//                        }
-//
-//                    } else {
-//                        mario.setRight(false);
-//                        mario.setLeft(false);
-//                        mario.setJump(false);
-//                        if (!mario.isAirborne()) {
-//                            prevAnim = animation;
-//                            animation = "idle";
-//                        }
-//                    }
-//
-//                    if (mario.getyVelocity() > 0) {
-//                        prevAnim = animation;
-//                        animation = "falling";
-//                    }
-//
-//                    if (mario.getyVelocity() < 0) {
-//                        prevAnim = animation;
-//                        animation = "jump";
-//                    }
-//
-//                    //if(!mySoundManager.bkgmusic.isRunning() && mySoundManager.loopMusic) {
-//                    //	mySoundManager.playMusic("smb_over.mid");
-//                    //}
-//
-//                    mario.animate(animation);
-//
-//                }
-//                //tweenJuggler.nextFrame();
-//            }
-//        }
-
 	}
 
 	// UPDATE METHODS FOR MODES
@@ -428,7 +263,9 @@ public class TheMinorsGame extends Game {
             // SET CURSORS VISIBLE
             cursor.setVisible(true);
             // MOVE CURSOR BASED ON USER INPUT
-            handleCursorMoveInput(cursor,CURSOR_SPEED,pressedKeys,gamePads);
+            handleCursorMoveInput(cursor,CURSOR_SPEED,pressedKeys);
+            handleGamepadCursorMoveInput(cursor,CURSOR_SPEED,gamePads);
+            constrainItemToLevel(cursor);
             // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
             for(Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext();) {
                 Sprite s = iterator.next();
@@ -500,7 +337,8 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys, gamePads);
             // Move sprite based on user input
             if (!(levelContainer.getLastChild().isPlaced)) {                     //TODO make this give each player the item they chose
-                handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys, gamePads);
+                handleCursorMoveInput(levelContainer.getLastChild(), CURSOR_SPEED, pressedKeys);
+                handleGamepadCursorMoveInput(levelContainer.getLastChild(),CURSOR_SPEED,gamePads);
             }
             // Allow user to rotate image
             if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
@@ -508,7 +346,7 @@ public class TheMinorsGame extends Game {
                 rKeyClock.resetGameClock();
             }
             if (gamePads.size() >= 1) {
-                if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_R1) && rKeyClock.getElapsedTime() > KEY_DELAY) {
+                if (gamePads.get(0).isButtonPressed(GamePad.RIGHT_TRIGGER) && rKeyClock.getElapsedTime() > KEY_DELAY) {
                     levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                     rKeyClock.resetGameClock();
                 }
@@ -578,7 +416,7 @@ public class TheMinorsGame extends Game {
             player.update(pressedKeys,gamePads);
             if(player.alive && !player.courseCompleted) {
                 handlePlayerMoveInput(player, pressedKeys, gamePads);
-                constrainToLevel(player);
+                constrainPlayerToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
                 shootGuns();
                 for (DisplayObjectContainer object : levelContainer.getChildren()) {
@@ -604,7 +442,7 @@ public class TheMinorsGame extends Game {
 
     // METHODIZED UPDATE SEGMENTS
 
-    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
         if (pressedKeys.contains(KEY_UP)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
         } else if (pressedKeys.contains(KEY_DOWN)) {
@@ -615,6 +453,9 @@ public class TheMinorsGame extends Game {
         } else if (pressedKeys.contains(KEY_RIGHT)) {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
+    }
+
+    public void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads) {
         if(gamePads.size()>=1) {
             if (gamePads.get(0).getLeftStickYAxis() < 0) {
                 displayObject.setyPosition(displayObject.getyPosition() - speed);
@@ -653,7 +494,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void constrainToLevel(PhysicsSprite player) {
+    public void constrainPlayerToLevel(PhysicsSprite player) {
         if(player.getBottom() > GAME_HEIGHT) {
             //TODO there is not currently a way for us to set the global position of a sprite if it is a child
             player.setyPosition(GAME_HEIGHT-player.getScaledHeight());
@@ -669,6 +510,20 @@ public class TheMinorsGame extends Game {
         } else if(player.getLeft() < 0) {
             player.setxPosition(0);
             player.setxVelocity(0);
+        }
+    }
+
+    public void constrainItemToLevel(Sprite sprite) {
+        if(sprite.getBottom() > GAME_HEIGHT) {
+            //TODO there is not currently a way for us to set the global position of a sprite if it is a child
+            sprite.setyPosition(GAME_HEIGHT-sprite.getScaledHeight());
+        } else if(sprite.getTop() < 0) {
+            sprite.setyPosition(0);
+        }
+        if(sprite.getRight() > GAME_WIDTH) {
+            sprite.setxPosition(GAME_WIDTH-sprite.getScaledWidth());
+        } else if(sprite.getLeft() < 0) {
+            sprite.setxPosition(0);
         }
     }
 
