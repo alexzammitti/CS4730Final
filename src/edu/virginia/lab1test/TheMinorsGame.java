@@ -43,7 +43,7 @@ public class TheMinorsGame extends Game {
     // speeds etc
     public final static int CURSOR_SPEED = 10;
     public final static int PLAYER_SPEED = 5;
-    public final static int BEAM_SPEED = 30;
+    public final static int BEAM_SPEED = 3;
 
 
 
@@ -51,7 +51,7 @@ public class TheMinorsGame extends Game {
     public int frameCounter = 0;
     public boolean itemSelectionInitialized = false;
     public int placedSpriteCounter = 0;
-    public boolean debugHitboxes = true;
+    public boolean debugHitboxes = false;
 
 
 	// SET UP SPRITE ASSETS
@@ -76,6 +76,7 @@ public class TheMinorsGame extends Game {
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
     public ArrayList<Sprite> laserGunList = new ArrayList<>(0);
+    public ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
 
@@ -342,12 +343,14 @@ public class TheMinorsGame extends Game {
             }
             // Allow user to rotate image
             if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
-                levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
+                if(levelContainer.getLastChild().getRotation() >= 3*Math.PI/2) levelContainer.getLastChild().setRotation(0);    // prevent rotations past 2 PI
+                else levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                 rKeyClock.resetGameClock();
             }
             if (gamePads.size() >= 1) {
                 if (gamePads.get(0).isButtonPressed(GamePad.RIGHT_TRIGGER) && rKeyClock.getElapsedTime() > KEY_DELAY) {
-                    levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
+                    if(levelContainer.getLastChild().getRotation() >= 3*Math.PI/2) levelContainer.getLastChild().setRotation(0);    // prevent rotations past 2 PI
+                    else levelContainer.getLastChild().setRotation(levelContainer.getLastChild().getRotation() + Math.PI / 2);
                     rKeyClock.resetGameClock();
                 }
             }
@@ -548,30 +551,32 @@ public class TheMinorsGame extends Game {
     public void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(frameCounter % 100 == 0) {
             for(Sprite gun : laserGunList) {
-                Sprite beam = new Sprite("laserBeam" + gun.getId(), "LaserBeam.png");
+                LaserBeam beam = new LaserBeam("laserbeam" + gun.getId(),gun.getRotation());
                 beam.dangerous = true;
                 beam.setPivotCenter();
-                gun.addChild(beam);
-                beam.setxScale(1/gun.getxScale());
-                beam.setyScale(1/gun.getyScale());
-                beam.setxPosition(gun.getxPivot());
-                beam.setyPosition(gun.getyPivot());
+                beam.setScale(1,1);
+                beam.alignCenterVertical(gun);
+                beam.alignCenterHorizontal(gun);
+                laserBeams.add(beam);
+                levelContainer.addChild(beam);
             }
         }
-        for(Sprite gun : laserGunList) {
-            for(Iterator<DisplayObjectContainer> iterator = gun.getChildren().iterator(); iterator.hasNext();) {
-                DisplayObjectContainer beam = iterator.next();
-                beam.update(pressedKeys,gamePads);
-                beam.dangerous = true;
-                beam.setxPosition(beam.getxPosition() - BEAM_SPEED);
-                if(gun.getRotation() % Math.PI < 1) {
-                    if(beam.getRight() < 0)iterator.remove();
-                    else if(beam.getLeft() > GAME_WIDTH) iterator.remove();
-                } else if(gun.getRotation() % Math.PI/2 < 1) {
-                    if(beam.getBottom() < 0) iterator.remove();
-                    else if(beam.getTop() > GAME_HEIGHT) iterator.remove();
-                }
+        for(Iterator<LaserBeam> iterator = laserBeams.iterator(); iterator.hasNext();) {
+            LaserBeam beam = iterator.next();
+            beam.update(pressedKeys,gamePads);
+            if(beam.direction == 0) beam.setxPosition(beam.getxPosition() - BEAM_SPEED);
+            else if(beam.direction == Math.PI/2) beam.setyPosition(beam.getyPosition() - BEAM_SPEED);
+            else if(beam.direction == Math.PI) beam.setxPosition(beam.getxPosition() + BEAM_SPEED);
+            else if(beam.direction == 3*Math.PI/2) beam.setyPosition(beam.getyPosition() + BEAM_SPEED);
+
+            if(beam.direction % Math.PI < 1) {
+                if(beam.getRight() < 0)iterator.remove();
+                else if(beam.getLeft() > GAME_WIDTH) iterator.remove();
+            } else if(beam.direction % Math.PI/2 < 1) {
+                if(beam.getBottom() < 0) iterator.remove();
+                else if(beam.getTop() > GAME_HEIGHT) iterator.remove();
             }
+
         }
     }
 
@@ -651,13 +656,13 @@ public class TheMinorsGame extends Game {
             for(DisplayObjectContainer c : levelContainer.getChildren()) {
                 Rectangle test = c.getHitbox();
                 g.fillRect(test.x, test.y, test.width, test.height);
-                for(DisplayObjectContainer cc : c.getChildren()) {
-                    test = cc.getHitbox();
-                    g.fillRect(test.x, test.y, test.width, test.height);
-                }
             }
             for(PhysicsSprite p : players) {
                 Rectangle test = p.getHitbox();
+                g.fillRect(test.x, test.y, test.width, test.height);
+            }
+            for(LaserBeam b : laserBeams) {
+                Rectangle test = b.getHitbox();
                 g.fillRect(test.x, test.y, test.width, test.height);
             }
         }
