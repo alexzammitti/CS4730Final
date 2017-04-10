@@ -426,6 +426,8 @@ public class TheMinorsGame extends Game {
                     if(player.collidesWith(object)) {
                         if(object.getId().equals("portal")){
                             player.dispatchEvent(new Event(Event.GOAL, player));
+                        } else if(object.dangerous) {
+                            player.dispatchEvent(new Event(Event.UNSAFE_COLLISION,player));
                         }
                     }
                     for(DisplayObjectContainer objectChild : object.getChildren()) {
