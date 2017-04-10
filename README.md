@@ -7,17 +7,21 @@ Team:
 </ul>
 
 <h2>Instructions:</h2>
-<h5>Selection and Placement </h5>
+<h5>Keyboard</h5>
 <ul>
-<li>arrow keys move cursor</li>
-<li>spacebar selects an item</li>
-<li>spacebar places an item on the map</li>
+<li>Arrow keys to move</li>
+<li>Spacebar to select/place an item</li>
 <li>R rotates selected items 90 degrees</li>
-<li>esc changes to gameplay mode</li>
+<li>Esc changes to gameplay mode</li>
+<li>Arrow keys to move in play mode</li>
 </ul>
-<h5>Gameplay </h5>
+<h5>Gamepad (Xbox controller)</h5>
 <ul>
-<lu>arrow keys to move</li>
+<li>Left joystick to move</li>
+<li>A to select/place an item</li>
+<li>Right bumper to rotate objects</li>
+<li>Start to enter play mode</li>
+<li>Left joystick to move in play mode</li>
 </ul>
 
 <h2>Milestones</h2>
@@ -27,9 +31,9 @@ Team:
         <ul>
             <li><strike>manage collisions between players and placed objects</strike></li>
             <li><strike>add player death upon hitting spikes etc</strike></li>
-            <li>add gamepad support</li>
-            <li>keep multiplayer considerations in mind</li>
-            <li>add third obstacle</li>
+            <li><strike>add gamepad support</strike></li>
+            <li><strike>keep multiplayer considerations in mind</strike></li>
+            <li><strike>add third obstacle</strike></li>
         </ul>
     <li>Beta: Cleanup and get good art/ music. Feature polish, add more obstacles? Implement multiplayer</li>
     <li>Final: Debug make it good</li>
