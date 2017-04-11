@@ -57,7 +57,7 @@ public class TheMinorsGame extends Game {
 	// SET UP SPRITE ASSETS
     // Characters
     private ArrayList<PhysicsSprite> players = new ArrayList<>(0);
-	public PhysicsSprite mario = new PhysicsSprite("mario", "sprite-sheet.png");
+	public PhysicsSprite mario = new PhysicsSprite("player1", "player1");
 	// Placeable items
 	public Sprite platform1 = new Sprite("platform1", "brick.png");
 	public Sprite platform2 = new Sprite("platform2", "brick.png");
@@ -169,8 +169,8 @@ public class TheMinorsGame extends Game {
 
 		mario.setxPosition(5);
 		mario.setyPosition(130);
-		mario.setxScale(3.5);
-		mario.setyScale(3.5);
+		mario.setxScale(1);
+		mario.setyScale(1);
 		mario.setAlpha(1);
 
         // ESTABLISH EVENT LISTENERS
@@ -422,6 +422,8 @@ public class TheMinorsGame extends Game {
                 constrainPlayerToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
                 shootGuns(pressedKeys,gamePads);
+                handleAnimation(player, pressedKeys, gamePads);
+                player.animate(animation);
                 for (DisplayObjectContainer object : levelContainer.getChildren()) {
                     if(player.collidesWith(object)) {
                         if(object.getId().equals("portal")){
@@ -483,28 +485,50 @@ public class TheMinorsGame extends Game {
     }
 
     public void handlePlayerMoveInput(PhysicsSprite physicsSprite, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
-        if(pressedKeys.contains(KEY_LEFT)){
-            physicsSprite.setxPosition(physicsSprite.getxPosition()-PLAYER_SPEED);
-        }
-        else if(pressedKeys.contains(KEY_RIGHT)){
-            physicsSprite.setxPosition(physicsSprite.getxPosition()+PLAYER_SPEED);
-        }
-        if(pressedKeys.contains(KEY_UP) && !physicsSprite.airborne){
-            physicsSprite.airborne = true;
-            physicsSprite.setyVelocity(-15);
-        }
-        if(gamePads.size()>=1) {
-            if (gamePads.get(0).getLeftStickXAxis() < 0) { //Left
+            if (pressedKeys.contains(KEY_LEFT)) {
                 physicsSprite.setxPosition(physicsSprite.getxPosition() - PLAYER_SPEED);
-            } else if (gamePads.get(0).getLeftStickXAxis() > 0) { //Right
+            } else if (pressedKeys.contains(KEY_RIGHT)) {
                 physicsSprite.setxPosition(physicsSprite.getxPosition() + PLAYER_SPEED);
             }
-            if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && !physicsSprite.airborne) {
+            if (pressedKeys.contains(KEY_UP) && !physicsSprite.airborne) {
                 physicsSprite.airborne = true;
                 physicsSprite.setyVelocity(-15);
             }
+
+            if (gamePads.size() >= 1) {
+                if (gamePads.get(0).getLeftStickXAxis() < 0) { //Left
+                    physicsSprite.setxPosition(physicsSprite.getxPosition() - PLAYER_SPEED);
+                } else if (gamePads.get(0).getLeftStickXAxis() > 0) { //Right
+                    physicsSprite.setxPosition(physicsSprite.getxPosition() + PLAYER_SPEED);
+                }
+                if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_CROSS) && !physicsSprite.airborne) {
+                    physicsSprite.airborne = true;
+                    physicsSprite.setyVelocity(-15);
+                }
+            }
+
+    }
+
+    public void handleAnimation(PhysicsSprite player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
+        if (player.airborne) {
+            if(player.yVelocity > 0) {
+                prevAnim = animation;
+                animation = "falling";
+            }
+            if(player.yVelocity < 0) {
+                prevAnim = animation;
+                animation = "jump";
+            }
+        } else if (pressedKeys.contains(KEY_LEFT) || pressedKeys.contains(KEY_RIGHT)) {
+            prevAnim = animation;
+            animation = "walk";
+        } else {
+            prevAnim = animation;
+            animation = "idle";
         }
     }
+
+
 
     public void constrainPlayerToLevel(PhysicsSprite player) {
         if(player.getBottom() > GAME_HEIGHT) {
