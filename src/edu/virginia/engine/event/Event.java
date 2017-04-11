@@ -2,6 +2,7 @@ package edu.virginia.engine.event;
 
 import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.PhysicsSprite;
+import edu.virginia.engine.display.Player;
 import edu.virginia.engine.display.Sprite;
 
 /**
@@ -23,7 +24,7 @@ public class Event {
     public int data;
 
     // COLLISION FIELDS
-    PhysicsSprite player;
+    Player player;
     DisplayObject object;
 
     public Event(String type, DisplayObject src) {
@@ -33,11 +34,11 @@ public class Event {
     public Event(String type) {
         this.eventType = type;
     }
-    public Event(String type, PhysicsSprite player) {
+    public Event(String type, Player player) {
         this.eventType = type;
         this.player = player;
     }
-    public Event(PhysicsSprite player, DisplayObject object, String type) {
+    public Event(Player player, DisplayObject object, String type) {
         this.eventType = type;
         this.player = player;
         this.object = object;

@@ -16,7 +16,7 @@ public class GamePad {
 	
 	/* Constants defining the various buttons on a typical controller */
 	/* Might be necessary to change the string bindings depending on your particular gamepad configuration */
-	public static final String BUTTON_CROSS = "0"; //X on ps3 | A on X360
+	public static final String BUTTON_A = "0"; //X on ps3 | A on X360
 	public static final String BUTTON_CIRCLE = "1"; //Cross on ps3 | B on X360
 	public static final String BUTTON_SQUARE = "2"; //Square on ps3 | X on X360
 	public static final String BUTTON_TRIANGLE = "3"; //Triangle on ps3 | Y on X360

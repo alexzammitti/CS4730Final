@@ -87,6 +87,12 @@ public class DisplayObjectContainer extends DisplayObject {
 		}
 	}
 
+	public void setAllChildrenImagesNormal() {
+		for (DisplayObjectContainer displayObjectContainer : this.getChildren()) {
+			if (displayObjectContainer.getFileName().contains("-error")) displayObjectContainer.setImageNormal();
+		}
+	}
+
 
 
 

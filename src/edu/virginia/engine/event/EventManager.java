@@ -2,6 +2,7 @@ package edu.virginia.engine.event;
 
 import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.PhysicsSprite;
+import edu.virginia.engine.display.Player;
 import edu.virginia.engine.tween.*;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class EventManager implements IEventListener {
             case Event.TWEEN_COMPLETE_EVENT:
                 break;
             case Event.UNSAFE_COLLISION:
-                event.player.alive = false;
+                event.player.setAlive(false);
                 event.player.dispatchEvent(new Event(Event.DEATH,event.player));
                 break;
             case Event.SAFE_COLLISION:
@@ -32,13 +33,13 @@ public class EventManager implements IEventListener {
                 deathAnimation(event);
                 break;
             case Event.GOAL:
-                event.player.courseCompleted = true;
+                event.player.setCourseCompleted(true);
                 break;
         }
 
     }
 
-    public void handlePlatformCollision(PhysicsSprite character, DisplayObject platform) {
+    public void handlePlatformCollision(Player character, DisplayObject platform) {
         Rectangle intersection = character.getHitbox().intersection(platform.getHitbox());
         if( intersection.width > intersection.height && character.getBottom() > platform.getTop()
                 || intersection.width > intersection.height && character.getTop() < platform.getBottom()){

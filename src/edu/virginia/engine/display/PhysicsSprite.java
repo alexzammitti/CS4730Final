@@ -19,9 +19,6 @@ public class PhysicsSprite extends AnimatedSprite {
     public int yForce;
     public boolean airborne = true;
     public boolean isOnPlatform = false;
-    public boolean alive = true;
-    public DisplayObject platformPlayerIsOn;
-    public boolean courseCompleted = false;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}
@@ -51,28 +48,6 @@ public class PhysicsSprite extends AnimatedSprite {
 
     public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         super.update(pressedKeys,gamePads);
-        if(alive) {
-            this.setxPosition(this.getxPosition()+xVelocity);
-            this.setyPosition(this.getyPosition()+yVelocity);
-            if(airborne) {
-                this.setyVelocity(this.getyVelocity()+yAcceleration);
-            }
-        }
-    }
-
-    @Override
-    public boolean collidesWith(DisplayObject object) {
-        if(object != null) {
-            if (object.getHitbox().intersects(this.hitbox)) {
-                if(object.dangerous) {
-                    this.dispatchEvent(new Event(this,object,Event.UNSAFE_COLLISION));
-                } else {
-                    this.dispatchEvent(new Event(this,object,Event.SAFE_COLLISION));
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
 }
