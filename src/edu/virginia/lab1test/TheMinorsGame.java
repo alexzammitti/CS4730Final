@@ -56,7 +56,7 @@ public class TheMinorsGame extends Game {
     private int frameCounter = 0;
     private boolean itemSelectionInitialized = false;
     private int placedItemCounter = 0;
-    private boolean debugHitboxes = true;
+    private boolean debugHitboxes = false;
     private String inputMode = "";
     private int numberOfPlayers = 0;
     private int numberOfSelectedItems = 0;
@@ -487,14 +487,13 @@ public class TheMinorsGame extends Game {
                 handleAnimation(player,pressedKeys,gamePads);
                 player.animate();
                 handlePlayerMoveInput(player, pressedKeys, gamePads);
-                constrainPlayerToLevel(player);
-                fallOffPlatforms(player, player.platformPlayerIsOn);
+                player.constrainToLevel(GAME_WIDTH,GAME_HEIGHT);
+                player.fallOffPlatforms(player.platformPlayerIsOn);
                 shootGuns(pressedKeys,gamePads);
                 for (DisplayObjectContainer object : levelContainer.getChildren()) {
                     if(player.collidesWith(object)) {
                         if(object.getId().equals("portal")){
                             player.dispatchEvent(new Event(Event.GOAL, player));
-                            player.setCourseCompleted(true);
                         }
                     }
                 }
@@ -580,24 +579,6 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void constrainPlayerToLevel(Player player) {
-        if(player.getTop() > GAME_HEIGHT+100) {
-            // kill players for falling off the map
-            player.dispatchEvent(new Event(Event.UNSAFE_COLLISION,player));
-        } else if(player.getTop() < 0) {
-            //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-            player.setyPosition(0);
-            player.airborne = true;
-        }
-        if(player.getRight() > GAME_WIDTH) {
-            player.setxPosition(GAME_WIDTH-player.getScaledWidth());
-            player.setxVelocity(0);
-        } else if(player.getLeft() < 0) {
-            player.setxPosition(0);
-            player.setxVelocity(0);
-        }
-    }
-
     public void constrainItemToLevel(Sprite sprite) {
         if(sprite.getBottom() > GAME_HEIGHT) {
             //TODO there is not currently a way for us to set the global position of a sprite if it is a child
@@ -609,17 +590,6 @@ public class TheMinorsGame extends Game {
             sprite.setxPosition(GAME_WIDTH-sprite.getScaledWidth());
         } else if(sprite.getLeft() < 0) {
             sprite.setxPosition(0);
-        }
-    }
-
-    public void fallOffPlatforms(Player player, DisplayObject platform) {
-        if (player.isOnPlatform) {
-            if (player.getRight() < platform.getLeft() || player.getLeft() > platform.getRight()) {
-                if (player.getBottom() > platform.getTop() - 2 && player.getBottom() < platform.getTop() + 2) {
-                    player.airborne = true;
-                    player.isOnPlatform = false;
-                }
-            }
         }
     }
 

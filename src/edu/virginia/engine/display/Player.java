@@ -64,4 +64,35 @@ public class Player extends PhysicsSprite {
         }
         return false;
     }
+
+    public void fallOffPlatforms(DisplayObject platform) {
+        if (this.isOnPlatform) {
+            if (this.getRight() < platform.getLeft() || this.getLeft() > platform.getRight()) {
+                if (this.getBottom() > platform.getTop() - 2 && this.getBottom() < platform.getTop() + 2) {
+                    this.airborne = true;
+                    this.isOnPlatform = false;
+                }
+            }
+        }
+    }
+
+    public void constrainToLevel(int gameWidth,int gameHeight) {
+        if(this.getTop() > gameHeight+100) {
+            // kill players for falling off the map
+            this.dispatchEvent(new Event(Event.UNSAFE_COLLISION,this));
+        } else if(this.getTop() < 0) {
+            //TODO there is not currently a way for us to set the global position of a sprite if it is a child
+            this.setyPosition(0);
+            this.airborne = true;
+        }
+        if(this.getRight() > gameWidth) {
+            this.setxPosition(gameWidth-this.getScaledWidth());
+            this.setxVelocity(0);
+        } else if(this.getLeft() < 0) {
+            this.setxPosition(0);
+            this.setxVelocity(0);
+        }
+    }
+
+
 }
