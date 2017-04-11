@@ -67,10 +67,10 @@ public class TheMinorsGame extends Game {
 	// SET UP SPRITE ASSETS
     // Characters
     private ArrayList<Player> players = new ArrayList<>(0);
-	private Player player1 = new Player("player1", "sprite-sheet.png","cursor-orange.png",1);
-	private Player player2 = new Player("player2", "sprite-sheet.png","cursor-blue.png",2);
-	private Player player3 = new Player("player3", "sprite-sheet.png","cursor-green.png",3);
-	private Player player4 = new Player("player4", "sprite-sheet.png","cursor-pink.png",4);
+	private Player player1 = new Player("player1", "player1","cursor-orange.png",1);
+	private Player player2 = new Player("player2", "player2","cursor-blue.png",2);
+	private Player player3 = new Player("player3", "player3","cursor-green.png",3);
+	private Player player4 = new Player("player4", "player4","cursor-pink.png",4);
 	// Placeable items
 	private Sprite platform1 = new Sprite("platform1", "brick.png");
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
@@ -105,8 +105,6 @@ public class TheMinorsGame extends Game {
 	public boolean onPlat1 = false;
 	public boolean onPlat2 = false;
 	public boolean gotCoin = false;
-	public String animation = "idle";
-	public String prevAnim = "idle";
 
 	// TWEENS
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
@@ -223,7 +221,7 @@ public class TheMinorsGame extends Game {
             player.setVisible(true);
             player.setAlive(true);
             player.setAlpha(1);
-            player.setScale(5, 5);
+            player.setScale(1, 1);
             player.setPosition(5 + players.indexOf(player) * 10, 130);   //space out players
             player.setyAcceleration(GRAVITY);
             player.cursor.setScale(0.25, 0.25);
@@ -485,6 +483,8 @@ public class TheMinorsGame extends Game {
         for(Player player : players) {
             player.update(pressedKeys,gamePads);
             if(player.isAlive() && !player.isCourseCompleted()) {
+                handleAnimation(player,pressedKeys,gamePads);
+                player.animate();
                 handlePlayerMoveInput(player, pressedKeys, gamePads);
                 constrainPlayerToLevel(player);
                 fallOffPlatforms(player, player.platformPlayerIsOn);
@@ -565,19 +565,15 @@ public class TheMinorsGame extends Game {
     public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
         if (player.airborne) {
             if(player.yVelocity > 0) {
-                prevAnim = animation;
-                animation = "falling";
+                player.setAnimation("falling");
             }
             if(player.yVelocity < 0) {
-                prevAnim = animation;
-                animation = "jump";
+                player.setAnimation("jump");
             }
         } else if (pressedKeys.contains(KEY_LEFT) || pressedKeys.contains(KEY_RIGHT)) {
-            prevAnim = animation;
-            animation = "walk";
+            player.setAnimation("walk");
         } else {
-            prevAnim = animation;
-            animation = "idle";
+            player.setAnimation("idle");
         }
     }
 

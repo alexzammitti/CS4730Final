@@ -24,7 +24,16 @@ public class AnimatedSprite extends Sprite {
 	protected boolean firstJump = true;
 	protected boolean firstWalk = true;
 	protected boolean firstFall = true;
-	
+	private String animation = "idle";
+
+	public String getAnimation() {
+		return animation;
+	}
+
+	public void setAnimation(String animation) {
+		this.animation = animation;
+	}
+
 	public BufferedImage[] getFrames() { return frames; }
 
 	public int getSpeed() { return speed; }
@@ -78,10 +87,10 @@ public class AnimatedSprite extends Sprite {
 
 	}
 	
-	public void animate(String action) {
+	public void animate() {
 		frameCounter++;
 		
-		if(action.equals("jump")) {
+		if(this.animation.equals("jump")) {
 			if(firstJump) {
 				firstJump = false;
 				firstWalk = true;
@@ -91,15 +100,15 @@ public class AnimatedSprite extends Sprite {
 			endIndex = 11;
 		}
 
-		if(action.equals("falling")) {
+		if(this.animation.equals("falling")) {
 			this.setImage(frames[12]);
 		}
 
-		if(action.equals("landing")) {
+		if(this.animation.equals("landing")) {
 			this.setImage(frames[13]);
 		}
 		
-		if(action.equals("walk")) {
+		if(this.animation.equals("walk")) {
 			if(firstWalk) {
 				firstWalk = false;
 				firstJump = true;
@@ -109,7 +118,7 @@ public class AnimatedSprite extends Sprite {
 			endIndex = 8;
 		}
 		
-		if(action.equals("idle")) {
+		if(this.animation.equals("idle")) {
 			currentIndex = 0;
 			startIndex = 0;
 			endIndex = 0;
@@ -117,7 +126,7 @@ public class AnimatedSprite extends Sprite {
 			firstWalk = true;
 			firstFall = true;
 			this.setImage(frames[currentIndex]);
-		} else if(action.equals("walk") || action.equals("jump")) {
+		} else if(this.animation.equals("walk") || this.animation.equals("jump")) {
 			if (frameCounter % speed == 0) {
 				if (currentIndex == endIndex) {
 					currentIndex = startIndex;

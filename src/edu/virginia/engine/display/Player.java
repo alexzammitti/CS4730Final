@@ -23,14 +23,14 @@ public class Player extends PhysicsSprite {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
-
     public boolean isCourseCompleted() {
         return courseCompleted;
     }
-
     public void setCourseCompleted(boolean courseCompleted) {
         this.courseCompleted = courseCompleted;
     }
+
+
 
     public Player(String id, String imageFileName, String cursorFileName, int number) {
         super(id,imageFileName);
