@@ -562,6 +562,25 @@ public class TheMinorsGame extends Game {
         }
     }
 
+    public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
+        if (player.airborne) {
+            if(player.yVelocity > 0) {
+                prevAnim = animation;
+                animation = "falling";
+            }
+            if(player.yVelocity < 0) {
+                prevAnim = animation;
+                animation = "jump";
+            }
+        } else if (pressedKeys.contains(KEY_LEFT) || pressedKeys.contains(KEY_RIGHT)) {
+            prevAnim = animation;
+            animation = "walk";
+        } else {
+            prevAnim = animation;
+            animation = "idle";
+        }
+    }
+
     public void constrainPlayerToLevel(Player player) {
         if(player.getTop() > GAME_HEIGHT+100) {
             // kill players for falling off the map
