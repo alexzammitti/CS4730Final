@@ -10,8 +10,15 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class AnimatedSprite extends Sprite {
-//test
-	protected BufferedImage[] frames = new BufferedImage[14];
+
+    public final static String IDLE_ANIMATION = "idle";
+    public final static String WALK_ANIMATION = "walk";
+    public final static String FALLING_ANIMATION = "falling";
+    public final static String JUMP_ANIMATION = "jump";
+    public final static String LANDING_ANIMATION = "landing";
+
+
+    protected BufferedImage[] frames = new BufferedImage[14];
 	protected int currentIndex = 0;
 	protected int startIndex;
 	protected int endIndex;
@@ -90,7 +97,7 @@ public class AnimatedSprite extends Sprite {
 	public void animate() {
 		frameCounter++;
 		
-		if(this.animation.equals("jump")) {
+		if(this.animation.equals(JUMP_ANIMATION)) {
 			if(firstJump) {
 				firstJump = false;
 				firstWalk = true;
@@ -100,15 +107,15 @@ public class AnimatedSprite extends Sprite {
 			endIndex = 11;
 		}
 
-		if(this.animation.equals("falling")) {
+		if(this.animation.equals(FALLING_ANIMATION)) {
 			this.setImage(frames[12]);
 		}
 
-		if(this.animation.equals("landing")) {
+		if(this.animation.equals(LANDING_ANIMATION)) {
 			this.setImage(frames[13]);
 		}
 		
-		if(this.animation.equals("walk")) {
+		if(this.animation.equals(WALK_ANIMATION)) {
 			if(firstWalk) {
 				firstWalk = false;
 				firstJump = true;
@@ -118,7 +125,7 @@ public class AnimatedSprite extends Sprite {
 			endIndex = 8;
 		}
 		
-		if(this.animation.equals("idle")) {
+		if(this.animation.equals(IDLE_ANIMATION)) {
 			currentIndex = 0;
 			startIndex = 0;
 			endIndex = 0;
@@ -126,7 +133,7 @@ public class AnimatedSprite extends Sprite {
 			firstWalk = true;
 			firstFall = true;
 			this.setImage(frames[currentIndex]);
-		} else if(this.animation.equals("walk") || this.animation.equals("jump")) {
+		} else if(this.animation.equals(WALK_ANIMATION) || this.animation.equals(JUMP_ANIMATION)) {
 			if (frameCounter % speed == 0) {
 				if (currentIndex == endIndex) {
 					currentIndex = startIndex;

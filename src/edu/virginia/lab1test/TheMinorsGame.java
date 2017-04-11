@@ -56,7 +56,7 @@ public class TheMinorsGame extends Game {
     private int frameCounter = 0;
     private boolean itemSelectionInitialized = false;
     private int placedItemCounter = 0;
-    private boolean debugHitboxes = false;
+    private boolean debugHitboxes = true;
     private String inputMode = "";
     private int numberOfPlayers = 0;
     private int numberOfSelectedItems = 0;
@@ -221,8 +221,9 @@ public class TheMinorsGame extends Game {
             player.setVisible(true);
             player.setAlive(true);
             player.setAlpha(1);
+            player.setPivotCenter();
             player.setScale(1, 1);
-            player.setPosition(5 + players.indexOf(player) * 10, 130);   //space out players
+            player.setPosition(100 + players.indexOf(player) * 10, 130);   //space out players
             player.setyAcceleration(GRAVITY);
             player.cursor.setScale(0.25, 0.25);
             player.cursor.setPosition(300, 300);
@@ -565,15 +566,17 @@ public class TheMinorsGame extends Game {
     public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
         if (player.airborne) {
             if(player.yVelocity > 0) {
-                player.setAnimation("falling");
+                player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
             }
             if(player.yVelocity < 0) {
-                player.setAnimation("jump");
+                player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
             }
-        } else if (pressedKeys.contains(KEY_LEFT) || pressedKeys.contains(KEY_RIGHT)) {
-            player.setAnimation("walk");
+        } else if (pressedKeys.contains(KEY_RIGHT)) {                   // TODO make animations flip images
+            player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+        } else if(pressedKeys.contains(KEY_LEFT)){
+            player.setAnimation(AnimatedSprite.WALK_ANIMATION);
         } else {
-            player.setAnimation("idle");
+            player.setAnimation(AnimatedSprite.IDLE_ANIMATION);
         }
     }
 
