@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class AnimatedSprite extends Sprite {
-//
+//test
 	protected BufferedImage[] frames = new BufferedImage[14];
 	protected int currentIndex = 0;
 	protected int startIndex;
