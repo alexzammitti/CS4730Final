@@ -23,7 +23,7 @@ public class TheMinorsGame extends Game {
 
     // GLOBAL CONSTANTS
     public enum GameMode {
-        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE;
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE;
     }
 
     private GameMode gameMode = GameMode.ITEM_SELECTION;
@@ -100,12 +100,6 @@ public class TheMinorsGame extends Game {
 	//xCoinTween.addEventListener(eventManager, Event.TWEEN_COMPLETE_EVENT);
     // the quest manager listens for events from the xCoinTween
 
-
-	// These variables should become fields of sprites
-	public boolean onPlat1 = false;
-	public boolean onPlat2 = false;
-	public boolean gotCoin = false;
-
 	// TWEENS
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
     public Tween item1SelectionTween = new Tween(item1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
@@ -120,6 +114,8 @@ public class TheMinorsGame extends Game {
     public GameClock rKeyClock = new GameClock();
     public GameClock spaceKeyClock = new GameClock();
     public GameClock escKeyClock = new GameClock();
+    public GameClock roundCompleteClock = new GameClock();
+
 
 	
     /**
@@ -277,7 +273,6 @@ public class TheMinorsGame extends Game {
 
         itemSelectionInitialized = true;
     }
-
 
 	@Override
 	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
@@ -528,6 +523,7 @@ public class TheMinorsGame extends Game {
         if(playersDone >= numberOfPlayers) {
             gameMode = GameMode.ROUND_COMPLETE;
             laserBeams.clear();
+            roundCompleteClock.resetGameClock();
         }
     }
 
@@ -659,11 +655,11 @@ public class TheMinorsGame extends Game {
     }
 
     public void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
-        GameClock gameClock = new GameClock();
-        gameClock.resetGameClock();
-        while(gameClock.getElapsedTime() < 1000){continue;}      //wait 200ms to prevent placement
-        gameMode = GameMode.ITEM_SELECTION;
-        resetPlayers(pressedKeys,gamePads);
+        if(roundCompleteClock.getElapsedTime() > 1000){
+            gameMode = GameMode.ITEM_SELECTION;
+            resetPlayers(pressedKeys,gamePads);
+            levelContainer.update(pressedKeys,gamePads);
+        }
     }
 
 	@Override
@@ -750,13 +746,17 @@ public class TheMinorsGame extends Game {
     }
 
     public void roundCompleteDraw(Graphics g) {
+	    String results = "";
+        g.drawString("Round Completed!",GAME_WIDTH/2,GAME_HEIGHT/2+400);
         if(levelContainer != null) {
-            levelContainer.draw(g);
+            //levelContainer.draw(g);
+            results = "Scores: \t";
             for(Player player : players) {
-                if(player.isVisible()) player.draw(g);
+                //if(player.isVisible()) player.draw(g);
+                results += player.getId() + " - " + Integer.toString(player.getScore()) + " points \t";
             }
         }
-        g.drawString("Round Completed!",GAME_WIDTH/2,GAME_HEIGHT/2+200);
+        //g.drawString(results,GAME_WIDTH/2, GAME_HEIGHT/2+400);
     }
 
 	public static void main(String[] args) {
