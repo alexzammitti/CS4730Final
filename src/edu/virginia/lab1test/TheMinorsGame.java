@@ -174,7 +174,7 @@ public class TheMinorsGame extends Game {
 
 	}
 
-	public void initializePlayers(ArrayList<GamePad> gamePads) {
+	public void initializePlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(numberOfPlayers==0) {
             switch (gamePads.size()) {
                 case 0:
@@ -205,7 +205,7 @@ public class TheMinorsGame extends Game {
                     break;
             }
             numberOfPlayers = players.size();
-            resetPlayers();
+            resetPlayers(pressedKeys,gamePads);
             for(Player player : players) {
                 player.addEventListener(eventManager, Event.SAFE_COLLISION);
                 player.addEventListener(eventManager, Event.UNSAFE_COLLISION);
@@ -215,7 +215,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void resetPlayers() {
+    public void resetPlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         for(Player player : players) {
             player.setCourseCompleted(false);
             player.setVisible(true);
@@ -223,7 +223,8 @@ public class TheMinorsGame extends Game {
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(1, 1);
-            player.setPosition(100 + players.indexOf(player) * 10, 130);   //space out players
+            //player.setPosition(100 + players.indexOf(player) * 10, 130);   //space out players
+            player.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
             player.setyAcceleration(GRAVITY);
             player.cursor.setScale(0.25, 0.25);
             player.cursor.setPosition(300, 300);
@@ -231,6 +232,7 @@ public class TheMinorsGame extends Game {
             //player.cursor.alignFractionHorizontal(levelContainer,players.size()+1,players.indexOf(player)+1);      //space out cursors
             //TODO make the cursors spread nicely
             player.cursor.setxPosition(GAME_WIDTH / 2);
+            player.update(pressedKeys,gamePads);
         }
     }
 
@@ -272,7 +274,7 @@ public class TheMinorsGame extends Game {
         frameCounter++;
         if (frameCounter > 4) {
             TweenJuggler.getInstance().nextFrame();
-            initializePlayers(gamePads); //only happens once
+            initializePlayers(pressedKeys,gamePads); //only happens once
         }
         if(gameMode != null) {
             switch (gameMode) {
@@ -288,7 +290,7 @@ public class TheMinorsGame extends Game {
                 case MAIN_MENU:
                     break;
                 case ROUND_COMPLETE:
-                    roundCompleteUpdate();
+                    roundCompleteUpdate(pressedKeys,gamePads);
                     break;
             }
         }
@@ -625,12 +627,12 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void roundCompleteUpdate(){
+    public void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         GameClock gameClock = new GameClock();
         gameClock.resetGameClock();
         while(gameClock.getElapsedTime() < 1000){continue;}      //wait 200ms to prevent placement
         gameMode = GameMode.ITEM_SELECTION;
-        resetPlayers();
+        resetPlayers(pressedKeys,gamePads);
     }
 
 	@Override
