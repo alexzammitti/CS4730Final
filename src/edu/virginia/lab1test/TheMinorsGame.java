@@ -67,10 +67,10 @@ public class TheMinorsGame extends Game {
 	// SET UP SPRITE ASSETS
     // Characters
     private ArrayList<Player> players = new ArrayList<>(0);
-	private Player player1 = new Player("player1", "player1","cursor-orange.png",1);
-	private Player player2 = new Player("player2", "player2","cursor-blue.png",2);
-	private Player player3 = new Player("player3", "player3","cursor-green.png",3);
-	private Player player4 = new Player("player4", "player4","cursor-pink.png",4);
+	private Player player1 = new Player("player1", "player1","cursor-orange.png",0);
+	private Player player2 = new Player("player2", "player2","cursor-blue.png",1);
+	private Player player3 = new Player("player3", "player3","cursor-green.png",2);
+	private Player player4 = new Player("player4", "player4","cursor-pink.png",3);
 	// Placeable items
 	private Sprite platform1 = new Sprite("platform1", "brick.png");
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
@@ -234,6 +234,8 @@ public class TheMinorsGame extends Game {
             player.cursor.setScale(0.25, 0.25);
             player.cursor.setPosition(300, 300);
             player.cursor.alignCenterHorizontal(levelContainer);
+            player.cursor.setVisible(true);
+            player.item = null;
             //player.cursor.alignFractionHorizontal(levelContainer,players.size()+1,players.indexOf(player)+1);      //space out cursors
             //TODO make the cursors spread nicely
             player.cursor.setxPosition(GAME_WIDTH / 2);
@@ -246,6 +248,7 @@ public class TheMinorsGame extends Game {
         selectionBackground.addChild(item1);
         selectionBackground.addChild(item2);
         selectionBackground.addChild(item3);
+
 
         // GIVE ITEMS IMAGES - will be randomized later TODO
         item1.setImage("brick.png");
@@ -268,6 +271,9 @@ public class TheMinorsGame extends Game {
         placeableItemList.add(item1);
         placeableItemList.add(item2);
         placeableItemList.add(item3);
+        for(Sprite item : placeableItemList) {
+            item.setVisible(true);
+        }
 
         itemSelectionInitialized = true;
     }
@@ -309,55 +315,58 @@ public class TheMinorsGame extends Game {
 	        initializeItemSelection();
         }
         for(Player player : players) {
-            player.cursor.update(pressedKeys, gamePads);
-            selectionBackground.update(pressedKeys, gamePads);
-            // SET CURSORS VISIBLE
-            player.cursor.setVisible(true); // not sure if this is actually necessary
-            // MOVE CURSOR BASED ON USER INPUT
-            handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
-            handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads,player.playerNumber);
-            constrainItemToLevel(player.cursor);
-            // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
-            for (Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext(); ) {
-                Sprite s = iterator.next();
-                s.update(pressedKeys, gamePads);
-                // if the cursor overlaps with a selectable items
-                if (player.cursor.collidesWith(s)) {
-                    // add tween stuff here for polish if desired
-                    // and the player presses the select button over it
-                    if (inputMode.equals(INPUT_GAMEPADS)) {
-                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
-                            player.item = selectItem(iterator,s);
-                            numberOfSelectedItems++;    //TODO this might cause issues with holding the A button
-                            if(numberOfSelectedItems >= numberOfPlayers) {
-                                gameMode = GameMode.ITEM_PLACEMENT;
-                                GameClock gameClock = new GameClock();
-                                gameClock.resetGameClock();
-                                while(gameClock.getElapsedTime() < 200){continue;}      //wait 200ms to prevent placement
-                                numberOfSelectedItems=0;
+            if(!levelContainer.getChildren().contains(player.item)) {
+                player.cursor.update(pressedKeys, gamePads);
+                selectionBackground.update(pressedKeys, gamePads);
+                // MOVE CURSOR BASED ON USER INPUT
+                if (inputMode.equals(INPUT_GAMEPADS))
+                    handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
+                else handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
+                constrainItemToLevel(player.cursor);
+                // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
+                for (Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext(); ) {
+                    Sprite s = iterator.next();
+                    s.update(pressedKeys, gamePads);
+                    // if the cursor overlaps with a selectable items
+                    if (player.cursor.collidesWith(s)) {
+                        // add tween stuff here for polish if desired
+                        // and the player presses the select button over it
+                        if (inputMode.equals(INPUT_GAMEPADS)) {
+                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                                player.item = selectItem(iterator, s);
+                                numberOfSelectedItems++;
+                                player.cursor.setVisible(false);
                             }
+                        } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
+                            player.item = selectItem(iterator, s);
+                            numberOfSelectedItems++;
+                            if (numberOfSelectedItems >= numberOfPlayers) {
+                                gameMode = GameMode.ITEM_PLACEMENT;
+                                numberOfSelectedItems = 0;
+                            }
+                            spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
                         }
-                    } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
-                        player.item = selectItem(iterator,s);
-                        numberOfSelectedItems++;
-                        if(numberOfSelectedItems >= numberOfPlayers) {
-                            gameMode = GameMode.ITEM_PLACEMENT;
-                            numberOfSelectedItems=0;
-                        }
-                        spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
                     }
                 }
+                // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
+                //if colliding and a is pressed
+                //create new sprite based on selection
+                //give item to player
+                //remove from selectable items
+                //add item to display tree
+
+                // CHECK IF SELECTION IS DONE OR TIMED OUT
+                //end selection phase and move into item phase
             }
-            // BASED ON OVERLAPS, HANDLE USER INPUT (SELECTION OF AN ITEM)
-            //if colliding and a is pressed
-            //create new sprite based on selection
-            //give item to player
-            //remove from selectable items
-            //add item to display tree
-
-            // CHECK IF SELECTION IS DONE OR TIMED OUT
-            //end selection phase and move into item phase
-
+        }
+        if (numberOfSelectedItems >= numberOfPlayers) {
+            gameMode = GameMode.ITEM_PLACEMENT;
+            GameClock gameClock = new GameClock();
+            gameClock.resetGameClock();
+            while (gameClock.getElapsedTime() < 200) {
+                continue;
+            }      //wait 200ms to prevent placement
+            numberOfSelectedItems = 0;
         }
 //        if(pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY){
 //            gameMode = GameMode.GAMEPLAY;
@@ -370,7 +379,7 @@ public class TheMinorsGame extends Game {
     }
 
     public Sprite selectItem(Iterator<Sprite> spriteIterator, Sprite sprite) {
-        String spriteId = "copy" + Integer.toString(placedItemCounter);   // we need to make a unique spriteId to make sure that --
+        String spriteId = "item" + Integer.toString(placedItemCounter);   // we need to make a unique spriteId to make sure that --
         placedItemCounter++;                                              // --> new sprites don't have the same id for checks later
         Sprite newSprite = new Sprite(spriteId, sprite.getFileName());          //duplicate the sprite and add it to our level
         newSprite.setScale(sprite.getxAbsoluteScale(), sprite.getyAbsoluteScale());
@@ -381,6 +390,7 @@ public class TheMinorsGame extends Game {
         }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
         newSprite.dangerous = sprite.getFileName().contains("spike");            // if its spiky, it kills us
+        sprite.setVisible(false);
         spriteIterator.remove();                                                 // the item can no longer be selected
         return newSprite;
     }
@@ -422,7 +432,8 @@ public class TheMinorsGame extends Game {
                                     break;
                                 }
                             } else {
-                                if (levelItem.collidesWith(DOCbeingPlaced)) {                                      //if there IS a collision
+                                if (levelItem.collidesWith(DOCbeingPlaced)
+                                        && !levelItem.getFileName().contains("beam")) {                                      //if there IS a collision
                                     DOCbeingPlaced.setImageError();
                                     levelItem.setImageError();
                                     break;
@@ -514,6 +525,7 @@ public class TheMinorsGame extends Game {
         }
         if(playersDone >= numberOfPlayers) {
             gameMode = GameMode.ROUND_COMPLETE;
+            laserBeams.clear();
         }
     }
 
@@ -673,7 +685,7 @@ public class TheMinorsGame extends Game {
 
     public void itemSelectionDraw(Graphics g) {
         if(levelContainer != null) {
-            Rectangle test = item1.getHitbox();
+            Rectangle test;
             levelContainer.draw(g);
             selectionBackground.draw(g);
             for(Player player : players) {

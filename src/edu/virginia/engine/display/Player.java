@@ -36,7 +36,7 @@ public class Player extends PhysicsSprite {
         super(id,imageFileName);
         this.fileName = imageFileName;
         cursor = new Sprite(id + "cursor",cursorFileName);
-        this.playerNumber = playerNumber;
+        this.playerNumber = number;
     }
 
     public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
