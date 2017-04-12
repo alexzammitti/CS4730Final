@@ -220,6 +220,7 @@ public class TheMinorsGame extends Game {
             player.setCourseCompleted(false);
             player.setVisible(true);
             player.setAlive(true);
+            player.setAirborne(true);
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(1, 1);
@@ -547,8 +548,8 @@ public class TheMinorsGame extends Game {
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) { //Right
                 player.setxPosition(player.getxPosition() + PLAYER_SPEED);
             }
-            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && !player.airborne) {
-                player.airborne = true;
+            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && !player.isAirborne()) {
+                player.setAirborne(true);
                 player.setyVelocity(-JUMP_SPEED);
             }
         } else if(pressedKeys.contains(KEY_LEFT)){
@@ -557,18 +558,18 @@ public class TheMinorsGame extends Game {
         else if(pressedKeys.contains(KEY_RIGHT)){
             player.setxPosition(player.getxPosition()+PLAYER_SPEED);
         }
-        if(pressedKeys.contains(KEY_UP) && !player.airborne){
-            player.airborne = true;
+        if(pressedKeys.contains(KEY_UP) && !player.isAirborne()){
+            player.setAirborne(true);
             player.setyVelocity(-JUMP_SPEED);
         }
     }
 
     public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
-        if (player.airborne) {
-            if(player.yVelocity > 0) {
+        if (player.isAirborne()) {
+            if(player.getyVelocity() > 0) {
                 player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
             }
-            if(player.yVelocity < 0) {
+            if(player.getyVelocity() < 0) {
                 player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
             }
         } else if(inputMode.equals(INPUT_GAMEPADS)) {

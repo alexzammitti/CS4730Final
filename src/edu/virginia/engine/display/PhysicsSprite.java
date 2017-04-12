@@ -10,15 +10,15 @@ import java.util.ArrayList;
  */
 public class PhysicsSprite extends AnimatedSprite {
 
-    public int mass;
-    public int xAcceleration;
-    public int yAcceleration;
-    public int xVelocity;
-    public int yVelocity;
-    public int xForce;
-    public int yForce;
-    public boolean airborne = true;
-    public boolean isOnPlatform = false;
+    private int mass;
+    private int xAcceleration;
+    private int yAcceleration;
+    private int xVelocity;
+    private int yVelocity;
+    private int xForce;
+    private int yForce;
+    private boolean airborne = true;
+    private boolean isOnPlatform = false;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}
@@ -34,6 +34,12 @@ public class PhysicsSprite extends AnimatedSprite {
     public void setxForce(int xForce) {this.xForce = xForce;}
     public int getyForce() {return yForce;}
     public void setyForce(int yForce) {this.yForce = yForce;}
+    public boolean isAirborne() {
+        return airborne;
+    }
+    public void setAirborne(boolean airborne) {
+        this.airborne = airborne;
+    }
 
     public PhysicsSprite(String id, String imageFileName) {
         super(id, imageFileName);
