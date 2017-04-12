@@ -375,7 +375,7 @@ public class TheMinorsGame extends Game {
         }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
         newSprite.dangerous = sprite.getFileName().contains("spike");            // if its spiky, it kills us
-        spriteIterator.remove();                                                  // the item can no longer be selected
+        spriteIterator.remove();                                                 // the item can no longer be selected
         return newSprite;
     }
 
@@ -572,6 +572,13 @@ public class TheMinorsGame extends Game {
             if(player.yVelocity < 0) {
                 player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
             }
+        } else if(inputMode.equals(INPUT_GAMEPADS)) {
+            if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) {
+                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+            } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) {
+                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+            }
+
         } else if (pressedKeys.contains(KEY_RIGHT)) {                   // TODO make animations flip images
             player.setAnimation(AnimatedSprite.WALK_ANIMATION);
         } else if(pressedKeys.contains(KEY_LEFT)){
