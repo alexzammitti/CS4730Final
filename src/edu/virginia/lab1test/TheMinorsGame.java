@@ -180,21 +180,25 @@ public class TheMinorsGame extends Game {
                 case 0:
                     inputMode = INPUT_KEYBOARD;
                     players.add(player1);
+                    System.out.println("One player on keyboard");
                     break;
                 case 1:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
+                    System.out.println("One player on controller");
                     break;
                 case 2:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
                     players.add(player2);
+                    System.out.println("Two players on controllers");
                     break;
                 case 3:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
                     players.add(player2);
                     players.add(player3);
+                    System.out.println("Three players on controllers");
                     break;
                 case 4:
                     inputMode = INPUT_GAMEPADS;
@@ -202,6 +206,7 @@ public class TheMinorsGame extends Game {
                     players.add(player2);
                     players.add(player3);
                     players.add(player4);
+                    System.out.println("Four players on controllers");
                     break;
             }
             numberOfPlayers = players.size();
