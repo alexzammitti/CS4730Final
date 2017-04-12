@@ -18,7 +18,7 @@ public class PhysicsSprite extends AnimatedSprite {
     private int xForce;
     private int yForce;
     private boolean airborne = true;
-    private boolean isOnPlatform = false;
+    private boolean onPlatform = false;
 
     public int getMass() {return mass;}
     public void setMass(int mass) {this.mass = mass;}
@@ -39,6 +39,12 @@ public class PhysicsSprite extends AnimatedSprite {
     }
     public void setAirborne(boolean airborne) {
         this.airborne = airborne;
+    }
+    public boolean isOnPlatform() {
+        return onPlatform;
+    }
+    public void setOnPlatform(boolean onPlatform) {
+        this.onPlatform = onPlatform;
     }
 
     public PhysicsSprite(String id, String imageFileName) {

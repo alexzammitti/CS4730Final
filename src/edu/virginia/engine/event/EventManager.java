@@ -45,15 +45,15 @@ public class EventManager implements IEventListener {
                 || intersection.width > intersection.height && character.getTop() < platform.getBottom()){
                 if(character.getyPosition() < platform.getTop()) {                                          //top of platform
                 character.setyPosition(platform.getHitbox().y-(character.getScaledHeight()+1));
-                character.airborne = false;
-                character.isOnPlatform = true;
+                character.setAirborne(false);
+                character.setOnPlatform(true);
                 character.platformPlayerIsOn = platform;
                 character.setyVelocity(0);
             }
             else if(character.getyPosition() > platform.getTop()) {                                         //bottom of platform
                 character.setyPosition(platform.getHitbox().y+platform.getHitbox().height);
-                character.airborne = true;
-                character.isOnPlatform = false;
+                character.setAirborne(true);
+                character.setOnPlatform(false);
                 character.setyVelocity(0);
             }
         } else {
