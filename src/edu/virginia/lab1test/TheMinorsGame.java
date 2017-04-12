@@ -336,6 +336,7 @@ public class TheMinorsGame extends Game {
                                 player.item = selectItem(iterator, s);
                                 numberOfSelectedItems++;
                                 player.cursor.setVisible(false);
+                                break;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                             player.item = selectItem(iterator, s);
@@ -345,6 +346,7 @@ public class TheMinorsGame extends Game {
                                 numberOfSelectedItems = 0;
                             }
                             spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
+                            break;
                         }
                     }
                 }
