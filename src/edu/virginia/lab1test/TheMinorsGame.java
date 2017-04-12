@@ -223,8 +223,7 @@ public class TheMinorsGame extends Game {
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(1, 1);
-            //player.setPosition(100 + players.indexOf(player) * 10, 130);   //space out players
-            player.setPosition(GAME_WIDTH/2,GAME_HEIGHT/2);
+            player.setPosition(10 + players.indexOf(player) * 10, 130);   //space out players
             player.setyAcceleration(GRAVITY);
             player.cursor.setScale(0.25, 0.25);
             player.cursor.setPosition(300, 300);

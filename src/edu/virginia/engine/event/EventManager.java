@@ -24,7 +24,7 @@ public class EventManager implements IEventListener {
                 break;
             case Event.UNSAFE_COLLISION:
                 event.player.setAlive(false);
-                event.player.dispatchEvent(new Event(Event.DEATH,event.player));
+                //event.player.dispatchEvent(new Event(Event.DEATH,event.player));
                 break;
             case Event.SAFE_COLLISION:
                 handlePlatformCollision(event.player,event.object);
