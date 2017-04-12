@@ -38,7 +38,7 @@ public class DisplayObject extends EventDispatcher {
 	protected int yRef;
 	protected DisplayObjectContainer parent;
 	protected Rectangle hitbox = new Rectangle(0, 0, 0, 0);
-    public boolean isPlaced = false;
+    protected boolean placed = false;
     protected String fileName = "";
 	public boolean dangerous = false;
 
@@ -125,6 +125,12 @@ public class DisplayObject extends EventDispatcher {
 	}
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
+	}
+	public boolean isPlaced() {
+		return placed;
+	}
+	public void setPlaced(boolean placed) {
+		this.placed = placed;
 	}
 
 	// Multiple argument setters:

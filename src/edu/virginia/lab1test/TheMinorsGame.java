@@ -280,23 +280,24 @@ public class TheMinorsGame extends Game {
         if (frameCounter > 4) {
             TweenJuggler.getInstance().nextFrame();
             initializePlayers(pressedKeys,gamePads); //only happens once
-        }
-        if(gameMode != null) {
-            switch (gameMode) {
-                case ITEM_SELECTION:
-                    itemSelectionUpdate(pressedKeys,gamePads);
-                    break;
-                case ITEM_PLACEMENT:
-                    itemPlacementUpdate(pressedKeys,gamePads);
-                    break;
-                case GAMEPLAY:
-                    gameplayUpdate(pressedKeys,gamePads);
-                    break;
-                case MAIN_MENU:
-                    break;
-                case ROUND_COMPLETE:
-                    roundCompleteUpdate(pressedKeys,gamePads);
-                    break;
+
+            if(gameMode != null) {
+                switch (gameMode) {
+                    case ITEM_SELECTION:
+                        itemSelectionUpdate(pressedKeys,gamePads);
+                        break;
+                    case ITEM_PLACEMENT:
+                        itemPlacementUpdate(pressedKeys,gamePads);
+                        break;
+                    case GAMEPLAY:
+                        gameplayUpdate(pressedKeys,gamePads);
+                        break;
+                    case MAIN_MENU:
+                        break;
+                    case ROUND_COMPLETE:
+                        roundCompleteUpdate(pressedKeys,gamePads);
+                        break;
+                }
             }
         }
 	}
@@ -389,7 +390,7 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys, gamePads);
             for(Player player : players) {
                 // Move sprite based on user input
-                if (!player.item.isPlaced) {
+                if (!player.item.isPlaced()) {
                     handleCursorMoveInput(player.item, CURSOR_SPEED, pressedKeys);
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     constrainItemToLevel(player.item);
@@ -432,7 +433,7 @@ public class TheMinorsGame extends Game {
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {     //if space is pressed
                             if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
-                                player.item.isPlaced = true;
+                                player.item.setPlaced(true);
                                 numberOfPlacedItems++;
                                 if(numberOfPlacedItems >= numberOfPlayers) {
                                     gameMode = GameMode.GAMEPLAY;
@@ -446,7 +447,7 @@ public class TheMinorsGame extends Game {
                         }
                     } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
                         if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
-                            player.item.isPlaced = true;
+                            player.item.setPlaced(true);
                             numberOfPlacedItems++;
                             if(numberOfPlacedItems >= numberOfPlayers) {
                                 gameMode = GameMode.GAMEPLAY;
