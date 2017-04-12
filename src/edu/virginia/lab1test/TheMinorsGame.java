@@ -180,21 +180,25 @@ public class TheMinorsGame extends Game {
                 case 0:
                     inputMode = INPUT_KEYBOARD;
                     players.add(player1);
+                    System.out.println("One player on keyboard");
                     break;
                 case 1:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
+                    System.out.println("One player on controller");
                     break;
                 case 2:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
                     players.add(player2);
+                    System.out.println("Two players on controllers");
                     break;
                 case 3:
                     inputMode = INPUT_GAMEPADS;
                     players.add(player1);
                     players.add(player2);
                     players.add(player3);
+                    System.out.println("Three players on controllers");
                     break;
                 case 4:
                     inputMode = INPUT_GAMEPADS;
@@ -202,6 +206,7 @@ public class TheMinorsGame extends Game {
                     players.add(player2);
                     players.add(player3);
                     players.add(player4);
+                    System.out.println("Four players on controllers");
                     break;
             }
             numberOfPlayers = players.size();
@@ -220,6 +225,7 @@ public class TheMinorsGame extends Game {
             player.setCourseCompleted(false);
             player.setVisible(true);
             player.setAlive(true);
+            player.setAirborne(true);
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(1, 1);
@@ -274,23 +280,24 @@ public class TheMinorsGame extends Game {
         if (frameCounter > 4) {
             TweenJuggler.getInstance().nextFrame();
             initializePlayers(pressedKeys,gamePads); //only happens once
-        }
-        if(gameMode != null) {
-            switch (gameMode) {
-                case ITEM_SELECTION:
-                    itemSelectionUpdate(pressedKeys,gamePads);
-                    break;
-                case ITEM_PLACEMENT:
-                    itemPlacementUpdate(pressedKeys,gamePads);
-                    break;
-                case GAMEPLAY:
-                    gameplayUpdate(pressedKeys,gamePads);
-                    break;
-                case MAIN_MENU:
-                    break;
-                case ROUND_COMPLETE:
-                    roundCompleteUpdate(pressedKeys,gamePads);
-                    break;
+
+            if(gameMode != null) {
+                switch (gameMode) {
+                    case ITEM_SELECTION:
+                        itemSelectionUpdate(pressedKeys,gamePads);
+                        break;
+                    case ITEM_PLACEMENT:
+                        itemPlacementUpdate(pressedKeys,gamePads);
+                        break;
+                    case GAMEPLAY:
+                        gameplayUpdate(pressedKeys,gamePads);
+                        break;
+                    case MAIN_MENU:
+                        break;
+                    case ROUND_COMPLETE:
+                        roundCompleteUpdate(pressedKeys,gamePads);
+                        break;
+                }
             }
         }
 	}
@@ -383,7 +390,7 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys, gamePads);
             for(Player player : players) {
                 // Move sprite based on user input
-                if (!player.item.isPlaced) {
+                if (!player.item.isPlaced()) {
                     handleCursorMoveInput(player.item, CURSOR_SPEED, pressedKeys);
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     constrainItemToLevel(player.item);
@@ -426,7 +433,7 @@ public class TheMinorsGame extends Game {
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {     //if space is pressed
                             if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
-                                player.item.isPlaced = true;
+                                player.item.setPlaced(true);
                                 numberOfPlacedItems++;
                                 if(numberOfPlacedItems >= numberOfPlayers) {
                                     gameMode = GameMode.GAMEPLAY;
@@ -440,7 +447,7 @@ public class TheMinorsGame extends Game {
                         }
                     } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
                         if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
-                            player.item.isPlaced = true;
+                            player.item.setPlaced(true);
                             numberOfPlacedItems++;
                             if(numberOfPlacedItems >= numberOfPlayers) {
                                 gameMode = GameMode.GAMEPLAY;
@@ -547,8 +554,8 @@ public class TheMinorsGame extends Game {
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) { //Right
                 player.setxPosition(player.getxPosition() + PLAYER_SPEED);
             }
-            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && !player.airborne) {
-                player.airborne = true;
+            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && !player.isAirborne()) {
+                player.setAirborne(true);
                 player.setyVelocity(-JUMP_SPEED);
             }
         } else if(pressedKeys.contains(KEY_LEFT)){
@@ -557,18 +564,18 @@ public class TheMinorsGame extends Game {
         else if(pressedKeys.contains(KEY_RIGHT)){
             player.setxPosition(player.getxPosition()+PLAYER_SPEED);
         }
-        if(pressedKeys.contains(KEY_UP) && !player.airborne){
-            player.airborne = true;
+        if(pressedKeys.contains(KEY_UP) && !player.isAirborne()){
+            player.setAirborne(true);
             player.setyVelocity(-JUMP_SPEED);
         }
     }
 
     public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
-        if (player.airborne) {
-            if(player.yVelocity > 0) {
+        if (player.isAirborne()) {
+            if(player.getyVelocity() > 0) {
                 player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
             }
-            if(player.yVelocity < 0) {
+            if(player.getyVelocity() < 0) {
                 player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
             }
         } else if(inputMode.equals(INPUT_GAMEPADS)) {
