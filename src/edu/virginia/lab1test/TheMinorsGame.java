@@ -73,8 +73,8 @@ public class TheMinorsGame extends Game {
 	private Player player3 = new Player("player3", "player3","cursor-green.png",2);
 	private Player player4 = new Player("player4", "player4","cursor-pink.png",3);
 	// Level starting items
-	private Sprite platform1 = new Sprite("platform1", "brick.png");
-	private Sprite platform2 = new Sprite("platform2", "brick.png");
+	private Sprite platform1 = new Sprite("platform1", "3x1platform.png");
+	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
     private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png"};
@@ -145,12 +145,6 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(350,100);
         selectionBackground.setScale(1,1);
 
-
-        // code from Alex's game
-//        coin.setxPosition(1150);
-//        coin.setyPosition(290);
-//        coin.setxScale(.17);
-//        coin.setyScale(.17);
 
         platform1.setxPosition(0);
         platform1.setyPosition(GAME_HEIGHT/2);
@@ -259,7 +253,7 @@ public class TheMinorsGame extends Game {
         placeableItemList.clear();
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
-            int random = ThreadLocalRandom.current().nextInt(0,itemCount);
+            int random = ThreadLocalRandom.current().nextInt(0,itemFileNames.length);
             item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
                 case "3x1platform.png":
