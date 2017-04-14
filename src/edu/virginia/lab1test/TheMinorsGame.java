@@ -57,7 +57,7 @@ public class TheMinorsGame extends Game {
     private int frameCounter = 0;
     private boolean itemSelectionInitialized = false;
     private int placedItemCounter = 0;
-    private boolean debugHitboxes = true;
+    private boolean debugHitboxes = false;
     private String inputMode = "";
     private int numberOfPlayers = 0;
     private int numberOfSelectedItems = 0;
@@ -77,7 +77,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"brick.png","spikerow.png","LaserGun.png"};
+    private static String[] itemFileNames = {"brick.png","spikerow.png","LaserGun.png","1x1platform.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -267,6 +267,9 @@ public class TheMinorsGame extends Game {
                     item.setScale(0.3,0.3);
                     break;
                 case "LaserGun.png":
+                    item.setScale(0.5,0.5);
+                    break;
+                case "1x1platform.png":
                     item.setScale(0.5,0.5);
                     break;
             }
