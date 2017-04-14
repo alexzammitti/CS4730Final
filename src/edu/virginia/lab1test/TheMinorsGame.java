@@ -85,7 +85,7 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
-    private Sprite levelBackground = new Sprite("background","background1.png");
+    private Sprite levelBackground = new Sprite("background","Background2.jpg");
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
@@ -129,7 +129,7 @@ public class TheMinorsGame extends Game {
 
         // BUILD DISPLAY TREES
 
-        levelBackground.setScale(3.8,3.6);
+        levelBackground.setScale(2,2);
         levelContainer.addChild(platform1);
         //levelContainer.addChild(coin);
         levelContainer.addChild(platform2);
