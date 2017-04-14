@@ -77,7 +77,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"brick.png","spikerow.png","LaserGun.png","1x1platform.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -260,8 +260,8 @@ public class TheMinorsGame extends Game {
             int random = ThreadLocalRandom.current().nextInt(0,itemCount+1);
             item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
-                case "brick.png":
-                    item.setScale(0.7,0.3);
+                case "3x1platform.png":
+                    item.setScale(1,1);
                     break;
                 case "spikerow.png":
                     item.setScale(0.3,0.3);
@@ -270,7 +270,7 @@ public class TheMinorsGame extends Game {
                     item.setScale(0.5,0.5);
                     break;
                 case "1x1platform.png":
-                    item.setScale(0.5,0.5);
+                    item.setScale(1,1);
                     break;
             }
             item.setVisible(true);
