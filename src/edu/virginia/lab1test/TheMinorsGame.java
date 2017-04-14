@@ -72,7 +72,7 @@ public class TheMinorsGame extends Game {
 	private Player player2 = new Player("player2", "player2","cursor-blue.png",1);
 	private Player player3 = new Player("player3", "player3","cursor-green.png",2);
 	private Player player4 = new Player("player4", "player4","cursor-pink.png",3);
-	// Placeable items
+	// Level starting items
 	private Sprite platform1 = new Sprite("platform1", "brick.png");
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
 	private Sprite portal = new Sprite("portal","portal.png");
@@ -85,6 +85,7 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
+    private Sprite levelBackground = new Sprite("background","background1.png");
     // Item Lists
     public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
@@ -128,6 +129,7 @@ public class TheMinorsGame extends Game {
 
         // BUILD DISPLAY TREES
 
+        levelBackground.setScale(3.8,3.6);
         levelContainer.addChild(platform1);
         //levelContainer.addChild(coin);
         levelContainer.addChild(platform2);
@@ -257,7 +259,7 @@ public class TheMinorsGame extends Game {
         placeableItemList.clear();
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
-            int random = ThreadLocalRandom.current().nextInt(0,itemCount+1);
+            int random = ThreadLocalRandom.current().nextInt(0,itemCount);
             item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
                 case "3x1platform.png":
@@ -699,6 +701,7 @@ public class TheMinorsGame extends Game {
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
+        levelBackground.draw(g);
         if(gameMode != null) {
             switch(gameMode) {
                 case ITEM_SELECTION:
