@@ -16,6 +16,7 @@ public class Player extends PhysicsSprite {
     public Sprite item;
     public Sprite cursor;
     public int playerNumber;
+    protected int score = 0;
 
     public boolean isAlive() {
         return alive;
@@ -29,8 +30,13 @@ public class Player extends PhysicsSprite {
     public void setCourseCompleted(boolean courseCompleted) {
         this.courseCompleted = courseCompleted;
     }
-
-
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
+    }
+    public void incrementScore(int numberOfPoints) { this.score +=numberOfPoints;}
 
     public Player(String id, String imageFileName, String cursorFileName, int number) {
         super(id,imageFileName);

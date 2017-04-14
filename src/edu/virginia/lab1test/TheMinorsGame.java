@@ -3,6 +3,7 @@ package edu.virginia.lab1test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
@@ -23,7 +24,7 @@ public class TheMinorsGame extends Game {
 
     // GLOBAL CONSTANTS
     public enum GameMode {
-        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE;
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE;
     }
 
     private GameMode gameMode = GameMode.ITEM_SELECTION;
@@ -76,6 +77,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "brick.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
+    private static String[] itemFileNames = {"brick.png","spikerow.png","LaserGun.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -100,12 +102,6 @@ public class TheMinorsGame extends Game {
 	//xCoinTween.addEventListener(eventManager, Event.TWEEN_COMPLETE_EVENT);
     // the quest manager listens for events from the xCoinTween
 
-
-	// These variables should become fields of sprites
-	public boolean onPlat1 = false;
-	public boolean onPlat2 = false;
-	public boolean gotCoin = false;
-
 	// TWEENS
     public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
     public Tween item1SelectionTween = new Tween(item1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
@@ -120,6 +116,8 @@ public class TheMinorsGame extends Game {
     public GameClock rKeyClock = new GameClock();
     public GameClock spaceKeyClock = new GameClock();
     public GameClock escKeyClock = new GameClock();
+    public GameClock roundCompleteClock = new GameClock();
+
 
 	
     /**
@@ -231,6 +229,8 @@ public class TheMinorsGame extends Game {
             player.setScale(1, 1);
             player.setPosition(10 + players.indexOf(player) * 10, 130);   //space out players
             player.setyAcceleration(GRAVITY);
+            player.setyVelocity(0);
+            player.setxVelocity(0);
             player.cursor.setScale(0.25, 0.25);
             player.cursor.setPosition(300, 300);
             player.cursor.alignCenterHorizontal(levelContainer);
@@ -248,42 +248,62 @@ public class TheMinorsGame extends Game {
         selectionBackground.addChild(item1);
         selectionBackground.addChild(item2);
         selectionBackground.addChild(item3);
+        selectionBackground.addChild(item4);
+        selectionBackground.addChild(item5);
+        for(int i = 0; i <= selectionBackground.getChildren().size() - numberOfPlayers; i++) {
+            selectionBackground.removeByIndex(selectionBackground.getChildren().size()-1);
+        }
+        int itemCount = selectionBackground.getChildren().size();
+        placeableItemList.clear();
 
+        for(DisplayObjectContainer item : selectionBackground.getChildren()) {
+            int random = ThreadLocalRandom.current().nextInt(0,itemCount+1);
+            item.setImage(itemFileNames[random]);
+            switch(itemFileNames[random]){
+                case "brick.png":
+                    item.setScale(0.7,0.3);
+                    break;
+                case "spikerow.png":
+                    item.setScale(0.3,0.3);
+                    break;
+                case "LaserGun.png":
+                    item.setScale(0.5,0.5);
+                    break;
+            }
+            item.setVisible(true);
+            placeableItemList.add((Sprite)item);
+            item.alignCenterHorizontal(selectionBackground);
+            item.alignFractionVertical(selectionBackground,
+                    itemCount+1,
+                    selectionBackground.getChildren().indexOf(item)+1);
+        }
 
         // GIVE ITEMS IMAGES - will be randomized later TODO
-        item1.setImage("brick.png");
-        item2.setImage("spikerow.png");
-        item3.setImage("LaserGun.png");
 
-        item1.setScale(0.7,0.3);
-        item1.alignCenterHorizontal(selectionBackground);
-        item1.alignFractionVertical(selectionBackground,100,30);
-
-        item2.setScale(0.3,0.3);
-        item2.alignCenterHorizontal(selectionBackground);
-        item2.alignFractionVertical(selectionBackground,100,52);
-
-        item3.setScale(.5,.5);
-        item3.alignCenterHorizontal(selectionBackground);
-        item3.alignFractionVertical(selectionBackground,100,75);
-
-        placeableItemList.clear();
-        placeableItemList.add(item1);
-        placeableItemList.add(item2);
-        placeableItemList.add(item3);
-        for(Sprite item : placeableItemList) {
-            item.setVisible(true);
-        }
+//        item1.setScale(0.7,0.3);
+//        item1.alignCenterHorizontal(selectionBackground);
+//        item1.alignFractionVertical(selectionBackground,100,30);
+//
+//        item2.setScale(0.3,0.3);
+//        item2.alignCenterHorizontal(selectionBackground);
+//        item2.alignFractionVertical(selectionBackground,100,52);
+//
+//        item3.setScale(.5,.5);
+//        item3.alignCenterHorizontal(selectionBackground);
+//        item3.alignFractionVertical(selectionBackground,100,75);
+//
+//        for(Sprite item : placeableItemList) {
+//            item.setVisible(true);
+//        }
 
         itemSelectionInitialized = true;
     }
-
 
 	@Override
 	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
 		super.update(pressedKeys,gamePads);
         frameCounter++;
-        if (frameCounter > 4) {
+        if (frameCounter > 3) {
             TweenJuggler.getInstance().nextFrame();
             initializePlayers(pressedKeys,gamePads); //only happens once
 
@@ -311,7 +331,7 @@ public class TheMinorsGame extends Game {
 	// UPDATE METHODS FOR MODES
 
 	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
-	    if(! itemSelectionInitialized && frameCounter > 3) {
+	    if(! itemSelectionInitialized && frameCounter > 4 && numberOfPlayers > 0) {
 	        initializeItemSelection();
         }
         for(Player player : players) {
@@ -336,6 +356,7 @@ public class TheMinorsGame extends Game {
                                 player.item = selectItem(iterator, s);
                                 numberOfSelectedItems++;
                                 player.cursor.setVisible(false);
+                                break;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                             player.item = selectItem(iterator, s);
@@ -345,6 +366,7 @@ public class TheMinorsGame extends Game {
                                 numberOfSelectedItems = 0;
                             }
                             spaceKeyClock.resetGameClock();         // make sure it doesn't get placed immediately after selection
+                            break;
                         }
                     }
                 }
@@ -526,6 +548,7 @@ public class TheMinorsGame extends Game {
         if(playersDone >= numberOfPlayers) {
             gameMode = GameMode.ROUND_COMPLETE;
             laserBeams.clear();
+            roundCompleteClock.resetGameClock();
         }
     }
 
@@ -657,11 +680,11 @@ public class TheMinorsGame extends Game {
     }
 
     public void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
-        GameClock gameClock = new GameClock();
-        gameClock.resetGameClock();
-        while(gameClock.getElapsedTime() < 1000){continue;}      //wait 200ms to prevent placement
-        gameMode = GameMode.ITEM_SELECTION;
-        resetPlayers(pressedKeys,gamePads);
+        if(roundCompleteClock.getElapsedTime() > 1000){
+            gameMode = GameMode.ITEM_SELECTION;
+            resetPlayers(pressedKeys,gamePads);
+            levelContainer.update(pressedKeys,gamePads);
+        }
     }
 
 	@Override
@@ -748,13 +771,17 @@ public class TheMinorsGame extends Game {
     }
 
     public void roundCompleteDraw(Graphics g) {
+	    String results = "";
+        g.drawString("Round Completed!",GAME_WIDTH/2,GAME_HEIGHT/2+400);
         if(levelContainer != null) {
-            levelContainer.draw(g);
+            //levelContainer.draw(g);
+            results = "Scores: \t";
             for(Player player : players) {
-                if(player.isVisible()) player.draw(g);
+                //if(player.isVisible()) player.draw(g);
+                results += player.getId() + " - " + Integer.toString(player.getScore()) + " points \t";
             }
         }
-        g.drawString("Round Completed!",GAME_WIDTH/2,GAME_HEIGHT/2+200);
+        //g.drawString(results,GAME_WIDTH/2, GAME_HEIGHT/2+400);
     }
 
 	public static void main(String[] args) {
