@@ -9,14 +9,13 @@ import edu.virginia.engine.event.EventDispatcher;
  */
 public class Tween extends EventDispatcher {
 
-    DisplayObject object;
-    TweenTransition transition;
-    double rate;
-    double elapsed;
-    double range;
-    TweenParam param;
-    boolean completed = false;
-    boolean isRunning = false;
+    public DisplayObject object;
+    private TweenTransition transition;
+    private double elapsed;
+    private double range;
+    private TweenParam param;
+    private boolean completed = false;
+    private boolean isRunning = false;
 
     public Tween(DisplayObject object) {
         this.object = object;
@@ -29,7 +28,6 @@ public class Tween extends EventDispatcher {
         if(!isRunning) {
             param = new TweenParam(fieldToAnimate, startVal, endVal, time);
             this.range = endVal - startVal;
-            this.rate = (range) / time;
             elapsed = 0;
             isRunning = true;
         }

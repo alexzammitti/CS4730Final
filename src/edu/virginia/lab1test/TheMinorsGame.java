@@ -526,24 +526,25 @@ public class TheMinorsGame extends Game {
     }
 
     public void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
-        if(levelContainer != null) levelContainer.update(pressedKeys, gamePads);
+        if(levelContainer != null){
+            levelContainer.update(pressedKeys, gamePads);
+            shootGuns(pressedKeys,gamePads);
+        }
         for(Player player : players) {
             player.update(pressedKeys,gamePads);
             handleAnimation(player,pressedKeys,gamePads);
             player.animate();
-            handlePlayerMoveInput(player, pressedKeys, gamePads);
+            if(player.isAlive() && !player.isCourseCompleted()) handlePlayerMoveInput(player, pressedKeys, gamePads);
             player.constrainToLevel(GAME_WIDTH,GAME_HEIGHT);
             player.fallOffPlatforms(player.platformPlayerIsOn);
-            shootGuns(pressedKeys,gamePads);
-            if(player.isAlive() && !player.isCourseCompleted()) {
-                for (DisplayObjectContainer object : levelContainer.getChildren()) {
-                    if(player.collidesWith(object)) {
-                        if(object.getId().equals("portal")){
-                            player.dispatchEvent(new Event(Event.GOAL, player));
-                        }
+            for (DisplayObjectContainer object : levelContainer.getChildren()) {
+                if(player.collidesWith(object)) {
+                    if(object.getId().equals("portal")){
+                        player.dispatchEvent(new Event(Event.GOAL, player));
                     }
                 }
             }
+
         }
         int playersDone = 0;
         for(Player player : players) {
@@ -679,7 +680,7 @@ public class TheMinorsGame extends Game {
             else if(beam.direction == 3*Math.PI/2) beam.setyPosition(beam.getyPosition() + BEAM_SPEED);
 
             if(beam.direction % Math.PI < 1) {
-                if(beam.getRight() < 0)iterator.remove();
+                if(beam.getRight() < 0) iterator.remove();
                 else if(beam.getLeft() > GAME_WIDTH) iterator.remove();
             } else if(beam.direction % Math.PI/2 < 1) {
                 if(beam.getBottom() < 0) iterator.remove();
@@ -691,6 +692,11 @@ public class TheMinorsGame extends Game {
 
     public void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
+        for(Player player : players) {
+            //player.update(pressedKeys,gamePads);
+            handleAnimation(player,pressedKeys,gamePads);
+            player.animate();
+        }
         if(roundCompleteClock.getElapsedTime() > 1000){
             gameMode = GameMode.ITEM_SELECTION;
             resetPlayers(pressedKeys,gamePads);

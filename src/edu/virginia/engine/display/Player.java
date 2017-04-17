@@ -47,7 +47,7 @@ public class Player extends PhysicsSprite {
 
     public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
         super.update(pressedKeys,gamePads);
-        if(this.isAlive()) {
+        if(this.isAlive()) { //originally checked if player was alive
             this.setxPosition(this.getxPosition()+this.getxVelocity());
             this.setyPosition(this.getyPosition()+this.getyVelocity());
             if(this.isAirborne()) {
