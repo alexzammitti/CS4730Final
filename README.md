@@ -36,5 +36,10 @@ Team:
             <li><strike>add third obstacle</strike></li>
         </ul>
     <li>Beta: Cleanup and get good art/ music. Feature polish, add more obstacles? Implement multiplayer</li>
+        <ul>
+            <li>Add start, level select, round complete, and game complete menus/interfaces</li>
+            <li>Update art</li>
+            <li>No game stopping bugs</li>
+        </ul>
     <li>Final: Debug make it good</li>
 </ul>
