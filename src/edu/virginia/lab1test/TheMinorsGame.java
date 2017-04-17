@@ -87,10 +87,10 @@ public class TheMinorsGame extends Game {
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     private Sprite levelBackground = new Sprite("background","Background2.jpg");
     // Item Lists
-    public ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
-    public ArrayList<Sprite> placedItemList = new ArrayList<>(0);
-    public ArrayList<Sprite> laserGunList = new ArrayList<>(0);
-    public ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
+    private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
+    private ArrayList<Sprite> placedItemList = new ArrayList<>(0);
+    private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
+    private ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
 
@@ -98,33 +98,27 @@ public class TheMinorsGame extends Game {
 	public SoundManager mySoundManager = SoundManager.getInstance();
 
 	// EVENT MANAGERS
-	public EventManager eventManager = new EventManager();
+	private EventManager eventManager = new EventManager();
 	//this is just a sanity check to make sure I remember how managers/events work
 	//xCoinTween.addEventListener(eventManager, Event.TWEEN_COMPLETE_EVENT);
     // the quest manager listens for events from the xCoinTween
 
 	// TWEENS
-    public Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween item1SelectionTween = new Tween(item1, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween item2SelectionTween = new Tween(item2, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween item3SelectionTween = new Tween(item3, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween item4SelectionTween = new Tween(item4, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-    public Tween item5SelectionTween = new Tween(item5, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-
+    private Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
 
 	// GAME CLOCKS
     //item selection, item placement, play time
-    public GameClock rKeyClock = new GameClock();
-    public GameClock spaceKeyClock = new GameClock();
-    public GameClock escKeyClock = new GameClock();
-    public GameClock roundCompleteClock = new GameClock();
+    private GameClock rKeyClock = new GameClock();
+    private GameClock spaceKeyClock = new GameClock();
+    private GameClock escKeyClock = new GameClock();
+    private GameClock roundCompleteClock = new GameClock();
 
 
 	
     /**
 	 * Constructor. See constructor in Game.java for details on the parameters given
 	 * */
-	public TheMinorsGame() {
+	private TheMinorsGame() {
 		super("The Minors Game", GAME_WIDTH, GAME_HEIGHT);
 
         // BUILD DISPLAY TREES
@@ -168,7 +162,7 @@ public class TheMinorsGame extends Game {
 
 	}
 
-	public void initializePlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+	private void initializePlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(numberOfPlayers==0) {
             switch (gamePads.size()) {
                 case 0:
@@ -214,7 +208,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void resetPlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void resetPlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         for(Player player : players) {
             player.setCourseCompleted(false);
             player.setVisible(true);
@@ -239,7 +233,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-	public void initializeItemSelection() {
+	private void initializeItemSelection() {
 	    selectionBackground.removeAll();
         selectionBackground.addChild(item1);
         selectionBackground.addChild(item2);
@@ -329,7 +323,7 @@ public class TheMinorsGame extends Game {
 
 	// UPDATE METHODS FOR MODES
 
-	public void itemSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+	private void itemSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
 	    if(! itemSelectionInitialized && frameCounter > 4 && numberOfPlayers > 0) {
 	        initializeItemSelection();
         }
@@ -401,7 +395,7 @@ public class TheMinorsGame extends Game {
 //        }
     }
 
-    public Sprite selectItem(Iterator<Sprite> spriteIterator, Sprite sprite) {
+    private Sprite selectItem(Iterator<Sprite> spriteIterator, Sprite sprite) {
         String spriteId = "item" + Integer.toString(placedItemCounter);   // we need to make a unique spriteId to make sure that --
         placedItemCounter++;                                              // --> new sprites don't have the same id for checks later
         Sprite newSprite = new Sprite(spriteId, sprite.getFileName());          //duplicate the sprite and add it to our level
@@ -418,7 +412,7 @@ public class TheMinorsGame extends Game {
         return newSprite;
     }
 
-    public void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if (levelContainer != null) {
             levelContainer.update(pressedKeys, gamePads);
             for(Player player : players) {
@@ -478,7 +472,9 @@ public class TheMinorsGame extends Game {
                                     itemSelectionInitialized = false;
                                     GameClock gameClock = new GameClock();
                                     gameClock.resetGameClock();
-                                    while(gameClock.getElapsedTime() < 200){continue;}      //wait 200ms to prevent placement
+                                    while(gameClock.getElapsedTime() < 200){
+                                        //do nothing
+                                    }      //wait 200ms to prevent placement
                                     numberOfPlacedItems=0;
                                 }
                             }
@@ -525,7 +521,7 @@ public class TheMinorsGame extends Game {
 
     }
 
-    public void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+    private void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         if(levelContainer != null){
             levelContainer.update(pressedKeys, gamePads);
             shootGuns(pressedKeys,gamePads);
@@ -565,7 +561,7 @@ public class TheMinorsGame extends Game {
 
     // METHODIZED UPDATE SEGMENTS
 
-    public void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
+    private void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
         if (pressedKeys.contains(KEY_UP)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
         } else if (pressedKeys.contains(KEY_DOWN)) {
@@ -578,7 +574,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads, int playerNumber) {
+    private void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads, int playerNumber) {
         if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(playerNumber).getLeftStickYAxis() < 0) {
                 displayObject.setyPosition(displayObject.getyPosition() - speed);
@@ -593,7 +589,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void handlePlayerMoveInput(Player player, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void handlePlayerMoveInput(Player player, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) { //Left
                 player.setxPosition(player.getxPosition() - PLAYER_SPEED);
@@ -616,7 +612,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
+    private void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
         if (player.isAirborne()) {
             if(player.getyVelocity() > 0) {
                 player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
@@ -644,7 +640,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void constrainItemToLevel(Sprite sprite) {
+    private void constrainItemToLevel(Sprite sprite) {
         if(sprite.getBottom() > GAME_HEIGHT) {
             //TODO there is not currently a way for us to set the global position of a sprite if it is a child
             sprite.setyPosition(GAME_HEIGHT-sprite.getScaledHeight());
@@ -658,7 +654,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(frameCounter % 100 == 0) {
             for(Sprite gun : laserGunList) {
                 LaserBeam beam = new LaserBeam("laserbeam" + gun.getId(),gun.getRotation());
@@ -690,7 +686,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+    private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
         for(Player player : players) {
             //player.update(pressedKeys,gamePads);
@@ -728,7 +724,7 @@ public class TheMinorsGame extends Game {
         }
 	}
 
-    public void itemSelectionDraw(Graphics g) {
+    private void itemSelectionDraw(Graphics g) {
         if(levelContainer != null) {
             Rectangle test;
             levelContainer.draw(g);
@@ -751,7 +747,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void itemPlacementDraw(Graphics g) {
+    private void itemPlacementDraw(Graphics g) {
 	    if(levelContainer != null) {
 	        levelContainer.draw(g);
             for(Player player : players) {
@@ -768,7 +764,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void gameplayDraw(Graphics g) {
+    private void gameplayDraw(Graphics g) {
         if(levelContainer != null) {
             levelContainer.draw(g);
             for(Player player : players) {
@@ -792,7 +788,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void roundCompleteDraw(Graphics g) {
+    private void roundCompleteDraw(Graphics g) {
         if(levelContainer != null) {
             levelContainer.draw(g);
             for(Player player : players) {
