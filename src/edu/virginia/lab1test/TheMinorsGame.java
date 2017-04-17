@@ -355,6 +355,8 @@ public class TheMinorsGame extends Game {
                                 player.item = selectItem(iterator, s);
                                 numberOfSelectedItems++;
                                 player.cursor.setVisible(false);
+                                player.cursor.alignCenterHorizontal(player.item);
+                                player.cursor.alignCenterVertical(player.item);
                                 break;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
@@ -422,8 +424,11 @@ public class TheMinorsGame extends Game {
             for(Player player : players) {
                 // Move sprite based on user input
                 if (!player.item.isPlaced()) {
+                    player.cursor.setVisible(true);
                     handleCursorMoveInput(player.item, CURSOR_SPEED, pressedKeys);
+                    handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
+                    handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
                     constrainItemToLevel(player.item);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
@@ -466,6 +471,7 @@ public class TheMinorsGame extends Game {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {     //if space is pressed
                             if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
                                 player.item.setPlaced(true);
+                                player.cursor.setVisible(false);
                                 numberOfPlacedItems++;
                                 if(numberOfPlacedItems >= numberOfPlayers) {
                                     gameMode = GameMode.GAMEPLAY;
@@ -695,7 +701,7 @@ public class TheMinorsGame extends Game {
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
-        levelBackground.draw(g);
+		if(levelBackground != null) levelBackground.draw(g);
         if(gameMode != null) {
             switch(gameMode) {
                 case ITEM_SELECTION:
@@ -742,7 +748,11 @@ public class TheMinorsGame extends Game {
     public void itemPlacementDraw(Graphics g) {
 	    if(levelContainer != null) {
 	        levelContainer.draw(g);
+            for(Player player : players) {
+                player.cursor.draw(g);
+            }
         }
+
 
         if(debugHitboxes) {
             for(DisplayObjectContainer c : levelContainer.getChildren()) {
