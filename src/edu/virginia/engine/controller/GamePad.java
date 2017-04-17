@@ -1,5 +1,6 @@
 package edu.virginia.engine.controller;
 
+import edu.virginia.engine.util.GameClock;
 import net.java.games.input.Component;
 import net.java.games.input.Component.Identifier;
 import net.java.games.input.Controller;
@@ -13,6 +14,7 @@ public class GamePad {
 	
 	/* The controller that was detected */
 	private Controller controller;
+	public GameClock triggerClock = new GameClock();
 	
 	/* Constants defining the various buttons on a typical controller */
 	/* Might be necessary to change the string bindings depending on your particular gamepad configuration */

@@ -426,13 +426,12 @@ public class TheMinorsGame extends Game {
                     constrainItemToLevel(player.item);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
-                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER)) {
+                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerClock.getElapsedTime() > KEY_DELAY) {
                             if (player.item.getRotation() >= 3 * Math.PI / 2) {
                                 player.item.setRotation(0);    // prevent rotations past 2 PI
-                            } else {
+                            } else
                                 player.item.setRotation(player.item.getRotation() + Math.PI / 2);
-                            }
-                            //rKeyClock.resetGameClock(); TODO figure out how to make delay between rotations
+                            gamePads.get(player.playerNumber).triggerClock.resetGameClock();
                         }
                     } else if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
                         if (player.item.getRotation() >= 3 * Math.PI / 2)
