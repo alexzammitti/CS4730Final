@@ -18,6 +18,7 @@ public class Player extends PhysicsSprite {
     public int playerNumber;
     protected int score = 0;
     protected boolean first = false;
+    protected Sprite scoreBar = null;
 
     public boolean isAlive() {
         return alive;
@@ -44,12 +45,23 @@ public class Player extends PhysicsSprite {
         this.score = score;
     }
     public void incrementScore(int numberOfPoints) { this.score +=numberOfPoints;}
+    public Sprite getScoreBar() {
+        return scoreBar;
+    }
+    public void setScoreBar(Sprite scoreBar) {
+        this.scoreBar = scoreBar;
+    }
+
+    public void sizeScoreBar(int winScore) {
+        scoreBar.setxScale((double)score/(double)winScore);
+    }
 
     public Player(String id, String imageFileName, String cursorFileName, int number) {
         super(id,imageFileName);
         this.fileName = imageFileName;
         cursor = new Sprite(id + "cursor",cursorFileName);
         this.playerNumber = number;
+        this.scoreBar = new Sprite("player" + playerNumber + "scorebar","scorebar1.png");
     }
 
     public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {

@@ -65,6 +65,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
+    private int winScore = 1000;
 
 
 
@@ -88,6 +89,8 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
+    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
+
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -773,17 +776,23 @@ public class TheMinorsGame extends Game {
             handleAnimation(player,pressedKeys,gamePads);
             player.animate();
         }
-        if(roundCompleteClock.getElapsedTime() > 1000){
-            for(Player player: players) {
-                if(playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
-                    if(player.isCourseCompleted()) {
-                        player.setScore(player.getScore() + 100);
-                    }
-                    if(firstCompleted.equals(player)) {
-                        player.setScore(player.getScore() + 20);
-                    }
+        for(Player player: players) {
+            if(playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
+                if(player.isCourseCompleted()) {
+                    player.incrementScore(100);
+                }
+                if(firstCompleted.equals(player)) {
+                    player.incrementScore(20);
                 }
             }
+            player.sizeScoreBar(winScore);
+            player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
+            player.getScoreBar().alignFractionVertical(scoreboardBackground,
+                    numberOfPlayers+1, player.getCurrentIndex());
+            if(!selectionBackground.getChildren().contains(player.getScoreBar())) selectionBackground.addChild(player.getScoreBar());
+        }
+
+        if(roundCompleteClock.getElapsedTime() > 1000){
             gameMode = GameMode.ITEM_SELECTION;
             resetPlayers(pressedKeys,gamePads);
             levelContainer.update(pressedKeys,gamePads);
@@ -896,6 +905,7 @@ public class TheMinorsGame extends Game {
             for(Player player : players) {
                 if(player.isVisible()) player.draw(g);
             }
+            scoreboardBackground.draw(g);
         }
     }
 
