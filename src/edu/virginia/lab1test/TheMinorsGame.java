@@ -85,14 +85,20 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
-    private Sprite levelBackground = new Sprite("background","Background2.jpg");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
-    private ArrayList<Sprite> placedItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
     private ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
+    private DisplayObjectContainer levelImages = new DisplayObjectContainer("level images");        // contains level background images for level selection
+    // Levels
+    private ArrayList<Level> levelList= new ArrayList<>(0);
+
+    private Level level1 = new Level("level1",new Sprite("level1_background","Background1.png"));
+    private Level level2 = new Level("level2",new Sprite("level2_background","Background2.jpg"));
+    private Level level3 = new Level("level3",new Sprite("level3_background","Background3.jpg"));
+    private Level currentLevel = null;
 
 	// AUDIO ASSETS
 	public SoundManager mySoundManager = SoundManager.getInstance();
@@ -104,7 +110,6 @@ public class TheMinorsGame extends Game {
     // the quest manager listens for events from the xCoinTween
 
 	// TWEENS
-    private Tween selectionBackgroundTween = new Tween(selectionBackground, new TweenTransition(TweenTransition.TransitionType.LINEAR));
 
 	// GAME CLOCKS
     //item selection, item placement, play time
@@ -121,14 +126,6 @@ public class TheMinorsGame extends Game {
 	private TheMinorsGame() {
 		super("The Minors Game", GAME_WIDTH, GAME_HEIGHT);
 
-        // BUILD DISPLAY TREES
-
-        levelBackground.setScale(2,2);
-        levelContainer.addChild(platform1);
-        //levelContainer.addChild(coin);
-        levelContainer.addChild(platform2);
-        levelContainer.addChild(portal);
-
         // POPULATE ITEM LISTS
         placeableItemList.add(item1);
         placeableItemList.add(item2);
@@ -136,17 +133,34 @@ public class TheMinorsGame extends Game {
         placeableItemList.add(item4);
         placeableItemList.add(item5);
 
+        levelList.add(level1);
+        levelList.add(level2);
+        levelList.add(level3);
+
         selectionBackground.setPosition(350,100);
         selectionBackground.setScale(1,1);
 
+        // BUILD DISPLAY TREES
+
+        for(Level level : levelList) {
+            levelImages.addChild(level.getBackground());
+        }
+        for(int i = 0; i < levelImages.getChildren().size(); i++) {
+            levelImages.getByIndex(i).setScale(0.2,0.2);
+            levelImages.getByIndex(i).setPosition((i+1)*GAME_WIDTH/4,GAME_HEIGHT/2);
+        }
+
+        levelContainer.addChild(platform1);
+        levelContainer.addChild(platform2);
+        levelContainer.addChild(portal);
 
         platform1.setxPosition(0);
         platform1.setyPosition(GAME_HEIGHT/2);
-        platform1.setxScale(.7);
-        platform1.setyScale(.3);
+        platform1.setxScale(1);
+        platform1.setyScale(1);
 
-        platform2.setxScale(.7);
-        platform2.setyScale(.3);
+        platform2.setxScale(1);
+        platform2.setyScale(1);
         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
         platform2.setyPosition(GAME_HEIGHT/2);
 
@@ -155,10 +169,9 @@ public class TheMinorsGame extends Game {
 
 
         // SET UP TWEENS - TODO - might also be good to methodize
-        selectionBackgroundTween.animate(TweenableParam.SCALE_X,0,1.2,100);
-        //tweenJuggler.add(selectionBackgroundTween);
 
-        gameMode = GameMode.ITEM_SELECTION;
+
+        gameMode = GameMode.LEVEL_SELECTION;
 
 	}
 
@@ -292,6 +305,10 @@ public class TheMinorsGame extends Game {
         itemSelectionInitialized = true;
     }
 
+    private void initializeLevels() {
+	    //TODO give levels their sprites and locations
+    }
+
 	@Override
 	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
 		super.update(pressedKeys,gamePads);
@@ -299,9 +316,14 @@ public class TheMinorsGame extends Game {
         if (frameCounter > 3) {
             TweenJuggler.getInstance().nextFrame();
             initializePlayers(pressedKeys,gamePads); //only happens once
-
             if(gameMode != null) {
                 switch (gameMode) {
+                    case START_SCREEN:
+                        startScreenUpdate(pressedKeys,gamePads);
+                        break;
+                    case LEVEL_SELECTION:
+                        levelSelectionUpdate(pressedKeys,gamePads);
+                        break;
                     case ITEM_SELECTION:
                         itemSelectionUpdate(pressedKeys,gamePads);
                         break;
@@ -322,6 +344,51 @@ public class TheMinorsGame extends Game {
 	}
 
 	// UPDATE METHODS FOR MODES
+
+    private void startScreenUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+        //TODO make a start screen, idk what we want
+    }
+
+    private void levelSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+        if(players.size() > 0) {
+            for(Player player : players) {
+                player.cursor.update(pressedKeys, gamePads);
+                // MOVE CURSOR BASED ON USER INPUT
+                if (inputMode.equals(INPUT_GAMEPADS))
+                    handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
+                else handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
+                constrainItemToLevel(player.cursor);
+                levelImages.update(pressedKeys,gamePads);
+                for(DisplayObjectContainer background : levelImages.getChildren()) {
+                    if (player.cursor.collidesWith(background)) {
+                        if (inputMode.equals(INPUT_GAMEPADS)) {
+                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                                for(Level level : levelList) {                              // potentially not the best way to do this
+                                    if(background.getFileName().equals(level.getBackground().getFileName())){
+                                        currentLevel = level;
+                                        currentLevel.setPositionAndScaling();
+                                    }
+                                }
+                                gameMode = GameMode.ITEM_SELECTION;
+                                break;
+                            }
+                        } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
+                            for(Level level : levelList) {                              // potentially not the best way to do this
+                                if(background.getFileName().equals(level.getBackground().getFileName())){
+                                    currentLevel = level;
+                                    currentLevel.setPositionAndScaling();
+                                }
+                            }
+                            gameMode = GameMode.ITEM_SELECTION;
+                            spaceKeyClock.resetGameClock();
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 
 	private void itemSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
 	    if(! itemSelectionInitialized && frameCounter > 4 && numberOfPlayers > 0) {
@@ -424,6 +491,7 @@ public class TheMinorsGame extends Game {
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
                     constrainItemToLevel(player.item);
+                    constrainItemToLevel(player.cursor);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerClock.getElapsedTime() > KEY_DELAY) {
@@ -432,6 +500,8 @@ public class TheMinorsGame extends Game {
                             } else
                                 player.item.setRotation(player.item.getRotation() + Math.PI / 2);
                             gamePads.get(player.playerNumber).triggerClock.resetGameClock();
+                            player.item.update(pressedKeys,gamePads);
+                            constrainItemToLevel(player.item);
                         }
                     } else if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
                         if (player.item.getRotation() >= 3 * Math.PI / 2)
@@ -439,6 +509,8 @@ public class TheMinorsGame extends Game {
                         else
                             player.item.setRotation(player.item.getRotation() + Math.PI / 2);
                         rKeyClock.resetGameClock();
+                        player.item.update(pressedKeys,gamePads);
+                        constrainItemToLevel(player.item);
                     }
                     // Preventing overlaps - image changes to imageName + "-error.png"
                     for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
@@ -702,9 +774,12 @@ public class TheMinorsGame extends Game {
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
-		if(levelBackground != null) levelBackground.draw(g);
+		if(currentLevel != null) currentLevel.getBackground().draw(g);
         if(gameMode != null) {
             switch(gameMode) {
+                case LEVEL_SELECTION:
+                    levelSelectionDraw(g);
+                    break;
                 case ITEM_SELECTION:
                     itemSelectionDraw(g);
                     break;
@@ -722,6 +797,15 @@ public class TheMinorsGame extends Game {
             }
         }
 	}
+
+	private void levelSelectionDraw(Graphics g) {
+        if(frameCounter > 3) {
+            levelImages.draw(g);
+            for(Player player : players) {
+                player.cursor.draw(g);
+            }
+        }
+    }
 
     private void itemSelectionDraw(Graphics g) {
         if(levelContainer != null) {
