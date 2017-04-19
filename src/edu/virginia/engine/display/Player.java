@@ -17,6 +17,7 @@ public class Player extends PhysicsSprite {
     public Sprite cursor;
     public int playerNumber;
     protected int score = 0;
+    protected boolean first = false;
 
     public boolean isAlive() {
         return alive;
@@ -29,6 +30,12 @@ public class Player extends PhysicsSprite {
     }
     public void setCourseCompleted(boolean courseCompleted) {
         this.courseCompleted = courseCompleted;
+    }
+    public boolean isFirst() {
+        return first;
+    }
+    public void setFirst(boolean first) {
+        this.first = first;
     }
     public int getScore() {
         return score;

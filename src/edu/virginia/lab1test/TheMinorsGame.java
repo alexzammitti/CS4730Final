@@ -27,7 +27,7 @@ public class TheMinorsGame extends Game {
         ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE, START_SCREEN;
     }
 
-    private GameMode gameMode = GameMode.ITEM_SELECTION;
+    private GameMode gameMode = GameMode.LEVEL_SELECTION;
     private final static int GAME_WIDTH = 1250;
     private final static int GAME_HEIGHT = 700;
     private final static String INPUT_KEYBOARD = "keyboard";
@@ -62,6 +62,9 @@ public class TheMinorsGame extends Game {
     private int numberOfPlayers = 0;
     private int numberOfSelectedItems = 0;
     private int numberOfPlacedItems = 0;
+    private int playersDead = 0;
+    private int playersCompleted = 0;
+    private Player firstCompleted = null;
 
 
 
@@ -244,6 +247,9 @@ public class TheMinorsGame extends Game {
             player.cursor.setxPosition(GAME_WIDTH / 2);
             player.update(pressedKeys,gamePads);
         }
+        playersDead = 0;
+        playersCompleted = 0;
+        firstCompleted = null;
     }
 
 	private void initializeItemSelection() {
@@ -608,17 +614,20 @@ public class TheMinorsGame extends Game {
                 if(player.collidesWith(object)) {
                     if(object.getId().equals("portal")){
                         player.dispatchEvent(new Event(Event.GOAL, player));
+                        if(firstCompleted == null) {
+                            firstCompleted = player;
+                        }
                     }
                 }
             }
 
         }
-        int playersDone = 0;
+
         for(Player player : players) {
-            if(!player.isAlive()) playersDone++;
-            if(player.isCourseCompleted()) playersDone++;
+            if(!player.isAlive()) playersDead++;
+            if(player.isCourseCompleted()) playersCompleted++;
         }
-        if(playersDone >= numberOfPlayers) {
+        if((playersDead + playersCompleted) >= numberOfPlayers) {
             gameMode = GameMode.ROUND_COMPLETE;
             for(Sprite beam : laserBeams) {
                 beam.setVisible(false);
@@ -765,6 +774,16 @@ public class TheMinorsGame extends Game {
             player.animate();
         }
         if(roundCompleteClock.getElapsedTime() > 1000){
+            for(Player player: players) {
+                if(playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
+                    if(player.isCourseCompleted()) {
+                        player.setScore(player.getScore() + 100);
+                    }
+                    if(firstCompleted.equals(player)) {
+                        player.setScore(player.getScore() + 20);
+                    }
+                }
+            }
             gameMode = GameMode.ITEM_SELECTION;
             resetPlayers(pressedKeys,gamePads);
             levelContainer.update(pressedKeys,gamePads);
