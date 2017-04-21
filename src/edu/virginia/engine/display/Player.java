@@ -53,7 +53,8 @@ public class Player extends PhysicsSprite {
     }
 
     public void sizeScoreBar(int winScore) {
-        scoreBar.setxScale((double)score/(double)winScore);
+        scoreBar.setyScale(1);
+        scoreBar.setxScale((double)this.score/(double)winScore);
     }
 
     public Player(String id, String imageFileName, String cursorFileName, int number) {

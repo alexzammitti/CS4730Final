@@ -7,14 +7,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
-import edu.virginia.engine.tween.Tween;
 import edu.virginia.engine.tween.TweenJuggler;
-import edu.virginia.engine.tween.TweenTransition;
-import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.event.*;
 import edu.virginia.engine.util.GameClock;
-import edu.virginia.engine.util.SoundManager;
 
 /**
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
@@ -107,7 +103,6 @@ public class TheMinorsGame extends Game {
     private Level currentLevel = null;
 
 	// AUDIO ASSETS
-	public SoundManager mySoundManager = SoundManager.getInstance();
 
 	// EVENT MANAGERS
 	private EventManager eventManager = new EventManager();
@@ -787,8 +782,9 @@ public class TheMinorsGame extends Game {
             }
             player.sizeScoreBar(winScore);
             player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
-            player.getScoreBar().alignFractionVertical(scoreboardBackground,
-                    numberOfPlayers+1, player.getCurrentIndex());
+            player.getScoreBar().alignCenterVertical(scoreboardBackground);
+//            player.getScoreBar().alignFractionVertical(scoreboardBackground,
+//                    numberOfPlayers+1, player.getCurrentIndex());
             if(!selectionBackground.getChildren().contains(player.getScoreBar())) selectionBackground.addChild(player.getScoreBar());
         }
 
