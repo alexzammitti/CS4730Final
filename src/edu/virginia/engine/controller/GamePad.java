@@ -14,7 +14,8 @@ public class GamePad {
 	
 	/* The controller that was detected */
 	private Controller controller;
-	public GameClock triggerClock = new GameClock();
+	public GameClock triggerButtonClock = new GameClock();
+	public GameClock aButtonClock = new GameClock();
 	
 	/* Constants defining the various buttons on a typical controller */
 	/* Might be necessary to change the string bindings depending on your particular gamepad configuration */
@@ -45,6 +46,8 @@ public class GamePad {
 		
 		this.controller = controller;
 		this.components = new HashMap<String, GamePadComponent>();
+		aButtonClock.resetGameClock();
+		triggerButtonClock.resetGameClock();
 	}
 	
 	/**
@@ -54,6 +57,10 @@ public class GamePad {
 		if(this.components.containsKey(buttonId))
 			return this.components.get(buttonId).getData() != 0.0;
 		return false;
+	}
+
+	public void clearButtons() {
+		this.components.clear();
 	}
 	
 	/**

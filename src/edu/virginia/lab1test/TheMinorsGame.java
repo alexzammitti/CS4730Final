@@ -366,7 +366,7 @@ public class TheMinorsGame extends Game {
                 for(DisplayObjectContainer background : levelImages.getChildren()) {
                     if (player.cursor.collidesWith(background)) {
                         if (inputMode.equals(INPUT_GAMEPADS)) {
-                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && gamePads.get(player.playerNumber).aButtonClock.getElapsedTime() > KEY_DELAY) {
                                 for(Level level : levelList) {                              // potentially not the best way to do this
                                     if(background.getFileName().equals(level.getBackground().getFileName())){
                                         currentLevel = level;
@@ -374,6 +374,7 @@ public class TheMinorsGame extends Game {
                                     }
                                 }
                                 gameMode = GameMode.ITEM_SELECTION;
+                                gamePads.get(player.playerNumber).aButtonClock.resetGameClock();
                                 break;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
@@ -416,17 +417,22 @@ public class TheMinorsGame extends Game {
                         // add tween stuff here for polish if desired
                         // and the player presses the select button over it
                         if (inputMode.equals(INPUT_GAMEPADS)) {
-                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && gamePads.get(player.playerNumber).aButtonClock.getElapsedTime() > KEY_DELAY) {
                                 player.item = selectItem(iterator, s);
                                 numberOfSelectedItems++;
                                 player.cursor.setVisible(false);
-                                player.cursor.alignCenterHorizontal(player.item);
-                                player.cursor.alignCenterVertical(player.item);
+                                if (numberOfSelectedItems >= numberOfPlayers) {
+                                    gameMode = GameMode.ITEM_PLACEMENT;
+                                    numberOfSelectedItems = 0;
+                                    wait(200);
+                                }
+                                gamePads.get(player.playerNumber).aButtonClock.resetGameClock();
                                 break;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                             player.item = selectItem(iterator, s);
                             numberOfSelectedItems++;
+                            player.cursor.setVisible(false);
                             if (numberOfSelectedItems >= numberOfPlayers) {
                                 gameMode = GameMode.ITEM_PLACEMENT;
                                 numberOfSelectedItems = 0;
@@ -498,12 +504,12 @@ public class TheMinorsGame extends Game {
                     constrainItemToLevel(player.cursor);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
-                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerClock.getElapsedTime() > KEY_DELAY) {
+                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerButtonClock.getElapsedTime() > KEY_DELAY) {
                             if (player.item.getRotation() >= 3 * Math.PI / 2) {
                                 player.item.setRotation(0);    // prevent rotations past 2 PI
                             } else
                                 player.item.setRotation(player.item.getRotation() + Math.PI / 2);
-                            gamePads.get(player.playerNumber).triggerClock.resetGameClock();
+                            gamePads.get(player.playerNumber).triggerButtonClock.resetGameClock();
                             player.item.update(pressedKeys,gamePads);
                             constrainItemToLevel(player.item);
                         }
@@ -547,9 +553,6 @@ public class TheMinorsGame extends Game {
                                     itemSelectionInitialized = false;
                                     GameClock gameClock = new GameClock();
                                     gameClock.resetGameClock();
-                                    while(gameClock.getElapsedTime() < 200){
-                                        //do nothing
-                                    }      //wait 200ms to prevent placement
                                     numberOfPlacedItems=0;
                                 }
                             }
@@ -620,11 +623,14 @@ public class TheMinorsGame extends Game {
             }
 
         }
-
+        int dead = 0;
+        int done = 0;
         for(Player player : players) {
-            if(!player.isAlive()) playersDead++;
-            if(player.isCourseCompleted()) playersCompleted++;
+            if (!player.isAlive()) dead++;
+            if (player.isCourseCompleted()) done++;
         }
+        playersDead = dead;
+        playersCompleted = done;
         if((playersDead + playersCompleted) >= numberOfPlayers) {
             gameMode = GameMode.ROUND_COMPLETE;
             for(Sprite beam : laserBeams) {
@@ -902,6 +908,14 @@ public class TheMinorsGame extends Game {
                 if(player.isVisible()) player.draw(g);
             }
             scoreboardBackground.draw(g);
+        }
+    }
+
+    private void wait(int milliseconds) {
+	    GameClock clock = new GameClock();
+	    clock.resetGameClock();
+	    while(clock.getElapsedTime() < milliseconds) {
+	        //do nothing
         }
     }
 
