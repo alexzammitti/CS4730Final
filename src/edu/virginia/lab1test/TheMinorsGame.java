@@ -64,8 +64,10 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 1000;
+    private int winScore = 600;
     private boolean scoresCalculated = false;
+    private int gameWinner = 0;
+    private boolean gameWon = false;
 
 
 
@@ -90,6 +92,7 @@ public class TheMinorsGame extends Game {
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
+    private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
 
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
@@ -143,10 +146,15 @@ public class TheMinorsGame extends Game {
         levelList.add(level2);
         levelList.add(level3);
 
+        //SET BACKGROUNDS UP FOR EACH SCREEN
         selectionBackground.setPosition(350,100);
         selectionBackground.setScale(1,1);
+
         scoreboardBackground.setPosition(350,100);
         scoreboardBackground.setScale(1,1);
+
+        gameOverBackground.setPosition(350,100);
+        gameOverBackground.setScale(1,1);
 
         // BUILD DISPLAY TREES
 
@@ -356,6 +364,9 @@ public class TheMinorsGame extends Game {
                         break;
                     case ROUND_COMPLETE:
                         roundCompleteUpdate(pressedKeys,gamePads);
+                        break;
+                    case GAME_COMPLETE:
+                        gameCompleteUpdate(pressedKeys, gamePads);
                         break;
                 }
             }
@@ -815,15 +826,43 @@ public class TheMinorsGame extends Game {
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 1, player.playerNumber + 1);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
+                if(player.getScore() >= winScore) {
+                    gameMode = GameMode.GAME_COMPLETE;
+                    gameWon = true;
+                }
+            }
+            if(gameWon) {
+                int maxScore = 0;
+                for(Player player : players) {
+                    if(player.getScore() > maxScore) {
+                        maxScore = player.getScore();
+                        gameWinner = player.playerNumber;
+                    }
+                }
             }
             scoresCalculated = true;
         }
 
-        if(roundCompleteClock.getElapsedTime() > 5000){
-            gameMode = GameMode.ITEM_SELECTION;
-            resetPlayers(pressedKeys,gamePads);
-            levelContainer.update(pressedKeys,gamePads);
+        if(roundCompleteClock.getElapsedTime() > 5000) {
+            if(!gameWon) {
+                gameMode = GameMode.ITEM_SELECTION;
+                resetPlayers(pressedKeys, gamePads);
+                levelContainer.update(pressedKeys, gamePads);
+            }
         }
+    }
+
+    public void gameCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+        if(gameWon) {
+            Sprite winnerTitle = new Sprite("winner", "wins" + gameWinner + ".png");
+            gameOverBackground.addChild(winnerTitle);
+            winnerTitle.alignCenterHorizontal(gameOverBackground);
+            winnerTitle.alignCenterVertical(gameOverBackground);
+        } else {
+            //TODO make a "No one wins" title and put this in the box
+        }
+        wait(3000);
+        gameMode = GameMode.LEVEL_SELECTION;
     }
 
 	@Override
@@ -848,6 +887,9 @@ public class TheMinorsGame extends Game {
                     break;
                 case ROUND_COMPLETE:
                     roundCompleteDraw(g);
+                    break;
+                case GAME_COMPLETE:
+                    gameCompleteDraw(g);
                     break;
             }
         }
@@ -934,6 +976,13 @@ public class TheMinorsGame extends Game {
             }
             scoreboardBackground.draw(g);
         }
+    }
+
+    private void gameCompleteDraw(Graphics g) {
+        if(levelContainer != null) {
+            levelContainer.draw(g);
+        }
+        gameOverBackground.draw(g);
     }
 
     private void wait(int milliseconds) {
