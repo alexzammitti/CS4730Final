@@ -4,6 +4,7 @@ import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.PhysicsSprite;
 import edu.virginia.engine.display.Player;
 import edu.virginia.engine.tween.*;
+import edu.virginia.engine.util.SoundEffect;
 
 import java.awt.*;
 
@@ -13,6 +14,10 @@ import java.awt.*;
 public class EventManager implements IEventListener {
 
     private Tween deathTweenY, deathTweenAlpha, deathTweenRotate;
+    private SoundEffect deathSound = new SoundEffect("death.wav");
+    private SoundEffect thudSound = new SoundEffect("thud.wav");
+    private SoundEffect goalSound = new SoundEffect("goal.wav");
+
 
     public void handleEvent(Event event) {
         switch (event.getEventType()) {
@@ -23,16 +28,18 @@ public class EventManager implements IEventListener {
             case Event.TWEEN_COMPLETE_EVENT:
                 break;
             case Event.UNSAFE_COLLISION:
+                if(event.player.isAlive()) deathSound.play(false);
                 event.player.setAlive(false);
-                //event.player.dispatchEvent(new Event(Event.DEATH,event.player));
                 break;
             case Event.SAFE_COLLISION:
+                if(event.player.isAirborne()) thudSound.play(false);
                 handlePlatformCollision(event.player,event.object);
                 break;
             case Event.DEATH:
                 deathAnimation(event);
                 break;
             case Event.GOAL:
+                if(!event.player.isCourseCompleted()) goalSound.play(false);
                 event.player.setCourseCompleted(true);
                 break;
         }

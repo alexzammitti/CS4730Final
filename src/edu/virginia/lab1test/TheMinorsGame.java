@@ -117,6 +117,7 @@ public class TheMinorsGame extends Game {
 
 	// AUDIO ASSETS
     private SoundEffect backgroundMusic = new SoundEffect("Space_Background_Music.wav");
+    private SoundEffect laserSound = new SoundEffect("laser.wav");
 
 	// EVENT MANAGERS
 	private EventManager eventManager = new EventManager();
@@ -867,6 +868,7 @@ public class TheMinorsGame extends Game {
                 beam.setPivotCenter();
                 laserBeams.add(beam);
                 levelContainer.addChild(beam);
+                laserSound.play(false);
             }
         }
         for(Iterator<LaserBeam> iterator = laserBeams.iterator(); iterator.hasNext();) {
@@ -910,6 +912,7 @@ public class TheMinorsGame extends Game {
                 player.getScoreBar().setxPosition(100);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
                 scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
+                scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
                 if(player.getScore() >= winScore) {
