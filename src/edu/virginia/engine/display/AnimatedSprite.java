@@ -88,26 +88,24 @@ public class AnimatedSprite extends Sprite {
 		for(int i = 0; i <= 1; i++) {
 			rightFrames[i+12] = readImage(player + "-falling-0" + i + ".png");
 		}
-		//TODO uncomment this when Watson adds the mirrored sprites
-//		BufferedImage leftIdle = readImage("left-" + player + "-waiting-00.png");
-//		leftFrames[0] = leftIdle;
-//		for(int i = 0; i <= 7; i++) {
-//			leftFrames[i+1] = readImage("left-" + player + "-walk-0" + i + ".png");
-//		}
-//		for(int i = 0; i <= 2; i++) {
-//			leftFrames[i+9] = readImage("left-" + player + "-jet-0" + i + ".png");
-//		}
-//		for(int i = 0; i <= 1; i++) {
-//			leftFrames[i+12] = readImage("left-" + player + "-falling-0" + i + ".png");
-//		}
+		BufferedImage leftIdle = readImage("left-" + player + "-waiting-00.png");
+		leftFrames[0] = leftIdle;
+		for(int i = 0; i <= 7; i++) {
+			leftFrames[i+1] = readImage("left-" + player + "-walk-0" + i + ".png");
+		}
+		for(int i = 0; i <= 2; i++) {
+			leftFrames[i+9] = readImage("left-" + player + "-jet-0" + i + ".png");
+		}
+		for(int i = 0; i <= 1; i++) {
+			leftFrames[i+12] = readImage("left-" + player + "-falling-0" + i + ".png");
+		}
 
 		this.setImage(rightFrames[0]);
 	}
 	
 	public void animate() {
 		frameCounter++;
-		//TODO uncomment all this shit once watson makes mirrored sprites
-//		if(right) {
+		if(right) {
 
 			if (this.animation.equals(JUMP_ANIMATION)) {
 				if (firstJump) {
@@ -156,55 +154,55 @@ public class AnimatedSprite extends Sprite {
 					}
 				}
 			}
-//		} else {
-//			if (this.animation.equals(JUMP_ANIMATION)) {
-//				if (firstJump) {
-//					firstJump = false;
-//					firstWalk = true;
-//					currentIndex = 9;
-//				}
-//				startIndex = 9;
-//				endIndex = 11;
-//			}
-//
-//			if (this.animation.equals(FALLING_ANIMATION)) {
-//				this.setImage(leftFrames[12]);
-//			}
-//
-//			if (this.animation.equals(LANDING_ANIMATION)) {
-//				this.setImage(leftFrames[13]);
-//			}
-//
-//			if (this.animation.equals(WALK_ANIMATION)) {
-//				if (firstWalk) {
-//					firstWalk = false;
-//					firstJump = true;
-//					currentIndex = 1;
-//				}
-//				startIndex = 1;
-//				endIndex = 8;
-//			}
-//
-//			if (this.animation.equals(IDLE_ANIMATION)) {
-//				currentIndex = 0;
-//				startIndex = 0;
-//				endIndex = 0;
-//				firstJump = true;
-//				firstWalk = true;
-//				firstFall = true;
-//				this.setImage(leftFrames[currentIndex]);
-//			} else if (this.animation.equals(WALK_ANIMATION) || this.animation.equals(JUMP_ANIMATION)) {
-//				if (frameCounter % speed == 0) {
-//					if (currentIndex == endIndex) {
-//						currentIndex = startIndex;
-//						this.setImage(leftFrames[currentIndex]);
-//					} else {
-//						currentIndex++;
-//						this.setImage(leftFrames[currentIndex]);
-//					}
-//				}
-//			}
-//		}
+		} else {
+			if (this.animation.equals(JUMP_ANIMATION)) {
+				if (firstJump) {
+					firstJump = false;
+					firstWalk = true;
+					currentIndex = 9;
+				}
+				startIndex = 9;
+				endIndex = 11;
+			}
+
+			if (this.animation.equals(FALLING_ANIMATION)) {
+				this.setImage(leftFrames[12]);
+			}
+
+			if (this.animation.equals(LANDING_ANIMATION)) {
+				this.setImage(leftFrames[13]);
+			}
+
+			if (this.animation.equals(WALK_ANIMATION)) {
+				if (firstWalk) {
+					firstWalk = false;
+					firstJump = true;
+					currentIndex = 1;
+				}
+				startIndex = 1;
+				endIndex = 8;
+			}
+
+			if (this.animation.equals(IDLE_ANIMATION)) {
+				currentIndex = 0;
+				startIndex = 0;
+				endIndex = 0;
+				firstJump = true;
+				firstWalk = true;
+				firstFall = true;
+				this.setImage(leftFrames[currentIndex]);
+			} else if (this.animation.equals(WALK_ANIMATION) || this.animation.equals(JUMP_ANIMATION)) {
+				if (frameCounter % speed == 0) {
+					if (currentIndex == endIndex) {
+						currentIndex = startIndex;
+						this.setImage(leftFrames[currentIndex]);
+					} else {
+						currentIndex++;
+						this.setImage(leftFrames[currentIndex]);
+					}
+				}
+			}
+		}
 	}
 
 }
