@@ -293,7 +293,7 @@ public class TheMinorsGame extends Game {
         resetPlayers(pressedKeys, gamePads);
         roundCompleteClock.resetGameClock();
         for(Player player : players) {
-            player.setScore(0);
+            player.setScore(1);
         }
     }
 

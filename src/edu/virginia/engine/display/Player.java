@@ -16,7 +16,7 @@ public class Player extends PhysicsSprite {
     public Sprite item;
     public Sprite cursor;
     public int playerNumber;
-    protected int score = 0;
+    protected int score = 1;
     protected boolean first = false;
     protected Sprite scoreBar = null;
 
