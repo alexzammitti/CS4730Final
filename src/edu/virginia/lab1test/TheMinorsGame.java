@@ -646,6 +646,7 @@ public class TheMinorsGame extends Game {
                     gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
                 }
             }
+            if(pressedKeys.contains(KEY_ESC)) player.setAlive(false);
         }
         int dead = 0;
         int done = 0;

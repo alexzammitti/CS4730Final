@@ -12,8 +12,8 @@ Team:
 <li>Arrow keys to move</li>
 <li>Spacebar to select/place an item</li>
 <li>R rotates selected items 90 degrees</li>
-<li>Esc changes to gameplay mode</li>
 <li>Arrow keys to move in play mode</li>
+<li>Esc to die</li>
 </ul>
 <h5>Gamepad (Xbox controller)</h5>
 <ul>
@@ -22,6 +22,7 @@ Team:
 <li>Right bumper to rotate objects</li>
 <li>Start to enter play mode</li>
 <li>Left joystick to move in play mode</li>
+<li>Hold B to die</li>
 </ul>
 
 <h2>Milestones</h2>
