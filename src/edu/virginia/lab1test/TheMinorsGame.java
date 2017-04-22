@@ -797,9 +797,9 @@ public class TheMinorsGame extends Game {
             }
             player.sizeScoreBar(winScore);
             player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
-            player.getScoreBar().alignCenterVertical(scoreboardBackground);
-//            player.getScoreBar().alignFractionVertical(scoreboardBackground,
-//                    numberOfPlayers+1, player.getCurrentIndex());
+            //player.getScoreBar().alignCenterVertical(scoreboardBackground);
+            player.getScoreBar().alignFractionVertical(scoreboardBackground,
+                    numberOfPlayers+1, player.getCurrentIndex());
             if(!scoreboardBackground.getChildren().contains(player.getScoreBar())) scoreboardBackground.addChild(player.getScoreBar());
         }
 
