@@ -47,6 +47,8 @@ public class TheMinorsGame extends Game {
     private final static int BEAM_SPEED = 15;
     private final static int GRAVITY = 1;
     private final static int JUMP_SPEED = 15;
+    private final static int ROUND_COUNT = 12;
+
 
 
 
@@ -68,6 +70,7 @@ public class TheMinorsGame extends Game {
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
+    private int roundsCompleted = 0;
 
 
 //
@@ -280,7 +283,7 @@ public class TheMinorsGame extends Game {
     private void resetGame(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         gameWon = false;
         gameWinner = 5;
-
+        roundsCompleted = 0;
         levelContainer.removeAll();
         levelContainer.addChild(platform1);
         levelContainer.addChild(platform2);
@@ -929,7 +932,11 @@ public class TheMinorsGame extends Game {
                     gameWon = true;
                 }
             }
-
+            if(roundsCompleted <= ROUND_COUNT) {
+                roundsCompleted++;
+            } else {
+                gameWon = true;
+            }
             if(gameWon) {
                 int maxScore = 0;
                 for(Player player : players) {
