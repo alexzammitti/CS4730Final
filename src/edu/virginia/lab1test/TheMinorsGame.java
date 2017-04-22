@@ -65,6 +65,7 @@ public class TheMinorsGame extends Game {
     private int playersCompleted = 0;
     private Player firstCompleted = null;
     private int winScore = 1000;
+    private boolean scoresCalculated = false;
 
 
 
@@ -257,6 +258,7 @@ public class TheMinorsGame extends Game {
         playersDead = 0;
         playersCompleted = 0;
         firstCompleted = null;
+        scoresCalculated = false;
     }
 
 	private void initializeItemSelection() {
@@ -787,25 +789,27 @@ public class TheMinorsGame extends Game {
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
         for(Player player : players) {
-            //player.update(pressedKeys,gamePads);
-            handleAnimation(player,pressedKeys,gamePads);
-            player.animate();
+            player.update(pressedKeys,gamePads);
         }
-        for(Player player: players) {
-            if(playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
-                if(player.isCourseCompleted()) {
-                    player.incrementScore(100);
+        if(!scoresCalculated) {
+            for (Player player : players) {
+                if (playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
+                    if (player.isCourseCompleted()) {
+                        player.incrementScore(100);
+                    }
+                    if (firstCompleted.equals(player)) {
+                        player.incrementScore(20);
+                    }
                 }
-                if(firstCompleted.equals(player)) {
-                    player.incrementScore(20);
-                }
+                player.sizeScoreBar(winScore);
+                player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
+                //player.getScoreBar().alignCenterVertical(scoreboardBackground);
+                player.getScoreBar().alignFractionVertical(scoreboardBackground,
+                        numberOfPlayers + 1, player.getCurrentIndex());
+                if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
+                    scoreboardBackground.addChild(player.getScoreBar());
             }
-            player.sizeScoreBar(winScore);
-            player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
-            //player.getScoreBar().alignCenterVertical(scoreboardBackground);
-            player.getScoreBar().alignFractionVertical(scoreboardBackground,
-                    numberOfPlayers+1, player.getCurrentIndex());
-            if(!scoreboardBackground.getChildren().contains(player.getScoreBar())) scoreboardBackground.addChild(player.getScoreBar());
+            scoresCalculated = true;
         }
 
         if(roundCompleteClock.getElapsedTime() > 1000){
