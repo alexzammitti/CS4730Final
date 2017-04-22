@@ -11,6 +11,9 @@ import edu.virginia.engine.tween.TweenJuggler;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.event.*;
 import edu.virginia.engine.util.GameClock;
+import edu.virginia.engine.util.SoundEffect;
+
+import javax.sound.sampled.Clip;
 
 /**
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
@@ -103,6 +106,7 @@ public class TheMinorsGame extends Game {
     private Level currentLevel = null;
 
 	// AUDIO ASSETS
+    private SoundEffect backgroundMusic = new SoundEffect("Space_Background_Music.wav");
 
 	// EVENT MANAGERS
 	private EventManager eventManager = new EventManager();
@@ -168,6 +172,9 @@ public class TheMinorsGame extends Game {
         portal.setScale(0.2,0.2);
         portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
 
+
+        // PLAY MUSIC
+        backgroundMusic.play(true);
 
         // SET UP TWEENS - TODO - might also be good to methodize
 
