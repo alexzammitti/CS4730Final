@@ -317,7 +317,7 @@ public class TheMinorsGame extends Game {
                     item.setScale(.8,.8);
                     break;
                 case "LaserGun.png":
-                    item.setScale(0.35,0.35);
+                    item.setScale(.35,.35);
                     break;
                 case "1x1platform.png":
                     item.setScale(.8,.8);
@@ -814,10 +814,11 @@ public class TheMinorsGame extends Game {
             for(Sprite gun : laserGunList) {
                 LaserBeam beam = new LaserBeam("laserbeam" + gun.getId(),gun.getRotation());
                 beam.dangerous = true;
-                beam.setPivotCenter();
                 beam.setScale(.5,.5);
+                //beam.setPosition((int) (gun.getUnscaledWidth()*.35/2 - beam.getScaledWidth()/2 + gun.getxAbsolutePosition()), (int) (gun.getUnscaledHeight()*.35/2 - beam.getScaledHeight()/2 + gun.getyAbsolutePosition()));
                 beam.alignCenterVertical(gun);
                 beam.alignCenterHorizontal(gun);
+                beam.setPivotCenter();
                 laserBeams.add(beam);
                 levelContainer.addChild(beam);
             }
