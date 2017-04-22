@@ -157,6 +157,8 @@ public class TheMinorsGame extends Game {
         scoreboardBackground.setPosition(350,100);
         scoreboardBackground.setScale(1,1);
         scoreboardBackground.addChild(scoreTitle);
+        scoreTitle.setyScale(.5);
+        scoreTitle.setxScale(.5);
         scoreTitle.alignCenterHorizontal(scoreboardBackground);
         scoreTitle.setyPosition(50);
 
