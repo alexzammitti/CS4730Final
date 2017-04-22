@@ -857,6 +857,9 @@ public class TheMinorsGame extends Game {
                         player.incrementScore(20);
                     }
                 }
+                if(numberOfPlayers == 1 && playersCompleted == 1) {
+                    player.incrementScore(100);
+                }
                 player.sizeScoreBar(winScore);
                 player.getScoreBar().setxPosition(100);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
