@@ -677,16 +677,17 @@ public class TheMinorsGame extends Game {
                     }
                 }
             }
-            // hold B to commit suicide
-            if(player.isAlive() && !player.isCourseCompleted()) {
-                if(gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)
-                        && gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
-                    player.setAlive(false);
-                } else {
-                    gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
+            if(inputMode.equals(INPUT_GAMEPADS)) {
+                // hold B to commit suicide
+                if (player.isAlive() && !player.isCourseCompleted()) {
+                    if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)
+                            && gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
+                        player.setAlive(false);
+                    } else {
+                        gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
+                    }
                 }
-            }
-            if(pressedKeys.contains(KEY_ESC)) player.setAlive(false);
+            } else if(pressedKeys.contains(KEY_ESC)) player.setAlive(false);
         }
         int dead = 0;
         int done = 0;
