@@ -498,8 +498,8 @@ public class TheMinorsGame extends Game {
             laserGunList.add(newSprite);
         }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
-        newSprite.dangerous = sprite.getFileName().contains("spike");            // if its spiky, it kills us
-        newSprite.dangerous = sprite.getFileName().contains("sawblade");            // if its spiky, it kills us
+        newSprite.dangerous = sprite.getFileName().contains("spike") ||            // if its spiky, it kills us
+            sprite.getFileName().contains("sawblade");            // if its spiky, it kills us
         sprite.setVisible(false);
         spriteIterator.remove();                                                 // the item can no longer be selected
         return newSprite;
@@ -802,17 +802,15 @@ public class TheMinorsGame extends Game {
                     }
                 }
                 player.sizeScoreBar(winScore);
-                player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
-                //player.getScoreBar().alignCenterVertical(scoreboardBackground);
-                player.getScoreBar().alignFractionVertical(scoreboardBackground,
-                        numberOfPlayers + 1, player.getCurrentIndex());
+                player.getScoreBar().setxPosition(100);
+                player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 1, player.playerNumber + 1);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
             }
             scoresCalculated = true;
         }
 
-        if(roundCompleteClock.getElapsedTime() > 1000){
+        if(roundCompleteClock.getElapsedTime() > 5000){
             gameMode = GameMode.ITEM_SELECTION;
             resetPlayers(pressedKeys,gamePads);
             levelContainer.update(pressedKeys,gamePads);
