@@ -24,14 +24,14 @@ public class Level extends Sprite {
 
     public void setPositionAndScaling() {
         this.background.setPosition(0,0);
-        switch (this.getId()){
-            case "level1":
+        switch (this.getBackground().getFileName()){
+            case "Background1.png":
                 this.background.setScale(3.8,3.6);
                 break;
-            case "level2":
+            case "Background2.jpg":
                 this.background.setScale(2,2);
                 break;
-            case "level3":
+            case "Background3.jpg":
                 this.background.setScale(2,2);
         }
     }

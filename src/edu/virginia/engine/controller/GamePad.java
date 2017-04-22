@@ -50,6 +50,7 @@ public class GamePad {
 		this.components = new HashMap<String, GamePadComponent>();
 		aButtonClock.resetGameClock();
 		triggerButtonClock.resetGameClock();
+		bButtonClock.resetGameClock();
 	}
 	
 	/**

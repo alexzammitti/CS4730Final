@@ -426,23 +426,26 @@ public class TheMinorsGame extends Game {
                                 for(Level level : levelList) {                              // potentially not the best way to do this
                                     if(background.getFileName().equals(level.getBackground().getFileName())){
                                         currentLevel = level;
+                                        currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
+                                        break;
                                     }
                                 }
                                 gameMode = GameMode.ITEM_SELECTION;
                                 gamePads.get(player.playerNumber).aButtonClock.resetGameClock();
-                                break;
+                                return;
                             }
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                             for(Level level : levelList) {                              // potentially not the best way to do this
                                 if(background.getFileName().equals(level.getBackground().getFileName())){
                                     currentLevel = level;
                                     currentLevel.setPositionAndScaling();
+                                    break;
                                 }
                             }
                             gameMode = GameMode.ITEM_SELECTION;
                             spaceKeyClock.resetGameClock();
-                            break;
+                            return;
                         }
                     }
                 }
