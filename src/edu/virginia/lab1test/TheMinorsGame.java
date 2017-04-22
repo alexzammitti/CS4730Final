@@ -272,6 +272,20 @@ public class TheMinorsGame extends Game {
         scoresCalculated = false;
     }
 
+    private void resetGame(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+        gameWon = false;
+        gameWinner = 5;
+
+        levelContainer.removeAll();
+        levelContainer.addChild(platform1);
+        levelContainer.addChild(platform2);
+        levelContainer.addChild(portal);
+        laserGunList.clear();
+        for(Player player : players) {
+            player.setScore(0);
+        }
+    }
+
 	private void initializeItemSelection() {
 	    selectionBackground.removeAll();
         selectionBackground.addChild(item1);
@@ -875,13 +889,7 @@ public class TheMinorsGame extends Game {
             //TODO make a "No one wins" title and put this in the box
         }
         if(gameCompleteClock.getElapsedTime() > 5000) {
-            gameWon = false;
-            gameWinner = 5;
-
-            levelContainer.removeAll();
-            levelContainer.addChild(platform1);
-            levelContainer.addChild(platform2);
-            levelContainer.addChild(portal);
+            resetGame(pressedKeys, gamePads);
 
             gameMode = GameMode.LEVEL_SELECTION;
         }
