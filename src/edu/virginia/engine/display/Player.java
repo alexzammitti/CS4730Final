@@ -62,20 +62,7 @@ public class Player extends PhysicsSprite {
         this.fileName = imageFileName;
         cursor = new Sprite(id + "cursor",cursorFileName);
         this.playerNumber = number;
-        switch(playerNumber) {
-            case 1:
-                this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar1.png");
-                break;
-            case 2:
-                this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar2.png");
-                break;
-            case 3:
-                this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar3.png");
-                break;
-            case 4:
-                this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar4.png");
-                break;
-        }
+        this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar" + playerNumber + ".png");
     }
 
     public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
