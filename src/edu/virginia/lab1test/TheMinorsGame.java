@@ -46,8 +46,8 @@ public class TheMinorsGame extends Game {
     private final static int PLAYER_SPEED = 5;
     private final static int BEAM_SPEED = 15;
     private final static int GRAVITY = 1;
-    private final static int JUMP_SPEED = 15;
-    private final static int ROUND_COUNT = 12;
+    private final static int JUMP_SPEED = 16;
+    private final static int ROUND_COUNT = 5;
 
 
 
@@ -66,7 +66,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 600;
+    private int winScore = 200; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -290,9 +290,9 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(portal);
         laserGunList.clear();
         resetPlayers(pressedKeys, gamePads);
+        roundCompleteClock.resetGameClock();
         for(Player player : players) {
             player.setScore(0);
-            player.sizeScoreBar(winScore);
         }
     }
 
