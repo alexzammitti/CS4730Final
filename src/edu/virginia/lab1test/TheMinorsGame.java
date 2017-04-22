@@ -66,7 +66,7 @@ public class TheMinorsGame extends Game {
     private Player firstCompleted = null;
     private int winScore = 600;
     private boolean scoresCalculated = false;
-    private int gameWinner = 0;
+    private int gameWinner = 5;
     private boolean gameWon = false;
 
 
@@ -128,6 +128,7 @@ public class TheMinorsGame extends Game {
     private GameClock spaceKeyClock = new GameClock();
     private GameClock escKeyClock = new GameClock();
     private GameClock roundCompleteClock = new GameClock();
+    private GameClock gameCompleteClock = new GameClock();
 
 
 	
@@ -384,6 +385,7 @@ public class TheMinorsGame extends Game {
     private void levelSelectionUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         if(players.size() > 0) {
             for(Player player : players) {
+                player.cursor.setVisible(true);
                 player.cursor.update(pressedKeys, gamePads);
                 // MOVE CURSOR BASED ON USER INPUT
                 if (inputMode.equals(INPUT_GAMEPADS))
@@ -834,7 +836,6 @@ public class TheMinorsGame extends Game {
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
                 if(player.getScore() >= winScore) {
-                    gameMode = GameMode.GAME_COMPLETE;
                     gameWon = true;
                 }
             }
@@ -846,6 +847,7 @@ public class TheMinorsGame extends Game {
                         gameWinner = player.playerNumber;
                     }
                 }
+                gameWinner++;
             }
             scoresCalculated = true;
         }
@@ -855,6 +857,9 @@ public class TheMinorsGame extends Game {
                 gameMode = GameMode.ITEM_SELECTION;
                 resetPlayers(pressedKeys, gamePads);
                 levelContainer.update(pressedKeys, gamePads);
+            } else {
+                gameMode = GameMode.GAME_COMPLETE;
+                gameCompleteClock.resetGameClock();
             }
         }
     }
@@ -863,13 +868,24 @@ public class TheMinorsGame extends Game {
         if(gameWon) {
             Sprite winnerTitle = new Sprite("winner", "wins" + gameWinner + ".png");
             gameOverBackground.addChild(winnerTitle);
+            //winnerTitle.setPosition(100,100);
             winnerTitle.alignCenterHorizontal(gameOverBackground);
             winnerTitle.alignCenterVertical(gameOverBackground);
         } else {
             //TODO make a "No one wins" title and put this in the box
         }
-        wait(3000);
-        gameMode = GameMode.LEVEL_SELECTION;
+        if(gameCompleteClock.getElapsedTime() > 5000) {
+            gameWon = false;
+            gameWinner = 5;
+
+            levelContainer.removeAll();
+            levelContainer.addChild(platform1);
+            levelContainer.addChild(platform2);
+            levelContainer.addChild(portal);
+
+            gameMode = GameMode.LEVEL_SELECTION;
+        }
+
     }
 
 	@Override
