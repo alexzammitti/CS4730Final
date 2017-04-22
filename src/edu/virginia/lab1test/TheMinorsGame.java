@@ -160,7 +160,6 @@ public class TheMinorsGame extends Game {
         scoreTitle.setyScale(.5);
         scoreTitle.setxScale(.5);
         scoreTitle.alignCenterHorizontal(scoreboardBackground);
-        scoreTitle.setyPosition(50);
 
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
@@ -855,7 +854,8 @@ public class TheMinorsGame extends Game {
                 }
                 player.sizeScoreBar(winScore);
                 player.getScoreBar().setxPosition(100);
-                player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 1, player.playerNumber + 1);
+                player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
+                scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
                 if(player.getScore() >= winScore) {
