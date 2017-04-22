@@ -90,7 +90,8 @@ public class TheMinorsGame extends Game {
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
-
+    // Titles
+    private Sprite gameTitle = new Sprite("game title","gametitle.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -378,7 +379,12 @@ public class TheMinorsGame extends Game {
                 else handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
                 constrainItemToLevel(player.cursor);
                 levelImages.update(pressedKeys,gamePads);
+                gameTitle.alignCenterHorizontal(GAME_WIDTH);
+                gameTitle.setyPosition(GAME_HEIGHT/2 - 200);
                 for(DisplayObjectContainer background : levelImages.getChildren()) {
+                    background.setScaledSize(300,175);
+                    background.alignCenterVertical(GAME_HEIGHT);
+                    background.alignFractionHorizontal(GAME_WIDTH,4,levelImages.getChildren().indexOf(background)+1);
                     if (player.cursor.collidesWith(background)) {
                         if (inputMode.equals(INPUT_GAMEPADS)) {
                             if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && gamePads.get(player.playerNumber).aButtonClock.getElapsedTime() > KEY_DELAY) {
@@ -859,6 +865,7 @@ public class TheMinorsGame extends Game {
             for(Player player : players) {
                 player.cursor.draw(g);
             }
+            gameTitle.draw(g);
         }
     }
 

@@ -150,12 +150,28 @@ public class DisplayObject extends EventDispatcher {
 		int x = parent.getScaledWidth()/2 - this.getScaledWidth()/2;
 		this.setxPosition(x);
 	}
+	public void alignCenterVertical(int height) {
+		int y = height/2 - this.getScaledHeight()/2;
+		this.setyPosition(y);
+	}
+	public void alignCenterHorizontal(int width) {
+		int x = width/2 - this.getScaledWidth()/2;
+		this.setxPosition(x);
+	}
 	public void alignFractionVertical(DisplayObject parent, int fraction, int position) {
 		int y = position*parent.getScaledHeight()/fraction - this.getScaledHeight()/2;
 		this.setyPosition(y);
 	}
 	public void alignFractionHorizontal(DisplayObject parent, int fraction, int position) {
 		int x = position*parent.getScaledWidth()/fraction - this.getScaledWidth()/2;
+		this.setxPosition(x);
+	}
+	public void alignFractionVertical(int height, int fraction, int position) {
+		int y = position*height/fraction - this.getScaledHeight()/2;
+		this.setyPosition(y);
+	}
+	public void alignFractionHorizontal(int width, int fraction, int position) {
+		int x = position*width/fraction - this.getScaledWidth()/2;
 		this.setxPosition(x);
 	}
 	public void setPivotCenter() {
@@ -196,7 +212,18 @@ public class DisplayObject extends EventDispatcher {
 		return this.getRotation();
 	}
 
+	public void setScaledWidth(int width) {
+		this.setxScale((double)width / (double)this.getUnscaledWidth());
+	}
 
+	public void setScaledHeight(int height) {
+		this.setyScale((double)height / (double)this.getUnscaledHeight());
+	}
+
+	public void setScaledSize(int width, int height) {
+		this.setxScale((double)width / (double)this.getUnscaledWidth());
+		this.setyScale((double)height / (double)this.getUnscaledHeight());
+	}
 
 	// HITBOXES & BOUNDS CHECKING --------------------------------------------------------------------------------------
 
