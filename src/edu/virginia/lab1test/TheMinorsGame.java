@@ -800,7 +800,7 @@ public class TheMinorsGame extends Game {
             player.getScoreBar().alignCenterVertical(scoreboardBackground);
 //            player.getScoreBar().alignFractionVertical(scoreboardBackground,
 //                    numberOfPlayers+1, player.getCurrentIndex());
-            if(!selectionBackground.getChildren().contains(player.getScoreBar())) selectionBackground.addChild(player.getScoreBar());
+            if(!scoreboardBackground.getChildren().contains(player.getScoreBar())) scoreboardBackground.addChild(player.getScoreBar());
         }
 
         if(roundCompleteClock.getElapsedTime() > 1000){
