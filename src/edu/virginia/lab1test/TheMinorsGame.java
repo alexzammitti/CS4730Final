@@ -771,24 +771,7 @@ public class TheMinorsGame extends Game {
     }
 
     private void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
-//        if (player.isAirborne()) {
-//            if(player.getyVelocity() > 0) {
-//                player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
-////                if(player.getxVelocity() > 0) {
-////                    player.setRight(true);
-////                } else if(player.getxVelocity() < 0) {
-////                    player.setRight(false);
-////                }
-//            }
-//            if(player.getyVelocity() < 0) {
-//                player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
-////                if(player.getxVelocity() > 0) {
-////                    player.setRight(true);
-////                } else if(player.getxVelocity() < 0) {
-////                    player.setRight(false);
-////                }
-//            }
-//        }
+
         if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) {
                 player.setRight(false);
