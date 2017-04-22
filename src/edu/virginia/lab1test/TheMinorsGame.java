@@ -157,11 +157,11 @@ public class TheMinorsGame extends Game {
 
         platform1.setxPosition(0);
         platform1.setyPosition(GAME_HEIGHT/2);
-        platform1.setxScale(1);
-        platform1.setyScale(1);
+        platform1.setxScale(.8);
+        platform1.setyScale(.8);
 
-        platform2.setxScale(1);
-        platform2.setyScale(1);
+        platform2.setxScale(.8);
+        platform2.setyScale(.8);
         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
         platform2.setyPosition(GAME_HEIGHT/2);
 
@@ -268,16 +268,16 @@ public class TheMinorsGame extends Game {
             item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
                 case "3x1platform.png":
-                    item.setScale(1,1);
+                    item.setScale(.8,.8);
                     break;
                 case "spikerow.png":
-                    item.setScale(0.3,0.3);
+                    item.setScale(.8,.8);
                     break;
                 case "LaserGun.png":
-                    item.setScale(0.5,0.5);
+                    item.setScale(0.35,0.35);
                     break;
                 case "1x1platform.png":
-                    item.setScale(1,1);
+                    item.setScale(.8,.8);
                     break;
             }
             item.setVisible(true);
