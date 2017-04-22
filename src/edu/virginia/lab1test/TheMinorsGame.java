@@ -637,7 +637,15 @@ public class TheMinorsGame extends Game {
                     }
                 }
             }
-
+            // hold B to commit suicide
+            if(player.isAlive() && !player.isCourseCompleted()) {
+                if(gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)
+                        && gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
+                    player.setAlive(false);
+                } else {
+                    gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
+                }
+            }
         }
         int dead = 0;
         int done = 0;

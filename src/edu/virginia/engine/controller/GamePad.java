@@ -1,5 +1,6 @@
 package edu.virginia.engine.controller;
 
+import edu.virginia.engine.display.Game;
 import edu.virginia.engine.util.GameClock;
 import net.java.games.input.Component;
 import net.java.games.input.Component.Identifier;
@@ -16,11 +17,12 @@ public class GamePad {
 	private Controller controller;
 	public GameClock triggerButtonClock = new GameClock();
 	public GameClock aButtonClock = new GameClock();
+	public GameClock bButtonClock = new GameClock();
 	
 	/* Constants defining the various buttons on a typical controller */
 	/* Might be necessary to change the string bindings depending on your particular gamepad configuration */
 	public static final String BUTTON_A = "0"; //X on ps3 | A on X360
-	public static final String BUTTON_CIRCLE = "1"; //Cross on ps3 | B on X360
+	public static final String BUTTON_B = "1"; //Cross on ps3 | B on X360
 	public static final String BUTTON_SQUARE = "2"; //Square on ps3 | X on X360
 	public static final String BUTTON_TRIANGLE = "3"; //Triangle on ps3 | Y on X360
 	
