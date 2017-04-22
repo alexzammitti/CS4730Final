@@ -34,7 +34,6 @@ public class EventManager implements IEventListener {
                 break;
             case Event.GOAL:
                 event.player.setCourseCompleted(true);
-                event.player.incrementScore(1);
                 break;
         }
 
