@@ -723,10 +723,10 @@ public class TheMinorsGame extends Game {
         } else if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) {
                 player.setAnimation(AnimatedSprite.WALK_ANIMATION);
-                player.setRight(true);
+                player.setRight(false);
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) {
                 player.setAnimation(AnimatedSprite.WALK_ANIMATION);
-                player.setRight(false);
+                player.setRight(true);
             }
 
         } else if (pressedKeys.contains(KEY_RIGHT)) {                   // TODO make animations flip images
