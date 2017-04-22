@@ -80,7 +80,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -288,6 +288,10 @@ public class TheMinorsGame extends Game {
                 case "1x1platform.png":
                     item.setScale(.8,.8);
                     break;
+                case "box.png":
+                    item.setScale(.8,.8);
+                case "sawblade.png":
+                    item.setScale(.75,.75);
             }
             item.setVisible(true);
             placeableItemList.add((Sprite)item);
@@ -493,6 +497,7 @@ public class TheMinorsGame extends Game {
         }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
         newSprite.dangerous = sprite.getFileName().contains("spike");            // if its spiky, it kills us
+        newSprite.dangerous = sprite.getFileName().contains("sawblade");            // if its spiky, it kills us
         sprite.setVisible(false);
         spriteIterator.remove();                                                 // the item can no longer be selected
         return newSprite;
@@ -797,10 +802,10 @@ public class TheMinorsGame extends Game {
             }
             player.sizeScoreBar(winScore);
             player.getScoreBar().alignCenterHorizontal(scoreboardBackground);
-            player.getScoreBar().alignCenterVertical(scoreboardBackground);
-//            player.getScoreBar().alignFractionVertical(scoreboardBackground,
-//                    numberOfPlayers+1, player.getCurrentIndex());
-            if(!selectionBackground.getChildren().contains(player.getScoreBar())) selectionBackground.addChild(player.getScoreBar());
+            //player.getScoreBar().alignCenterVertical(scoreboardBackground);
+            player.getScoreBar().alignFractionVertical(scoreboardBackground,
+                    numberOfPlayers+1, player.getCurrentIndex());
+            if(!scoreboardBackground.getChildren().contains(player.getScoreBar())) scoreboardBackground.addChild(player.getScoreBar());
         }
 
         if(roundCompleteClock.getElapsedTime() > 1000){
