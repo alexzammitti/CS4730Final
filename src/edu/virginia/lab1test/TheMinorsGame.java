@@ -144,6 +144,8 @@ public class TheMinorsGame extends Game {
 
         selectionBackground.setPosition(350,100);
         selectionBackground.setScale(1,1);
+        scoreboardBackground.setPosition(350,100);
+        scoreboardBackground.setScale(1,1);
 
         // BUILD DISPLAY TREES
 
