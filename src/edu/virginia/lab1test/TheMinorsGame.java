@@ -237,7 +237,7 @@ public class TheMinorsGame extends Game {
             player.setAirborne(true);
             player.setAlpha(1);
             player.setPivotCenter();
-            player.setScale(1, 1);
+            player.setScale(.8, .8);
             player.setPosition(10 + players.indexOf(player) * 10, 130);   //space out players
             player.setyAcceleration(GRAVITY);
             player.setyVelocity(0);
@@ -751,7 +751,7 @@ public class TheMinorsGame extends Game {
                 LaserBeam beam = new LaserBeam("laserbeam" + gun.getId(),gun.getRotation());
                 beam.dangerous = true;
                 beam.setPivotCenter();
-                beam.setScale(1,1);
+                beam.setScale(.5,.5);
                 beam.alignCenterVertical(gun);
                 beam.alignCenterHorizontal(gun);
                 laserBeams.add(beam);
