@@ -564,6 +564,7 @@ public class TheMinorsGame extends Game {
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
                     constrainItemToLevel(player.item);
+                    player.cursor.update(pressedKeys,gamePads);
                     constrainItemToLevel(player.cursor);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
