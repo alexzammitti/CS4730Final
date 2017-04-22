@@ -96,6 +96,7 @@ public class TheMinorsGame extends Game {
 
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
+    private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -155,6 +156,9 @@ public class TheMinorsGame extends Game {
 
         scoreboardBackground.setPosition(350,100);
         scoreboardBackground.setScale(1,1);
+        scoreboardBackground.addChild(scoreTitle);
+        scoreTitle.alignCenterHorizontal(scoreboardBackground);
+        scoreTitle.setyPosition(50);
 
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
@@ -281,8 +285,10 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(platform2);
         levelContainer.addChild(portal);
         laserGunList.clear();
+        resetPlayers(pressedKeys, gamePads);
         for(Player player : players) {
             player.setScore(0);
+            player.sizeScoreBar(winScore);
         }
     }
 
@@ -853,6 +859,7 @@ public class TheMinorsGame extends Game {
                     gameWon = true;
                 }
             }
+
             if(gameWon) {
                 int maxScore = 0;
                 for(Player player : players) {
