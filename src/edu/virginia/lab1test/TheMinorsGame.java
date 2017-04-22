@@ -665,9 +665,11 @@ public class TheMinorsGame extends Game {
             shootGuns(pressedKeys,gamePads);
         }
         for(Player player : players) {
+            if(player.isAlive()){
+                handleAnimation(player,pressedKeys,gamePads);
+                player.animate();
+            }
             player.update(pressedKeys,gamePads);
-            handleAnimation(player,pressedKeys,gamePads);
-            player.animate();
             if(player.isAlive() && !player.isCourseCompleted()) handlePlayerMoveInput(player, pressedKeys, gamePads);
             player.constrainToLevel(GAME_WIDTH,GAME_HEIGHT);
             player.fallOffPlatforms(player.platformPlayerIsOn);
@@ -684,9 +686,8 @@ public class TheMinorsGame extends Game {
             if(inputMode.equals(INPUT_GAMEPADS)) {
                 // hold B to commit suicide
                 if (player.isAlive() && !player.isCourseCompleted()) {
-                    if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)
-                            && gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
-                        player.setAlive(false);
+                    if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)){
+                        if(gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) player.setAlive(false);
                     } else {
                         gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
                     }
