@@ -70,7 +70,7 @@ public class TheMinorsGame extends Game {
     private boolean gameWon = false;
 
 
-
+//
 	// SET UP SPRITE ASSETS
     // Characters
     private ArrayList<Player> players = new ArrayList<>(0);
