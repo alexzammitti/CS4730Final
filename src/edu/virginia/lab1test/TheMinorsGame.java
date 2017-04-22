@@ -768,28 +768,87 @@ public class TheMinorsGame extends Game {
     }
 
     private void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
-        if (player.isAirborne()) {
-            if(player.getyVelocity() > 0) {
-                player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
-            }
-            if(player.getyVelocity() < 0) {
-                player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
-            }
-        } else if(inputMode.equals(INPUT_GAMEPADS)) {
+//        if (player.isAirborne()) {
+//            if(player.getyVelocity() > 0) {
+//                player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+////                if(player.getxVelocity() > 0) {
+////                    player.setRight(true);
+////                } else if(player.getxVelocity() < 0) {
+////                    player.setRight(false);
+////                }
+//            }
+//            if(player.getyVelocity() < 0) {
+//                player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+////                if(player.getxVelocity() > 0) {
+////                    player.setRight(true);
+////                } else if(player.getxVelocity() < 0) {
+////                    player.setRight(false);
+////                }
+//            }
+//        }
+        if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) {
-                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
                 player.setRight(false);
+                if(player.isAirborne()) {
+                    if(player.getyVelocity() > 0) {
+                        player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+                    } else {
+                        player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+                    }
+                } else {
+                    player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+                }
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) {
-                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
                 player.setRight(true);
+                if(player.isAirborne()) {
+                    if(player.getyVelocity() > 0) {
+                        player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+                    } else {
+                        player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+                    }
+                } else {
+                    player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+                }
+            } else if (player.isAirborne()){
+                if(player.getyVelocity() > 0) {
+                    player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+                } else {
+                    player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+                }
+            } else {
+                player.setAnimation(AnimatedSprite.IDLE_ANIMATION);
             }
 
-        } else if (pressedKeys.contains(KEY_RIGHT)) {                   // TODO make animations flip images
-            player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+        } else if (pressedKeys.contains(KEY_RIGHT)) {
             player.setRight(true);
+            if(player.isAirborne()) {
+                if(player.getyVelocity() > 0) {
+                    player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+                } else {
+                    player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+                }
+            } else {
+                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+            }
+
         } else if(pressedKeys.contains(KEY_LEFT)){
-            player.setAnimation(AnimatedSprite.WALK_ANIMATION);
             player.setRight(false);
+            if(player.isAirborne()) {
+                if(player.getyVelocity() > 0) {
+                    player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+                } else {
+                    player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+                }
+            } else {
+                player.setAnimation(AnimatedSprite.WALK_ANIMATION);
+            }
+
+        } else if (player.isAirborne()){
+            if(player.getyVelocity() > 0) {
+                player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
+            } else {
+                player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
+            }
         } else {
             player.setAnimation(AnimatedSprite.IDLE_ANIMATION);
         }
