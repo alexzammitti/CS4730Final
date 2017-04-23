@@ -2,6 +2,7 @@ package edu.virginia.engine.display;
 
 import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
+import edu.virginia.engine.util.GameClock;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class Player extends PhysicsSprite {
     protected int score = 1;
     protected boolean first = false;
     protected Sprite scoreBar = null;
+    public GameClock hoverClock = new GameClock();
 
     public boolean isAlive() {
         return alive;
@@ -63,6 +65,7 @@ public class Player extends PhysicsSprite {
         cursor = new Sprite(id + "cursor",cursorFileName);
         this.playerNumber = number;
         this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar" + playerNumber + ".png");
+        hoverClock.resetGameClock();
     }
 
     public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {

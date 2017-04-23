@@ -96,6 +96,8 @@ public class TheMinorsGame extends Game {
     private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
+    private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
+
 
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
@@ -118,6 +120,8 @@ public class TheMinorsGame extends Game {
 	// AUDIO ASSETS
     private SoundEffect backgroundMusic = new SoundEffect("Space_Background_Music.wav");
     private SoundEffect laserSound = new SoundEffect("laser.wav");
+    private SoundEffect jumpSound = new SoundEffect("jump.wav");
+
 
 	// EVENT MANAGERS
 	private EventManager eventManager = new EventManager();
@@ -167,6 +171,9 @@ public class TheMinorsGame extends Game {
 
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
+
+        levelSelectionBackground.setPosition(0,0);
+        levelSelectionBackground.setScaledSize(GAME_WIDTH,GAME_HEIGHT);
 
         // BUILD DISPLAY TREES
 
@@ -756,9 +763,14 @@ public class TheMinorsGame extends Game {
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) { //Right
                 player.setxPosition(player.getxPosition() + PLAYER_SPEED);
             }
-            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && !player.isAirborne()) {
-                player.setAirborne(true);
-                player.setyVelocity(-JUMP_SPEED);
+            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                if(!player.isAirborne()) {
+                    player.setAirborne(true);
+                    player.setyVelocity(-JUMP_SPEED);
+                    jumpSound.play(false);
+                } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+                    player.setyVelocity(player.getyVelocity()-1);
+                }
             }
         } else if(pressedKeys.contains(KEY_LEFT)){
             player.setxPosition(player.getxPosition()-PLAYER_SPEED);
@@ -999,6 +1011,7 @@ public class TheMinorsGame extends Game {
 
 	private void levelSelectionDraw(Graphics g) {
         if(frameCounter > 3) {
+            levelSelectionBackground.draw(g);
             levelImages.draw(g);
             for(Player player : players) {
                 player.cursor.draw(g);

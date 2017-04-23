@@ -56,6 +56,7 @@ public class EventManager implements IEventListener {
                 character.setOnPlatform(true);
                 character.platformPlayerIsOn = platform;
                 character.setyVelocity(0);
+                character.hoverClock.resetGameClock();
             }
             else if(character.getyPosition() > platform.getTop()) {                                         //bottom of platform
                 character.setyPosition(platform.getHitbox().y+platform.getHitbox().height);
