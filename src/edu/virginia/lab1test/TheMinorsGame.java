@@ -47,7 +47,7 @@ public class TheMinorsGame extends Game {
     private final static int BEAM_SPEED = 15;
     private final static int GRAVITY = 1;
     private final static int JUMP_SPEED = 16;
-    private final static int ROUND_COUNT = 5;
+    private final static int ROUND_COUNT = 10;
 
 
 
@@ -66,7 +66,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 200; //TODO
+    private int winScore = 500; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -783,6 +783,7 @@ public class TheMinorsGame extends Game {
                 player.setAirborne(true);
                 player.setyVelocity(-JUMP_SPEED);
                 jumpSound.play(false);
+                player.hoverClock.resetGameClock(); //This line keeps the amount of time hovering equivalent, removes random aspect, do we want this?
             } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
                 player.setyVelocity(player.getyVelocity()-1);
             }
