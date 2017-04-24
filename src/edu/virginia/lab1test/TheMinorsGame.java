@@ -768,6 +768,7 @@ public class TheMinorsGame extends Game {
                     player.setAirborne(true);
                     player.setyVelocity(-JUMP_SPEED);
                     jumpSound.play(false);
+                    player.hoverClock.resetGameClock();
                 } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
                     player.setyVelocity(player.getyVelocity()-1);
                 }
