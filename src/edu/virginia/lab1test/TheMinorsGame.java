@@ -778,9 +778,14 @@ public class TheMinorsGame extends Game {
         else if(pressedKeys.contains(KEY_RIGHT)){
             player.setxPosition(player.getxPosition()+PLAYER_SPEED);
         }
-        if(pressedKeys.contains(KEY_UP) && !player.isAirborne()){
-            player.setAirborne(true);
-            player.setyVelocity(-JUMP_SPEED);
+        if(pressedKeys.contains(KEY_UP)) {
+            if(!player.isAirborne()) {
+                player.setAirborne(true);
+                player.setyVelocity(-JUMP_SPEED);
+                jumpSound.play(false);
+            } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+                player.setyVelocity(player.getyVelocity()-1);
+            }
         }
     }
 
