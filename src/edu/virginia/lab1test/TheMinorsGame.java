@@ -86,7 +86,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png", "Dynamite.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -335,8 +335,13 @@ public class TheMinorsGame extends Game {
                     break;
                 case "box.png":
                     item.setScale(.8,.8);
+                    break;
                 case "sawblade.png":
                     item.setScale(.75,.75);
+                    break;
+                case "Dynamite.png":
+                    item.setScale(.2,.2);
+                    break;
             }
             item.setVisible(true);
             placeableItemList.add((Sprite)item);
@@ -574,6 +579,7 @@ public class TheMinorsGame extends Game {
                     constrainItemToLevel(player.item);
                     player.cursor.update(pressedKeys,gamePads);
                     constrainItemToLevel(player.cursor);
+                    constrainItemToLevel(player.item);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerButtonClock.getElapsedTime() > KEY_DELAY) {
@@ -606,10 +612,16 @@ public class TheMinorsGame extends Game {
                                 }
                             } else {
                                 if (levelItem.collidesWith(DOCbeingPlaced)
-                                        && !levelItem.getFileName().contains("beam")) {                                      //if there IS a collision
-                                    DOCbeingPlaced.setImageError();
-                                    levelItem.setImageError();
-                                    break;
+                                        && !levelItem.getFileName().contains("beam")) {                             //if there IS a collision
+                                    if (!DOCbeingPlaced.getFileName().contains("Dynamite")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    } else if (levelItem.getId().contains("platform1") || levelItem.getId().contains("platform2") || levelItem.getId().contains("portal")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -617,6 +629,15 @@ public class TheMinorsGame extends Game {
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {     //if space is pressed
                             if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
+                                if(player.item.getFileName().contains("Dynamite")) {
+                                    for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
+                                        DisplayObjectContainer levelItem = iterator.next();
+                                        if(player.item.collidesWith(levelItem)) {
+                                            iterator.remove();
+                                            player.item.setPlaced(true);
+                                        }
+                                    }
+                                }
                                 player.item.setPlaced(true);
                                 player.cursor.setVisible(false);
                                 numberOfPlacedItems++;
@@ -630,7 +651,16 @@ public class TheMinorsGame extends Game {
                             }
                         }
                     } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
-                        if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
+                        if (!player.item.getFileName().contains("-error")) {// and placement is allowed
+                            if(player.item.getFileName().contains("Dynamite")) {
+                                for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
+                                    DisplayObjectContainer levelItem = iterator.next();
+                                    if(player.item.collidesWith(levelItem)) {
+                                        iterator.remove();
+                                        player.item.setPlaced(true);
+                                    }
+                                }
+                            }
                             player.item.setPlaced(true);
                             numberOfPlacedItems++;
                             if(numberOfPlacedItems >= numberOfPlayers) {
