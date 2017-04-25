@@ -343,7 +343,7 @@ public class TheMinorsGame extends Game {
                     item.setScale(.8,.8);
                     break;
                 case "LaserGun.png":
-                    item.setScale(.35,.35);
+                    item.setScale(1.5,1.5);
                     break;
                 case "1x1platform.png":
                     item.setScale(.8,.8);

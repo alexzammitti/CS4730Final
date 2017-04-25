@@ -1,3 +1,9 @@
+CS4730 Final: The Minors
+Team:
+Jasbir Harnal JLH2AV
+Watson Spivey WAS9P
+Alex Zammitti ADZ2PA
+
 Instructions:
 
 At the beginning of each round, select an item to place
