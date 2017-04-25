@@ -66,7 +66,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 500; //TODO
+    private int winScore = 100; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -444,6 +444,25 @@ public class TheMinorsGame extends Game {
                                         currentLevel = level;
                                         currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
+                                        if(currentLevel.getFileName().contains("1")) {
+                                            platform1.setxPosition(0);
+                                            platform1.setyPosition(GAME_HEIGHT*7/8);
+                                            platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                            platform2.setyPosition(GAME_HEIGHT/4);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
+                                        } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                            platform1.setxPosition(0);
+                                            platform1.setyPosition(GAME_HEIGHT/2);
+                                            platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                            platform2.setyPosition(GAME_HEIGHT/2);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+                                        } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                            platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
+                                            platform1.setyPosition(GAME_HEIGHT*7/8);
+                                            platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
+                                            platform2.setyPosition(GAME_HEIGHT/4);
+                                            portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
+                                        }
                                         break;
                                     }
                                 }
@@ -456,6 +475,25 @@ public class TheMinorsGame extends Game {
                                 if(background.getFileName().equals(level.getBackground().getFileName())){
                                     currentLevel = level;
                                     currentLevel.setPositionAndScaling();
+                                    if(currentLevel.getBackground().getFileName().contains("1")) {
+                                        platform1.setxPosition(0);
+                                        platform1.setyPosition(GAME_HEIGHT*7/8);
+                                        platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                        platform2.setyPosition(GAME_HEIGHT/4);
+                                        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
+                                    } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                        platform1.setxPosition(0);
+                                        platform1.setyPosition(GAME_HEIGHT/2);
+                                        platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                        platform2.setyPosition(GAME_HEIGHT/2);
+                                        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+                                    } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                        platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
+                                        platform1.setyPosition(GAME_HEIGHT*7/8);
+                                        platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
+                                        platform2.setyPosition(GAME_HEIGHT/4);
+                                        portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
+                                    }
                                     break;
                                 }
                             }
@@ -633,6 +671,9 @@ public class TheMinorsGame extends Game {
                                     for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
                                         DisplayObjectContainer levelItem = iterator.next();
                                         if(player.item.collidesWith(levelItem)) {
+                                            if(levelItem.getFileName().contains("Gun")) {
+                                                laserGunList.remove(levelItem);
+                                            }
                                             iterator.remove();
                                             player.item.setPlaced(true);
                                         }
@@ -656,6 +697,9 @@ public class TheMinorsGame extends Game {
                                 for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
                                     DisplayObjectContainer levelItem = iterator.next();
                                     if(player.item.collidesWith(levelItem)) {
+                                        if(levelItem.getFileName().contains("Gun")) {
+                                            laserGunList.remove(levelItem);
+                                        }
                                         iterator.remove();
                                         player.item.setPlaced(true);
                                     }
