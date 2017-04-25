@@ -13,6 +13,8 @@ import edu.virginia.engine.event.*;
 import edu.virginia.engine.util.GameClock;
 import edu.virginia.engine.util.SoundEffect;
 
+import javax.sound.sampled.Clip;
+
 /**
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
  * although, for now, it won't be a very fun game :)
@@ -66,7 +68,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 500; //TODO
+    private int winScore = 100; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -87,7 +89,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -270,7 +272,15 @@ public class TheMinorsGame extends Game {
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(.8, .8);
-            player.setPosition(10 + players.indexOf(player) * 10, 130);   //space out players
+            if(currentLevel != null) {
+                if (currentLevel.getBackground().getFileName().contains("1")) {
+                    player.setPosition(10 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
+                } else if (currentLevel.getBackground().getFileName().contains("2")) {
+                    player.setPosition(10 + players.indexOf(player) * 10, 200);   //space out players
+                } else if (currentLevel.getBackground().getFileName().contains("3")) {
+                    player.setPosition(GAME_WIDTH / 2 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
+                }
+            }
             player.setyAcceleration(GRAVITY);
             player.setyVelocity(0);
             player.setxVelocity(0);
@@ -344,6 +354,9 @@ public class TheMinorsGame extends Game {
                     break;
                 case "sawblade.png":
                     item.setScale(.75,.75);
+                    break;
+                case "Dynamite.png":
+                    item.setScale(.2,.2);
                     break;
             }
             item.setVisible(true);
@@ -447,6 +460,25 @@ public class TheMinorsGame extends Game {
                                         currentLevel = level;
                                         currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
+                                        if(currentLevel.getFileName().contains("1")) {
+                                            platform1.setxPosition(0);
+                                            platform1.setyPosition(GAME_HEIGHT*7/8);
+                                            platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                            platform2.setyPosition(GAME_HEIGHT/4);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
+                                        } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                            platform1.setxPosition(0);
+                                            platform1.setyPosition(GAME_HEIGHT/2);
+                                            platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                            platform2.setyPosition(GAME_HEIGHT/2);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+                                        } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                            platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
+                                            platform1.setyPosition(GAME_HEIGHT*7/8);
+                                            platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
+                                            platform2.setyPosition(GAME_HEIGHT/4);
+                                            portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
+                                        }
                                         break;
                                     }
                                 }
@@ -459,9 +491,29 @@ public class TheMinorsGame extends Game {
                                 if(background.getFileName().equals(level.getBackground().getFileName())){
                                     currentLevel = level;
                                     currentLevel.setPositionAndScaling();
+                                    if(currentLevel.getBackground().getFileName().contains("1")) {
+                                        platform1.setxPosition(0);
+                                        platform1.setyPosition(GAME_HEIGHT*7/8);
+                                        platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                        platform2.setyPosition(GAME_HEIGHT/4);
+                                        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
+                                    } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                        platform1.setxPosition(0);
+                                        platform1.setyPosition(GAME_HEIGHT/2);
+                                        platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
+                                        platform2.setyPosition(GAME_HEIGHT/2);
+                                        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+                                    } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                        platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
+                                        platform1.setyPosition(GAME_HEIGHT*7/8);
+                                        platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
+                                        platform2.setyPosition(GAME_HEIGHT/4);
+                                        portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
+                                    }
                                     break;
                                 }
                             }
+                            resetPlayers(pressedKeys,gamePads);
                             gameMode = GameMode.ITEM_SELECTION;
                             spaceKeyClock.resetGameClock();
                             return;
@@ -592,6 +644,7 @@ public class TheMinorsGame extends Game {
                     constrainItemToLevel(player.item);
                     player.cursor.update(pressedKeys,gamePads);
                     constrainItemToLevel(player.cursor);
+                    constrainItemToLevel(player.item);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerButtonClock.getElapsedTime() > KEY_DELAY) {
@@ -624,10 +677,16 @@ public class TheMinorsGame extends Game {
                                 }
                             } else {
                                 if (levelItem.collidesWith(DOCbeingPlaced)
-                                        && !levelItem.getFileName().contains("beam")) {                                      //if there IS a collision
-                                    DOCbeingPlaced.setImageError();
-                                    levelItem.setImageError();
-                                    break;
+                                        && !levelItem.getFileName().contains("beam")) {                             //if there IS a collision
+                                    if (!DOCbeingPlaced.getFileName().contains("Dynamite")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    } else if (levelItem.getId().contains("platform1") || levelItem.getId().contains("platform2") || levelItem.getId().contains("portal")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -635,6 +694,18 @@ public class TheMinorsGame extends Game {
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {     //if space is pressed
                             if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
+                                if(player.item.getFileName().contains("Dynamite")) {
+                                    for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
+                                        DisplayObjectContainer levelItem = iterator.next();
+                                        if(player.item.collidesWith(levelItem)) {
+                                            if(levelItem.getFileName().contains("Gun")) {
+                                                laserGunList.remove(levelItem);
+                                            }
+                                            iterator.remove();
+                                            player.item.setPlaced(true);
+                                        }
+                                    }
+                                }
                                 player.item.setPlaced(true);
                                 player.cursor.setVisible(false);
                                 numberOfPlacedItems++;
@@ -648,7 +719,19 @@ public class TheMinorsGame extends Game {
                             }
                         }
                     } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {     //if space is pressed
-                        if (!player.item.getFileName().contains("-error")) {                // and placement is allowed
+                        if (!player.item.getFileName().contains("-error")) {// and placement is allowed
+                            if(player.item.getFileName().contains("Dynamite")) {
+                                for(Iterator<DisplayObjectContainer> iterator = levelContainer.getChildren().iterator(); iterator.hasNext();) {
+                                    DisplayObjectContainer levelItem = iterator.next();
+                                    if(player.item.collidesWith(levelItem)) {
+                                        if(levelItem.getFileName().contains("Gun")) {
+                                            laserGunList.remove(levelItem);
+                                        }
+                                        iterator.remove();
+                                        player.item.setPlaced(true);
+                                    }
+                                }
+                            }
                             player.item.setPlaced(true);
                             numberOfPlacedItems++;
                             if(numberOfPlacedItems >= numberOfPlayers) {
