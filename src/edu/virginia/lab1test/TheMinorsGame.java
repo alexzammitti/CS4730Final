@@ -268,7 +268,15 @@ public class TheMinorsGame extends Game {
             player.setAlpha(1);
             player.setPivotCenter();
             player.setScale(.8, .8);
-            player.setPosition(10 + players.indexOf(player) * 10, 130);   //space out players
+            if(currentLevel != null) {
+                if (currentLevel.getBackground().getFileName().contains("1")) {
+                    player.setPosition(10 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
+                } else if (currentLevel.getBackground().getFileName().contains("2")) {
+                    player.setPosition(10 + players.indexOf(player) * 10, 200);   //space out players
+                } else if (currentLevel.getBackground().getFileName().contains("3")) {
+                    player.setPosition(GAME_WIDTH / 2 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
+                }
+            }
             player.setyAcceleration(GRAVITY);
             player.setyVelocity(0);
             player.setxVelocity(0);
@@ -497,6 +505,7 @@ public class TheMinorsGame extends Game {
                                     break;
                                 }
                             }
+                            resetPlayers(pressedKeys,gamePads);
                             gameMode = GameMode.ITEM_SELECTION;
                             spaceKeyClock.resetGameClock();
                             return;
