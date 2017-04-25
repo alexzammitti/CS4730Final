@@ -139,7 +139,6 @@ public class TheMinorsGame extends Game {
     //item selection, item placement, play time
     private GameClock rKeyClock = new GameClock();
     private GameClock spaceKeyClock = new GameClock();
-    private GameClock escKeyClock = new GameClock();
     private GameClock roundCompleteClock = new GameClock();
     private GameClock gameCompleteClock = new GameClock();
 
