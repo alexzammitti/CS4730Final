@@ -13,8 +13,6 @@ import edu.virginia.engine.event.*;
 import edu.virginia.engine.util.GameClock;
 import edu.virginia.engine.util.SoundEffect;
 
-import javax.sound.sampled.Clip;
-
 /**
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
  * although, for now, it won't be a very fun game :)
@@ -48,6 +46,8 @@ public class TheMinorsGame extends Game {
     private final static int GRAVITY = 1;
     private final static int JUMP_SPEED = 16;
     private final static int ROUND_COUNT = 10;
+    private final static int SLIDING_PLATFORM_SPEED = 2;
+
 
 
 
@@ -71,6 +71,7 @@ public class TheMinorsGame extends Game {
     private int gameWinner = 5;
     private boolean gameWon = false;
     private int roundsCompleted = 0;
+    private boolean slidingPlatformDirection = false;
 
 
 //
@@ -86,7 +87,7 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -98,7 +99,6 @@ public class TheMinorsGame extends Game {
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
 
-
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
@@ -106,6 +106,8 @@ public class TheMinorsGame extends Game {
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
     private ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
+    private ArrayList<Sprite> selectableSlidingPlatforms = new ArrayList<>(0);
+    private ArrayList<Sprite> gameplaySlidingPlatforms = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
     private DisplayObjectContainer levelImages = new DisplayObjectContainer("level images");        // contains level background images for level selection
@@ -319,7 +321,11 @@ public class TheMinorsGame extends Game {
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
             int random = ThreadLocalRandom.current().nextInt(0,itemFileNames.length);
-            item.setImage(itemFileNames[random]);
+            if(itemFileNames[random].equals("slidingplatform.png")) {
+                item.setImage("1x1platform.png");
+                item.setScale(0.8,0.8);
+                selectableSlidingPlatforms.add((Sprite)item);
+            } else item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
                 case "3x1platform.png":
                     item.setScale(.8,.8);
@@ -335,8 +341,10 @@ public class TheMinorsGame extends Game {
                     break;
                 case "box.png":
                     item.setScale(.8,.8);
+                    break;
                 case "sawblade.png":
                     item.setScale(.75,.75);
+                    break;
             }
             item.setVisible(true);
             placeableItemList.add((Sprite)item);
@@ -469,6 +477,7 @@ public class TheMinorsGame extends Game {
 	    if(! itemSelectionInitialized && frameCounter > 4 && numberOfPlayers > 0) {
 	        initializeItemSelection();
         }
+        movePlatforms(30,pressedKeys,gamePads,false);
         for(Player player : players) {
             if(!levelContainer.getChildren().contains(player.item)) {
                 player.cursor.update(pressedKeys, gamePads);
@@ -524,6 +533,11 @@ public class TheMinorsGame extends Game {
             }
         }
         if (numberOfSelectedItems >= numberOfPlayers) {
+            for(Sprite sprite : placeableItemList) {
+                if(selectableSlidingPlatforms.contains(sprite)) {
+                    selectableSlidingPlatforms.remove(sprite);
+                }
+            }
             gameMode = GameMode.ITEM_PLACEMENT;
             GameClock gameClock = new GameClock();
             gameClock.resetGameClock();
@@ -551,6 +565,10 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(newSprite);                                 // the level container will hold everything in the level
         if (sprite.getFileName().contains("Laser")) {
             laserGunList.add(newSprite);
+        }
+        if(selectableSlidingPlatforms.contains(sprite)) {
+            selectableSlidingPlatforms.remove(sprite);
+            gameplaySlidingPlatforms.add(newSprite);
         }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
         newSprite.dangerous = sprite.getFileName().contains("spike") ||            // if its spiky, it kills us
@@ -675,6 +693,7 @@ public class TheMinorsGame extends Game {
         if(levelContainer != null){
             levelContainer.update(pressedKeys, gamePads);
             shootGuns(pressedKeys,gamePads);
+            movePlatforms(100,pressedKeys,gamePads,true);
         }
         for(Player player : players) {
             if(player.isAlive()){
@@ -906,6 +925,45 @@ public class TheMinorsGame extends Game {
                 else if(beam.getTop() > GAME_HEIGHT) iterator.remove();
             }
 
+        }
+    }
+
+    private void movePlatforms(int travelDistance, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads, boolean gameplay){
+        if(frameCounter % travelDistance == 0) {
+            slidingPlatformDirection = !slidingPlatformDirection;
+        }
+        if(!gameplay) {
+            for (Sprite platform : selectableSlidingPlatforms) {
+                if (slidingPlatformDirection) {
+                    platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
+                } else {
+                    platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
+                }
+                platform.update(pressedKeys, gamePads);
+                constrainItemToLevel(platform);
+            }
+        } else {
+            for (Sprite platform : gameplaySlidingPlatforms) {
+                if (slidingPlatformDirection) {
+                    platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
+                    for(Player player : players) {
+                        if(player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn.equals(platform))
+                                player.setxPosition(player.getxPosition() + SLIDING_PLATFORM_SPEED);
+                        }                    }
+                } else {
+                    platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
+                    for(Player player : players) {
+                        if(player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn.equals(platform))
+                                player.setxPosition(player.getxPosition() - SLIDING_PLATFORM_SPEED);
+                        }
+                    }
+                }
+
+                platform.update(pressedKeys, gamePads);
+                constrainItemToLevel(platform);
+            }
         }
     }
 
