@@ -1127,7 +1127,7 @@ public class TheMinorsGame extends Game {
                 scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
-                if(player.getScore() > 1) {
+//                if(player.getScore() > 1) {
                     if (player.playerNumber == 0) {
                         Tween score1 = new Tween(player1.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
                         score1.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
@@ -1149,7 +1149,7 @@ public class TheMinorsGame extends Game {
                         TweenJuggler.getInstance().add(score4);
                         player.getScoreBar().setVisible(true);
                     }
-                }
+//                }
                 //player.sizeScoreBar(0);
 
                 if(player.getScore() >= winScore) {
