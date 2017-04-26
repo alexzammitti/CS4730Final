@@ -125,6 +125,7 @@ public class TheMinorsGame extends Game {
     private SoundEffect backgroundMusic = new SoundEffect("Space_Background_Music.wav");
     private SoundEffect laserSound = new SoundEffect("laser.wav");
     private SoundEffect jumpSound = new SoundEffect("jump.wav");
+    private SoundEffect DynamiteSound = new SoundEffect("rocket.wav");
 
 
 	// EVENT MANAGERS
@@ -701,6 +702,7 @@ public class TheMinorsGame extends Game {
                                                 laserGunList.remove(levelItem);
                                             }
                                             iterator.remove();
+                                            DynamiteSound.play(false);
                                             player.item.setPlaced(true);
                                         }
                                     }
@@ -727,6 +729,7 @@ public class TheMinorsGame extends Game {
                                             laserGunList.remove(levelItem);
                                         }
                                         iterator.remove();
+                                        DynamiteSound.play(false);
                                         player.item.setPlaced(true);
                                     }
                                 }
