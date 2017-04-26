@@ -438,7 +438,7 @@ public class TheMinorsGame extends Game {
 	}
 
 	// UPDATE METHODS FOR MODES
-
+    //
     private void startScreenUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         //TODO make a start screen, idk what we want
     }
