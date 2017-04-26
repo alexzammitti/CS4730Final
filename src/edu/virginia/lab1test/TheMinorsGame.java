@@ -16,8 +16,6 @@ import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.util.GameClock;
 import edu.virginia.engine.util.SoundEffect;
 
-import javax.sound.sampled.Clip;
-
 /**
  * Example game that utilizes our engine. We can create a simple prototype game with just a couple lines of code
  * although, for now, it won't be a very fun game :)
@@ -52,6 +50,7 @@ public class TheMinorsGame extends Game {
     private final static int JUMP_SPEED = 16;
     private final static int ROUND_COUNT = 10;
     private final static int SLIDING_PLATFORM_SPEED = 2;
+    private final static int FLOATTIME = 500;
     private final static int SAW_SPEED = 1;
 
 
@@ -124,7 +123,9 @@ public class TheMinorsGame extends Game {
     private Level currentLevel = null;
 
 	// AUDIO ASSETS
-    private SoundEffect backgroundMusic = new SoundEffect("Space_Background_Music.wav");
+    private SoundEffect theme1 = new SoundEffect("theme1.wav");
+    private SoundEffect theme2 = new SoundEffect("theme2.wav");
+    private SoundEffect theme3 = new SoundEffect("theme3.wav");
     private SoundEffect laserSound = new SoundEffect("laser.wav");
     private SoundEffect jumpSound = new SoundEffect("jump.wav");
     private SoundEffect DynamiteSound = new SoundEffect("rocket.wav");
@@ -210,7 +211,7 @@ public class TheMinorsGame extends Game {
 
 
         // PLAY MUSIC
-        backgroundMusic.play(true);
+
 
         // SET UP TWEENS - TODO - might also be good to methodize
 
@@ -316,6 +317,9 @@ public class TheMinorsGame extends Game {
         for(Player player : players) {
             player.setScore(1);
         }
+        theme1.stop();
+        theme2.stop();
+        theme3.stop();
     }
 
 	private void initializeItemSelection() {
@@ -465,18 +469,22 @@ public class TheMinorsGame extends Game {
                                         currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
                                         if(currentLevel.getFileName().contains("1")) {
+                                            theme1.play(true);
                                             platform1.setxPosition(0);
                                             platform1.setyPosition(GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/4);
+
                                             portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
                                         } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                            theme2.play(true);
                                             platform1.setxPosition(0);
                                             platform1.setyPosition(GAME_HEIGHT/2);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/2);
                                             portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
                                         } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                            theme3.play(true);
                                             platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
                                             platform1.setyPosition(GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
@@ -496,18 +504,21 @@ public class TheMinorsGame extends Game {
                                     currentLevel = level;
                                     currentLevel.setPositionAndScaling();
                                     if(currentLevel.getBackground().getFileName().contains("1")) {
+                                        theme1.play(true);
                                         platform1.setxPosition(0);
                                         platform1.setyPosition(GAME_HEIGHT*7/8);
                                         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                         platform2.setyPosition(GAME_HEIGHT/4);
                                         portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
                                     } else if(currentLevel.getBackground().getFileName().contains("2")) {
+                                        theme2.play(true);
                                         platform1.setxPosition(0);
                                         platform1.setyPosition(GAME_HEIGHT/2);
                                         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                         platform2.setyPosition(GAME_HEIGHT/2);
                                         portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
                                     } else if(currentLevel.getBackground().getFileName().contains("3")) {
+                                        theme3.play(true);
                                         platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
                                         platform1.setyPosition(GAME_HEIGHT*7/8);
                                         platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
@@ -890,7 +901,7 @@ public class TheMinorsGame extends Game {
                     player.setyVelocity(-JUMP_SPEED);
                     jumpSound.play(false);
                     player.hoverClock.resetGameClock();
-                } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+                } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < FLOATTIME) {
                     player.setyVelocity(player.getyVelocity()-1);
                 }
             }
@@ -906,7 +917,7 @@ public class TheMinorsGame extends Game {
                 player.setyVelocity(-JUMP_SPEED);
                 jumpSound.play(false);
                 player.hoverClock.resetGameClock(); //This line keeps the amount of time hovering equivalent, removes random aspect, do we want this?
-            } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+            } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < FLOATTIME) {
                 player.setyVelocity(player.getyVelocity()-1);
             }
         }
@@ -1153,7 +1164,7 @@ public class TheMinorsGame extends Game {
             if(gameWon) {
                 int maxScore = 0;
                 for(Player player : players) {
-                    if(player.getScore() >= maxScore) {
+                    if(player.getScore() > maxScore) {
                         maxScore = player.getScore();
                         gameWinner = player.playerNumber;
                     }
