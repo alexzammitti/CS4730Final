@@ -468,7 +468,7 @@ public class TheMinorsGame extends Game {
                                         currentLevel = level;
                                         currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
-                                        if(currentLevel.getFileName().contains("1")) {
+                                        if(currentLevel.getBackground().getFileName().contains("1")) {
                                             theme1.play(true);
                                             platform1.setxPosition(0);
                                             platform1.setyPosition(GAME_HEIGHT*7/8);
@@ -494,6 +494,7 @@ public class TheMinorsGame extends Game {
                                         break;
                                     }
                                 }
+                                resetPlayers(pressedKeys,gamePads);
                                 gameMode = GameMode.ITEM_SELECTION;
                                 gamePads.get(player.playerNumber).aButtonClock.resetGameClock();
                                 return;
@@ -1101,10 +1102,6 @@ public class TheMinorsGame extends Game {
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
 
-        for(Player player : players) {
-            player.update(pressedKeys,gamePads);
-
-        }
         if(!scoresCalculated) {
             for (Player player : players) {
                 if (playersDead != numberOfPlayers && playersCompleted != numberOfPlayers) {
