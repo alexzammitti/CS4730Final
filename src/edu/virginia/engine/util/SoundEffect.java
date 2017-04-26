@@ -49,5 +49,9 @@ public class SoundEffect {
         }
     }
 
+    public void stop() {
+        clip.stop();
+    }
+
 }
 
