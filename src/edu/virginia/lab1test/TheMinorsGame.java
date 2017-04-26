@@ -7,9 +7,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
+import edu.virginia.engine.tween.Tween;
 import edu.virginia.engine.tween.TweenJuggler;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.event.*;
+import edu.virginia.engine.tween.TweenTransition;
+import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.util.GameClock;
 import edu.virginia.engine.util.SoundEffect;
 
@@ -50,9 +53,6 @@ public class TheMinorsGame extends Game {
     private final static int ROUND_COUNT = 10;
     private final static int SLIDING_PLATFORM_SPEED = 2;
     private final static int SAW_SPEED = 1;
-
-
-
 
 
 
@@ -138,7 +138,7 @@ public class TheMinorsGame extends Game {
 
 	// TWEENS
 
-	// GAME CLOCKS
+    // GAME CLOCKS
     //item selection, item placement, play time
     private GameClock rKeyClock = new GameClock();
     private GameClock spaceKeyClock = new GameClock();
@@ -1089,8 +1089,10 @@ public class TheMinorsGame extends Game {
 
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
+
         for(Player player : players) {
             player.update(pressedKeys,gamePads);
+
         }
         if(!scoresCalculated) {
             for (Player player : players) {
@@ -1105,13 +1107,40 @@ public class TheMinorsGame extends Game {
                 if(numberOfPlayers == 1 && playersCompleted == 1) {
                     player.incrementScore(100);
                 }
-                player.sizeScoreBar(winScore);
+
                 player.getScoreBar().setxPosition(100);
+                player.getScoreBar().setyScale(1);
+                player.getScoreBar().setxScale(0);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
                 scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
                 scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
+                if(player.getScore() > 1) {
+                    if (player.playerNumber == 0) {
+                        Tween score1 = new Tween(player1.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                        score1.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        TweenJuggler.getInstance().add(score1);
+                        player.getScoreBar().setVisible(true);
+                    } else if (player.playerNumber == 1) {
+                        Tween score2 = new Tween(player2.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                        score2.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        TweenJuggler.getInstance().add(score2);
+                        player.getScoreBar().setVisible(true);
+                    } else if (player.playerNumber == 2) {
+                        Tween score3 = new Tween(player3.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                        score3.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        TweenJuggler.getInstance().add(score3);
+                        player.getScoreBar().setVisible(true);
+                    } else if (player.playerNumber == 3) {
+                        Tween score4 = new Tween(player4.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
+                        score4.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        TweenJuggler.getInstance().add(score4);
+                        player.getScoreBar().setVisible(true);
+                    }
+                }
+                //player.sizeScoreBar(0);
+
                 if(player.getScore() >= winScore) {
                     gameWon = true;
                 }
@@ -1135,6 +1164,9 @@ public class TheMinorsGame extends Game {
         }
 
         if(roundCompleteClock.getElapsedTime() > 5000) {
+            for(Player player: players) {
+                player.getScoreBar().setVisible(false);
+            }
             if(!gameWon) {
                 gameMode = GameMode.ITEM_SELECTION;
                 resetPlayers(pressedKeys, gamePads);

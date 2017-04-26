@@ -9,7 +9,7 @@ public class TweenJuggler {
     ArrayList<Tween> tweens = new ArrayList<>(0);
     private static TweenJuggler ourInstance = new TweenJuggler();
     public static TweenJuggler getInstance() {return ourInstance;}
-    private TweenJuggler() {
+    public TweenJuggler() {
 
     }
     public void add(Tween tween) {
@@ -17,9 +17,16 @@ public class TweenJuggler {
             tweens.add(tween);
         }
     }
+
+    public boolean remove(Tween t) {
+        return this.tweens.remove(t);
+    }
+
     public void nextFrame() {
         for (Tween tween:tweens) {
-            if(tween != null && tween.object != null) tween.update();
+            if(tween != null && tween.object != null) {
+                tween.update();
+            }
         }
     }
 }
