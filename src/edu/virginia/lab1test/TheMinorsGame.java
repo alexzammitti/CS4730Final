@@ -49,7 +49,7 @@ public class TheMinorsGame extends Game {
     private final static int JUMP_SPEED = 16;
     private final static int ROUND_COUNT = 10;
     private final static int SLIDING_PLATFORM_SPEED = 2;
-
+    private final static int SAW_SPEED = 1;
 
 
 
@@ -110,6 +110,8 @@ public class TheMinorsGame extends Game {
     private ArrayList<LaserBeam> laserBeams = new ArrayList<>(0);
     private ArrayList<Sprite> selectableSlidingPlatforms = new ArrayList<>(0);
     private ArrayList<Sprite> gameplaySlidingPlatforms = new ArrayList<>(0);
+    private ArrayList<Sprite> selectableSawbladeList = new ArrayList<>(0);
+    private ArrayList<Sprite> gameplaySawbladeList = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
     private DisplayObjectContainer levelImages = new DisplayObjectContainer("level images");        // contains level background images for level selection
@@ -353,12 +355,14 @@ public class TheMinorsGame extends Game {
                     break;
                 case "sawblade.png":
                     item.setScale(.75,.75);
+                    selectableSawbladeList.add((Sprite) item);
                     break;
                 case "Dynamite.png":
                     item.setScale(.2,.2);
                     break;
             }
             item.setVisible(true);
+            item.setRotation(0);
             placeableItemList.add((Sprite)item);
             item.alignCenterHorizontal(selectionBackground);
             item.alignFractionVertical(selectionBackground,
@@ -529,6 +533,7 @@ public class TheMinorsGame extends Game {
 	        initializeItemSelection();
         }
         movePlatforms(30,pressedKeys,gamePads,false);
+	    spinSawblades(false);
         for(Player player : players) {
             if(!levelContainer.getChildren().contains(player.item)) {
                 player.cursor.update(pressedKeys, gamePads);
@@ -621,6 +626,10 @@ public class TheMinorsGame extends Game {
             selectableSlidingPlatforms.remove(sprite);
             gameplaySlidingPlatforms.add(newSprite);
         }
+        if(sprite.getFileName().contains("saw")) {
+            selectableSawbladeList.remove(sprite);
+            gameplaySawbladeList.add(newSprite);
+        }
         newSprite.setPivotCenter();                                         // we only want rotation about the center of the sprite
         newSprite.dangerous = sprite.getFileName().contains("spike") ||            // if its spiky, it kills us
             sprite.getFileName().contains("sawblade");            // if its spiky, it kills us
@@ -632,6 +641,7 @@ public class TheMinorsGame extends Game {
     private void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if (levelContainer != null) {
             levelContainer.update(pressedKeys, gamePads);
+            spinSawblades(true);
             for(Player player : players) {
                 // Move sprite based on user input
                 if (!player.item.isPlaced()) {
@@ -700,6 +710,9 @@ public class TheMinorsGame extends Game {
                                             if(levelItem.getFileName().contains("Gun")) {
                                                 laserGunList.remove(levelItem);
                                             }
+                                            if(levelItem.getFileName().contains("saw")) {
+                                                gameplaySawbladeList.remove(levelItem);
+                                            }
                                             iterator.remove();
                                             player.item.setPlaced(true);
                                         }
@@ -725,6 +738,9 @@ public class TheMinorsGame extends Game {
                                     if(player.item.collidesWith(levelItem)) {
                                         if(levelItem.getFileName().contains("Gun")) {
                                             laserGunList.remove(levelItem);
+                                        }
+                                        if(levelItem.getFileName().contains("saw")) {
+                                            gameplaySawbladeList.remove(levelItem);
                                         }
                                         iterator.remove();
                                         player.item.setPlaced(true);
@@ -776,6 +792,7 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys, gamePads);
             shootGuns(pressedKeys,gamePads);
             movePlatforms(100,pressedKeys,gamePads,true);
+            spinSawblades(true);
         }
         for(Player player : players) {
             if(player.isAlive()){
@@ -1049,6 +1066,24 @@ public class TheMinorsGame extends Game {
         }
     }
 
+    private void spinSawblades(boolean gameplay) {
+        if(!gameplay) {
+            for (Sprite saw : selectableSawbladeList) {
+                if (frameCounter % SAW_SPEED == 0) {
+                    saw.setPivotCenter();
+                    saw.setRotation(saw.getRotation() + .03);
+                }
+            }
+        } else {
+            for (Sprite saw : gameplaySawbladeList) {
+                if (frameCounter % SAW_SPEED == 0) {
+                    saw.setPivotCenter();
+                    saw.setRotation(saw.getRotation() + .03);
+                }
+            }
+        }
+    }
+
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
         for(Player player : players) {
@@ -1086,7 +1121,7 @@ public class TheMinorsGame extends Game {
             if(gameWon) {
                 int maxScore = 0;
                 for(Player player : players) {
-                    if(player.getScore() > maxScore) {
+                    if(player.getScore() >= maxScore) {
                         maxScore = player.getScore();
                         gameWinner = player.playerNumber;
                     }
