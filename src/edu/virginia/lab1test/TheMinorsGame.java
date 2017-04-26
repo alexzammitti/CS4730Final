@@ -49,6 +49,7 @@ public class TheMinorsGame extends Game {
     private final static int JUMP_SPEED = 16;
     private final static int ROUND_COUNT = 10;
     private final static int SLIDING_PLATFORM_SPEED = 2;
+    private final static int FLOATTIME = 500;
 
 
 
@@ -873,7 +874,7 @@ public class TheMinorsGame extends Game {
                     player.setyVelocity(-JUMP_SPEED);
                     jumpSound.play(false);
                     player.hoverClock.resetGameClock();
-                } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+                } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < FLOATTIME) {
                     player.setyVelocity(player.getyVelocity()-1);
                 }
             }
@@ -889,7 +890,7 @@ public class TheMinorsGame extends Game {
                 player.setyVelocity(-JUMP_SPEED);
                 jumpSound.play(false);
                 player.hoverClock.resetGameClock(); //This line keeps the amount of time hovering equivalent, removes random aspect, do we want this?
-            } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < 800) {
+            } else if(player.getyVelocity() > 0 && player.hoverClock.getElapsedTime() < FLOATTIME) {
                 player.setyVelocity(player.getyVelocity()-1);
             }
         }
