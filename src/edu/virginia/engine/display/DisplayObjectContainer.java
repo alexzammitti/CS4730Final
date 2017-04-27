@@ -11,6 +11,24 @@ public class DisplayObjectContainer extends DisplayObject {
 	protected ArrayList<DisplayObjectContainer> children = new ArrayList<DisplayObjectContainer>(0);
 	public ArrayList<DisplayObjectContainer> allChildren = new ArrayList<>();
 	protected boolean visible = true;
+	private boolean upDown = false;
+	private boolean leftRight = false;
+
+	public boolean isLeftRight() {
+		return leftRight;
+	}
+
+	public void setLeftRight(boolean leftRight) {
+		this.leftRight = leftRight;
+	}
+
+	public boolean isUpDown() {
+		return upDown;
+	}
+
+	public void setUpDown(boolean upDown) {
+		this.upDown = upDown;
+	}
 
 	public DisplayObjectContainer(String id) {
 		super(id);

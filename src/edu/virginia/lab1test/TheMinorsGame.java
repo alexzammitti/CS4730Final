@@ -72,7 +72,6 @@ public class TheMinorsGame extends Game {
     private int gameWinner = 5;
     private boolean gameWon = false;
     private int roundsCompleted = 0;
-    private boolean slidingPlatformDirection = false;
 
 
 //
@@ -88,7 +87,8 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
+    //private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
+    private static String[] itemFileNames = {"3x1platform.png","1x1platform.png", "slidingplatform.png", "sawblade.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -297,6 +297,10 @@ public class TheMinorsGame extends Game {
             player.cursor.setxPosition(GAME_WIDTH / 2);
             player.update(pressedKeys,gamePads);
         }
+        for(Sprite platform: gameplaySlidingPlatforms) {
+            platform.setxPosition(platform.getStartX());
+            platform.setyPosition(platform.getStartY());
+        }
         playersDead = 0;
         playersCompleted = 0;
         firstCompleted = null;
@@ -334,12 +338,25 @@ public class TheMinorsGame extends Game {
         }
         int itemCount = selectionBackground.getChildren().size();
         placeableItemList.clear();
+        selectableSawbladeList.clear();
+        selectableSlidingPlatforms.clear();
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
             int random = ThreadLocalRandom.current().nextInt(0,itemFileNames.length);
             if(itemFileNames[random].equals("slidingplatform.png")) {
                 item.setImage("1x1platform.png");
+                item.setId("sliding1x1");
                 item.setScale(0.8,0.8);
+                if(frameCounter % 3 == 0) {
+                    item.setLeftRight(true);
+                    item.setUpDown(false);
+                } else if (frameCounter % 3 == 1) {
+                    item.setLeftRight(true);
+                    item.setUpDown(false);                  //Change these when you fix left right
+                } else if(frameCounter % 3 == 2) {
+                    item.setLeftRight(true);
+                    item.setUpDown(false);
+                }
                 selectableSlidingPlatforms.add((Sprite)item);
             } else item.setImage(itemFileNames[random]);
             switch(itemFileNames[random]){
@@ -373,6 +390,8 @@ public class TheMinorsGame extends Game {
             item.alignFractionVertical(selectionBackground,
                     itemCount+1,
                     selectionBackground.getChildren().indexOf(item)+1);
+            ((Sprite) item).setStartX(item.getxAbsolutePosition());
+            ((Sprite) item).setStartY(item.getyAbsolutePosition());
         }
 
         // GIVE ITEMS IMAGES - will be randomized later TODO
@@ -438,7 +457,7 @@ public class TheMinorsGame extends Game {
 	}
 
 	// UPDATE METHODS FOR MODES
-    //
+
     private void startScreenUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         //TODO make a start screen, idk what we want
     }
@@ -474,7 +493,6 @@ public class TheMinorsGame extends Game {
                                             platform1.setyPosition(GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/4);
-
                                             portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
                                         } else if(currentLevel.getBackground().getFileName().contains("2")) {
                                             theme2.play(true);
@@ -636,6 +654,9 @@ public class TheMinorsGame extends Game {
             laserGunList.add(newSprite);
         }
         if(selectableSlidingPlatforms.contains(sprite)) {
+            newSprite.setLeftRight(sprite.isLeftRight());
+            newSprite.setUpDown(sprite.isUpDown());
+            newSprite.setId("sliding1x1");
             selectableSlidingPlatforms.remove(sprite);
             gameplaySlidingPlatforms.add(newSprite);
         }
@@ -732,6 +753,8 @@ public class TheMinorsGame extends Game {
                                         }
                                     }
                                 }
+                                player.item.setStartX(player.item.getxAbsolutePosition());
+                                player.item.setStartY(player.item.getyAbsolutePosition());
                                 player.item.setPlaced(true);
                                 player.cursor.setVisible(false);
                                 numberOfPlacedItems++;
@@ -762,6 +785,8 @@ public class TheMinorsGame extends Game {
                                     }
                                 }
                             }
+                            player.item.setStartX(player.item.getxAbsolutePosition());
+                            player.item.setStartY(player.item.getyAbsolutePosition());
                             player.item.setPlaced(true);
                             numberOfPlacedItems++;
                             if(numberOfPlacedItems >= numberOfPlayers) {
@@ -1043,37 +1068,89 @@ public class TheMinorsGame extends Game {
     }
 
     private void movePlatforms(int travelDistance, ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads, boolean gameplay){
-        if(frameCounter % travelDistance == 0) {
-            slidingPlatformDirection = !slidingPlatformDirection;
-        }
+
         if(!gameplay) {
             for (Sprite platform : selectableSlidingPlatforms) {
-                if (slidingPlatformDirection) {
-                    platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
-                } else {
-                    platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
+                if (platform.isLeftRight()) {
+                    if (platform.isSlidingPlatformDirection()) {
+                        if(platform.getxAbsolutePosition() < platform.getStartX() + travelDistance) {
+                            platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                    } else {
+                        if(platform.getxAbsolutePosition() > platform.getStartX() - travelDistance) {
+                            platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                    }
+                    platform.update(pressedKeys, gamePads);
+                    constrainItemToLevel(platform);
                 }
-                platform.update(pressedKeys, gamePads);
-                constrainItemToLevel(platform);
-            }
-        } else {
-            for (Sprite platform : gameplaySlidingPlatforms) {
-                if (slidingPlatformDirection) {
-                    platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
-                    for(Player player : players) {
-                        if(player.platformPlayerIsOn != null) {
-                            if (player.platformPlayerIsOn.equals(platform))
-                                player.setxPosition(player.getxPosition() + SLIDING_PLATFORM_SPEED);
-                        }                    }
-                } else {
-                    platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
-                    for(Player player : players) {
-                        if(player.platformPlayerIsOn != null) {
-                            if (player.platformPlayerIsOn.equals(platform))
-                                player.setxPosition(player.getxPosition() - SLIDING_PLATFORM_SPEED);
+                if(platform.isUpDown()) {
+                    if (platform.isSlidingPlatformDirection()) {
+                        if (platform.getyAbsolutePosition() > platform.getStartY() - travelDistance) {
+                            platform.setyPosition(platform.getyPosition() - SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                    } else {
+                        if (platform.getyAbsolutePosition() < platform.getStartY() + travelDistance) {
+                            platform.setyPosition(platform.getyPosition() + SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
                     }
                 }
+                    platform.update(pressedKeys, gamePads);
+                    constrainItemToLevel(platform);
+            }
+        } else {
+            for (Sprite platform : gameplaySlidingPlatforms) {
+                if(platform.isLeftRight()) {
+                    if (platform.isSlidingPlatformDirection()) {
+                        if(platform.getxAbsolutePosition() < platform.getStartX() + travelDistance) {
+                            platform.setxPosition(platform.getxPosition() + SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                        for (Player player : players) {
+                            if (player.platformPlayerIsOn != null) {
+                                if (player.platformPlayerIsOn.equals(platform) && !player.isAirborne()) {
+                                    player.setxPosition(player.getxPosition() + SLIDING_PLATFORM_SPEED);
+                                }
+                            }
+                        }
+                    } else {
+                        if(platform.getxAbsolutePosition() > platform.getStartX() - travelDistance) {
+                            platform.setxPosition(platform.getxPosition() - SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                        for (Player player : players) {
+                            if (player.platformPlayerIsOn != null) {
+                                if (player.platformPlayerIsOn.equals(platform) && !player.isAirborne())
+                                    player.setxPosition(player.getxPosition() - SLIDING_PLATFORM_SPEED);
+                            }
+                        }
+                    }
+                } if(platform.isUpDown()) {
+                    if (platform.isSlidingPlatformDirection()) {
+                        if (platform.getyAbsolutePosition() > platform.getStartY() - travelDistance) {
+                            platform.setyPosition(platform.getyPosition() - SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                    } else {
+                        if (platform.getyAbsolutePosition() < platform.getStartY() + travelDistance) {
+                            platform.setyPosition(platform.getyPosition() + SLIDING_PLATFORM_SPEED);
+                        } else {
+                            platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                    }
+                }
+
 
                 platform.update(pressedKeys, gamePads);
                 constrainItemToLevel(platform);

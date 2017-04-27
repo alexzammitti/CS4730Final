@@ -11,6 +11,34 @@ import java.util.ArrayList;
  * */
 public class Sprite extends DisplayObjectContainer {
 
+	private int startX;
+	private int startY;
+	private boolean slidingPlatformDirection = true;
+
+	public boolean isSlidingPlatformDirection() {
+		return slidingPlatformDirection;
+	}
+
+	public void setSlidingPlatformDirection(boolean slidingPlatformDirection) {
+		this.slidingPlatformDirection = slidingPlatformDirection;
+	}
+
+	public int getStartX() {
+		return startX;
+	}
+
+	public void setStartX(int startX) {
+		this.startX = startX;
+	}
+
+	public int getStartY() {
+		return startY;
+	}
+
+	public void setStartY(int startY) {
+		this.startY = startY;
+	}
+
 	public Sprite(String id) {
 		super(id);
 	}
