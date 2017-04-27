@@ -334,6 +334,7 @@ public class TheMinorsGame extends Game {
         gameOver = false;
         gameWinner = 5;
         roundsCompleted = 0;
+        gameOverBackground.removeAll();
         levelContainer.removeAll();
         levelContainer.addChild(platform1);
         levelContainer.addChild(platform2);
@@ -725,7 +726,7 @@ public class TheMinorsGame extends Game {
                     handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
-                    constrainItemToLevel(player.item);
+                    //constrainItemToLevel(player.item);
                     player.cursor.update(pressedKeys,gamePads);
                     constrainItemToLevel(player.cursor);
                     constrainItemToLevel(player.item);
@@ -1086,18 +1087,35 @@ public class TheMinorsGame extends Game {
     }
 
     private void constrainItemToLevel(Sprite sprite) {
-        if(sprite.getBottom() > GAME_HEIGHT) {
-            //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-            sprite.setyPosition(GAME_HEIGHT-sprite.getScaledHeight());
-        } else if(sprite.getTop() < 0) {
-            sprite.setyPosition(0);
+
+            if (sprite.getBottom() > GAME_HEIGHT) {
+                //TODO there is not currently a way for us to set the global position of a sprite if it is a child
+                sprite.setyPosition(GAME_HEIGHT - sprite.getScaledHeight());
+            } else if (sprite.getTop() < 0) {
+                sprite.setyPosition(0);
+            }
+            if (sprite.getRight() > GAME_WIDTH) {
+                sprite.setxPosition(GAME_WIDTH - sprite.getScaledWidth());
+            } else if (sprite.getLeft() < 0) {
+                sprite.setxPosition(0);
+            }
+//
+//            if (sprite.getBottom() > GAME_HEIGHT) {
+//                sprite.setyPosition(GAME_HEIGHT - sprite.getScaledHeight());
+//            } else if (sprite.getTop() < 0) {
+//                sprite.setyPosition(0);
+//            }
+//            if (sprite.getRight() > GAME_WIDTH) {
+//                sprite.setxPosition(GAME_WIDTH - sprite.getScaledWidth());
+//            } else if (sprite.getLeft() < 0) {
+//                sprite.setxPosition(0);
+//            }
         }
-        if(sprite.getRight() > GAME_WIDTH) {
-            sprite.setxPosition(GAME_WIDTH-sprite.getScaledWidth());
-        } else if(sprite.getLeft() < 0) {
-            sprite.setxPosition(0);
-        }
-    }
+
+
+
+
+
 
     private void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(frameCounter % 100 == 0) {
