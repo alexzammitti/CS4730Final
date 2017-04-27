@@ -474,7 +474,7 @@ public class TheMinorsGame extends Game {
                 constrainItemToLevel(player.cursor);
                 levelImages.update(pressedKeys,gamePads);
                 gameTitle.alignCenterHorizontal(GAME_WIDTH);
-                gameTitle.setyPosition(GAME_HEIGHT/2 - 200);
+                gameTitle.setyPosition(GAME_HEIGHT/2 - 275);
                 for(DisplayObjectContainer background : levelImages.getChildren()) {
                     background.setScaledSize(300,175);
                     background.alignCenterVertical(GAME_HEIGHT);
@@ -1280,6 +1280,7 @@ public class TheMinorsGame extends Game {
             Sprite winnerTitle = new Sprite("winner", "wins" + gameWinner + ".png");
             gameOverBackground.addChild(winnerTitle);
             //winnerTitle.setPosition(100,100);
+            winnerTitle.setScale(0.6,0.6);
             winnerTitle.alignCenterHorizontal(gameOverBackground);
             winnerTitle.alignCenterVertical(gameOverBackground);
         } else {
