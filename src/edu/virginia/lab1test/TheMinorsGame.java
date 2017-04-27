@@ -202,10 +202,10 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(platform2);
         levelContainer.addChild(portal);
 
-        overlay.addChild(startText);
-        overlay.addChild(finishText);
         overlay.addChild(startBackground);
         overlay.addChild(finishBackground);
+        overlay.addChild(startText);
+        overlay.addChild(finishText);
         startBackground.setAlpha((float)0.5);
         finishBackground.setAlpha((float)0.5);
         startText.setScale(0.5,0.5);
