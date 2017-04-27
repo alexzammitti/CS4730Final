@@ -106,6 +106,7 @@ public class TheMinorsGame extends Game {
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
     private Sprite noPointsTitle = new Sprite("no points", "nopoints.png");
+    private Sprite noPointsWide = new Sprite("no points wide", "nopointswide.png");
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
     private Sprite scoreboardHeader = null;
@@ -1257,7 +1258,7 @@ public class TheMinorsGame extends Game {
         levelContainer.update(pressedKeys,gamePads);
         scoreboardBackground.removeChild(scoreboardHeader);
         if(playersCompleted == numberOfPlayers && numberOfPlayers != 1) {
-            scoreboardHeader = noPointsTitle;
+            scoreboardHeader = noPointsWide;
             scoreboardBackground.addChild(scoreboardHeader);
             scoreboardHeader.setxScale(.5);
             scoreboardHeader.setyScale(.5);
