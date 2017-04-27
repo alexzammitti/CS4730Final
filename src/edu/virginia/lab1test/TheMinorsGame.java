@@ -1285,7 +1285,7 @@ public class TheMinorsGame extends Game {
                     player.incrementScore(100);
                 }
 
-                player.getScoreBar().setxPosition(100);
+                player.getScoreBar().setxPosition(145);
                 player.getScoreBar().setyScale(1);
                 player.getScoreBar().setxScale(0);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
