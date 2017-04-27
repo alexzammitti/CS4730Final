@@ -97,7 +97,7 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","big-item-selection-screen.png");
-    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","big-item-selection-screen.png");
+    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","bigger-item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
     private Sprite startBackground = new Sprite("levelselectionbackground","goalareas.png");
@@ -177,7 +177,7 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(375,100);
         selectionBackground.setScale(1,1);
 
-        scoreboardBackground.setPosition(375,100);
+        scoreboardBackground.setPosition(308,100);
         scoreboardBackground.setScale(1,1);
 
 //        scoreboardHeader.setyScale(.5);
