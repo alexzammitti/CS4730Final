@@ -71,6 +71,7 @@ public class TheMinorsGame extends Game {
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
+    private boolean gameOver = false;
     private int roundsCompleted = 0;
 
 
@@ -176,6 +177,7 @@ public class TheMinorsGame extends Game {
         scoreTitle.setxScale(.5);
         scoreTitle.alignCenterHorizontal(scoreboardBackground);
 
+
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
 
@@ -256,6 +258,7 @@ public class TheMinorsGame extends Game {
                     break;
             }
             numberOfPlayers = players.size();
+            scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
             resetPlayers(pressedKeys,gamePads);
             for(Player player : players) {
                 player.addEventListener(eventManager, Event.SAFE_COLLISION);
@@ -309,6 +312,7 @@ public class TheMinorsGame extends Game {
 
     private void resetGame(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         gameWon = false;
+        gameOver = false;
         gameWinner = 5;
         roundsCompleted = 0;
         levelContainer.removeAll();
@@ -1240,14 +1244,15 @@ public class TheMinorsGame extends Game {
 
                 if(player.getScore() >= winScore) {
                     gameWon = true;
+                    gameOver = true;
                 }
             }
             if(roundsCompleted <= ROUND_COUNT) {
                 roundsCompleted++;
             } else {
-                gameWon = true;
+                gameOver = true;
             }
-            if(gameWon) {
+            if(gameOver) {
                 int maxScore = 0;
                 for(Player player : players) {
                     if(player.getScore() > maxScore) {
@@ -1256,6 +1261,13 @@ public class TheMinorsGame extends Game {
                     }
                 }
                 gameWinner++;
+                if(numberOfPlayers == 1 && maxScore < winScore) {
+                    gameWon = false;
+                } else if(numberOfPlayers != 1 && maxScore == 1) {
+                    gameWon = false;
+                } else {
+                    gameWon = true;
+                }
             }
             scoresCalculated = true;
         }
@@ -1264,7 +1276,7 @@ public class TheMinorsGame extends Game {
             for(Player player: players) {
                 player.getScoreBar().setVisible(false);
             }
-            if(!gameWon) {
+            if(!gameOver) {
                 gameMode = GameMode.ITEM_SELECTION;
                 resetPlayers(pressedKeys, gamePads);
                 levelContainer.update(pressedKeys, gamePads);
@@ -1285,6 +1297,11 @@ public class TheMinorsGame extends Game {
             winnerTitle.alignCenterVertical(gameOverBackground);
         } else {
             //TODO make a "No one wins" title and put this in the box
+            Sprite noWinnerTitle = new Sprite("noWinner", "noonewins.png");
+            gameOverBackground.addChild(noWinnerTitle);
+            noWinnerTitle.setScale(0.6,0.6);
+            noWinnerTitle.alignCenterHorizontal(gameOverBackground);
+            noWinnerTitle.alignCenterVertical(gameOverBackground);
         }
         if(gameCompleteClock.getElapsedTime() > 5000) {
             resetGame(pressedKeys, gamePads);
