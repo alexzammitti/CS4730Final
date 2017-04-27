@@ -355,12 +355,32 @@ public class DisplayObject extends EventDispatcher {
 	 * to update objects appropriately.
 	 * */
 	protected void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
-		if(this.getAbsoluteRotation()%(Math.PI) < 1){
+		if (this.getAbsoluteRotation() % (Math.PI) < 1) {
 			hitbox.setBounds(this.getxAbsolutePosition(), this.getyAbsolutePosition(), this.getScaledWidth(), this.getScaledHeight());
-		} else if(this.getAbsoluteRotation()%Math.PI/2 < 1) {
-			hitbox.setBounds(this.getxAbsolutePosition()+this.getScaledWidth()/2-this.getScaledHeight()/2,
-					this.getyAbsolutePosition()-this.getScaledWidth()/2+this.getScaledHeight()/2,
+		} else if (this.getAbsoluteRotation() % Math.PI / 2 < 1) {
+			hitbox.setBounds(this.getxAbsolutePosition() + this.getScaledWidth() / 2 - this.getScaledHeight() / 2,
+					this.getyAbsolutePosition() - this.getScaledWidth() / 2 + this.getScaledHeight() / 2,
 					this.getScaledHeight(), this.getScaledWidth());
+		}
+		if (this.fileName.contains("saw")) {
+			this.setPivotCenter();
+			if (this.getAbsoluteRotation() % (Math.PI) < 1) {
+				hitbox.setBounds((int) (this.getxAbsolutePosition() + this.getScaledWidth() * .1), (int) (this.getyAbsolutePosition() + this.getScaledHeight() * .1), (int) (this.getScaledWidth() * .8), (int) (this.getScaledHeight() * .8));
+			} else if (this.getAbsoluteRotation() % Math.PI / 2 < 1) {
+				hitbox.setBounds((int) (this.getxAbsolutePosition() + this.getScaledWidth() / 2 - this.getScaledHeight() / 2 + this.getScaledWidth() * .1),
+						(int) (this.getyAbsolutePosition() - this.getScaledWidth() / 2 + this.getScaledHeight() / 2 + this.getScaledHeight() * .1),
+						(int) (this.getScaledHeight() * .8), (int) (this.getScaledWidth() * .8));
+			}
+		}
+		if (this.fileName.contains("spike")) {
+			this.setPivotCenter();
+			if (this.getAbsoluteRotation() % (Math.PI) < 1) {
+				hitbox.setBounds((int) (.1 * this.getScaledWidth() + this.getxAbsolutePosition()), (int) (this.getyAbsolutePosition() + this.getScaledHeight() * .1), (int) (this.getScaledWidth() * .9), (int) (this.getScaledHeight() * .9));
+			} else if (this.getAbsoluteRotation() % Math.PI / 2 < 1) {
+				hitbox.setBounds(this.getxAbsolutePosition() + this.getScaledWidth() / 2 - this.getScaledHeight() / 2,
+						this.getyAbsolutePosition() - this.getScaledWidth() / 2 + this.getScaledHeight() / 2,
+						(int) (this.getScaledHeight() * .9), (int) (this.getScaledWidth() * .9));
+			}
 		}
 	}
 
