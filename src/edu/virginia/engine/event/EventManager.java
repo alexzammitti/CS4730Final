@@ -62,6 +62,7 @@ public class EventManager implements IEventListener {
                 character.setyPosition(platform.getHitbox().y+platform.getHitbox().height);
                 character.setAirborne(true);
                 character.setOnPlatform(false);
+                character.platformPlayerIsOn = null;
                 character.setyVelocity(0);
 
             }

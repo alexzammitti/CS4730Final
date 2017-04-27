@@ -15,6 +15,7 @@ public class Player extends PhysicsSprite {
     protected boolean courseCompleted = false;
     public DisplayObject platformPlayerIsOn;
     public Sprite item;
+    public SlidingPlatform slidingPlatform = null;
     public Sprite cursor;
     public int playerNumber;
     protected int score = 1;
