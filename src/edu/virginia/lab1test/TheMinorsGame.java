@@ -707,6 +707,7 @@ public class TheMinorsGame extends Game {
             levelContainer.update(pressedKeys, gamePads);
             overlay.update(pressedKeys,gamePads);
             spinSawblades(true);
+            }
             for(Player player : players) {
                 // Move sprite based on user input
                 if (!player.item.isPlaced()) {
@@ -881,7 +882,7 @@ public class TheMinorsGame extends Game {
             }
         }
 
-    }
+
 
     private void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         if(levelContainer != null){

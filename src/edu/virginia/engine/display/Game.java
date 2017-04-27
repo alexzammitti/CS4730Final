@@ -177,9 +177,11 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 	}
 
 	private void pollControllers(){
-		if(controllers.size() > 0) {
-			for (GamePad controller : controllers) {
-				controller.update();
+		if(controllers != null) {
+			if (controllers.size() > 0) {
+				for (GamePad controller : controllers) {
+					controller.update();
+				}
 			}
 		}
 	}

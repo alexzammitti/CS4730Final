@@ -59,7 +59,7 @@ public class EventManager implements IEventListener {
                     character.hoverClock.resetGameClock();
             }
             else if(character.getyPosition() > platform.getTop()) { //bottom of platform
-                    if(character.isOnPlatform()) {
+                    if(character.platformPlayerIsOn != null) {
                         if(character.isAlive()) deathSound.play(false);
                         character.setyScale(0.5*character.getyScale());
                         character.setAlive(false);
