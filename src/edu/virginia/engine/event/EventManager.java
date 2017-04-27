@@ -51,28 +51,39 @@ public class EventManager implements IEventListener {
         if( intersection.width > intersection.height && character.getBottom() > platform.getTop()
                 || intersection.width > intersection.height && character.getTop() < platform.getBottom()){
                 if(character.getyPosition() < platform.getTop()) {                                          //top of platform
-                character.setyPosition(platform.getHitbox().y-(character.getScaledHeight()+1));
-                character.setAirborne(false);
-                character.setOnPlatform(true);
-                character.platformPlayerIsOn = platform;
-                character.setyVelocity(0);
-                character.hoverClock.resetGameClock();
+                    character.setyPosition(platform.getHitbox().y-(character.getScaledHeight()+1));
+                    character.setAirborne(false);
+                    character.setOnPlatform(true);
+                    character.platformPlayerIsOn = platform;
+                    character.setyVelocity(0);
+                    character.hoverClock.resetGameClock();
             }
             else if(character.getyPosition() > platform.getTop()) {                                         //bottom of platform
-                character.setyPosition(platform.getHitbox().y+platform.getHitbox().height);
+                if(platform.getFileName().contains("sliding"))   {
+                    character.setyPosition(platform.getHitbox().y+platform.getHitbox().height + 10);
+                } else {
+                    character.setyPosition(platform.getHitbox().y + platform.getHitbox().height);
+                }
                 character.setAirborne(true);
                 character.setOnPlatform(false);
                 character.platformPlayerIsOn = null;
                 character.setyVelocity(0);
-
             }
         } else {
             if(character.getRight() > platform.getLeft() && intersection.x == platform.getLeft()) {
-                character.setxPosition(platform.getLeft()-character.getScaledWidth()-1);
+                if(platform.getFileName().contains("sliding")) {
+                    character.setxPosition(platform.getLeft()-character.getScaledWidth()-10);
+                } else {
+                    character.setxPosition(platform.getLeft() - character.getScaledWidth() - 1);
+                }
                 character.setxVelocity((int)(character.getxVelocity()*-1.2));
             }
             else if(character.getLeft() < platform.getRight()) {
-                character.setxPosition(platform.getRight()+1);
+                if(platform.getFileName().contains("sliding")) {
+                    character.setxPosition(platform.getRight()+10);
+                } else {
+                    character.setxPosition(platform.getRight() + 1);
+                }
                 character.setxVelocity((int)(character.getxVelocity()*-1.2));
             }
         }
