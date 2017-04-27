@@ -354,7 +354,7 @@ public class TheMinorsGame extends Game {
         selectionBackground.addChild(item3);
         selectionBackground.addChild(item4);
         selectionBackground.addChild(item5);
-        for(int i = 0; i <= selectionBackground.getChildren().size() - numberOfPlayers; i++) {
+        for(int i = 0; i < 4 - numberOfPlayers; i++) {
             selectionBackground.removeByIndex(selectionBackground.getChildren().size()-1);
         }
         int itemCount = selectionBackground.getChildren().size();
