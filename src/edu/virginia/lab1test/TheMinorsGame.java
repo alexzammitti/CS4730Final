@@ -87,8 +87,8 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    //private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
-    private static String[] itemFileNames = {"3x1platform.png","1x1platform.png", "slidingplatform.png", "sawblade.png"};
+    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
+    //private static String[] itemFileNames = {"3x1platform.png","1x1platform.png", "slidingplatform.png", "sawblade.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
