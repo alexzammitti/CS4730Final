@@ -105,6 +105,7 @@ public class TheMinorsGame extends Game {
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
+    private Sprite noPointsTitle = new Sprite("no points", "nopoints.png");
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
     // Item Lists
@@ -1272,7 +1273,11 @@ public class TheMinorsGame extends Game {
                 player.getScoreBar().setyScale(1);
                 player.getScoreBar().setxScale(0);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
-                scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
+                if(playersCompleted == numberOfPlayers) {
+                    noPointsTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
+                } else {
+                    scoreTitle.alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, 1);
+                }
                 scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
