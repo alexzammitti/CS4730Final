@@ -172,7 +172,7 @@ public class TheMinorsGame extends Game {
         levelList.add(level3);
 
         //SET BACKGROUNDS UP FOR EACH SCREEN
-        selectionBackground.setPosition(350,100);
+        selectionBackground.setPosition(375,100);
         selectionBackground.setScale(1,1);
 
         scoreboardBackground.setPosition(350,100);
