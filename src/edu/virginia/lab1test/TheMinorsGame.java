@@ -96,7 +96,7 @@ public class TheMinorsGame extends Game {
     private Sprite item4 = new Sprite("item4");
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
-    private Sprite selectionBackground = new Sprite("selectionbackground","item-selection-screen.png");
+    private Sprite selectionBackground = new Sprite("selectionbackground","big-item-selection-screen.png");
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
