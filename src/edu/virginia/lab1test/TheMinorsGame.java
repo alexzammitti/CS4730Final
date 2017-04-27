@@ -344,7 +344,7 @@ public class TheMinorsGame extends Game {
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
             int random = ThreadLocalRandom.current().nextInt(0,itemFileNames.length);
             if(itemFileNames[random].equals("slidingplatform.png")) {
-                item.setImage("1x1platform.png");
+                item.setImage("slidingplatform.png");
                 item.setId("sliding1x1");
                 item.setScale(0.8,0.8);
                 if(frameCounter % 3 == 0) {
