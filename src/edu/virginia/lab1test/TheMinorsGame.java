@@ -222,7 +222,7 @@ public class TheMinorsGame extends Game {
         platform2.setyPosition(GAME_HEIGHT/2);
 
         portal.setScale(0.2,0.2);
-        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+        portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-60);
 
 
         // PLAY MUSIC
@@ -509,21 +509,21 @@ public class TheMinorsGame extends Game {
                                             platform1.setPosition(0,GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/4);
-                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-60);
                                         } else if(currentLevel.getBackground().getFileName().contains("2")) {
                                             theme2.play(true);
                                             platform1.setxPosition(0);
                                             platform1.setyPosition(GAME_HEIGHT/2);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/2);
-                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-120);
+                                            portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/2-60);
                                         } else if(currentLevel.getBackground().getFileName().contains("3")) {
                                             theme3.play(true);
                                             platform1.setxPosition(GAME_WIDTH/2 - platform1.getScaledWidth()/2);
                                             platform1.setyPosition(GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH/2 - platform2.getScaledWidth()/2);
                                             platform2.setyPosition(GAME_HEIGHT/4);
-                                            portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
+                                            portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-60);
                                         }
                                         startBackground.setPosition(platform1.getxPosition(),platform1.getyPosition()-startBackground.getScaledHeight());
                                         startText.setPosition(startBackground.getxPosition()+startBackground.getScaledWidth()/2,
