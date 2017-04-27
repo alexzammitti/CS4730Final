@@ -289,6 +289,7 @@ public class TheMinorsGame extends Game {
     private void resetPlayers(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         for(Player player : players) {
             player.setCourseCompleted(false);
+            player.setRotation(0);
             player.setVisible(true);
             player.setAlive(true);
             player.setAirborne(true);
@@ -936,7 +937,7 @@ public class TheMinorsGame extends Game {
         }
         playersDead = dead;
         playersCompleted = done;
-        if((playersDead + playersCompleted) >= numberOfPlayers) {
+        if((playersDead + playersCompleted) >= numberOfPlayers && TweenJuggler.getInstance().tweensComplete()) {
             gameMode = GameMode.ROUND_COMPLETE;
             for(Sprite beam : laserBeams) {
                 beam.setVisible(false);

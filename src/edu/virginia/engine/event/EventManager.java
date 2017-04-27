@@ -13,7 +13,6 @@ import java.awt.*;
  */
 public class EventManager implements IEventListener {
 
-    private Tween deathTweenY, deathTweenAlpha, deathTweenRotate;
     private SoundEffect deathSound = new SoundEffect("death.wav");
     private SoundEffect thudSound = new SoundEffect("thud.wav");
     private SoundEffect goalSound = new SoundEffect("goal.wav");
@@ -29,6 +28,7 @@ public class EventManager implements IEventListener {
                 break;
             case Event.UNSAFE_COLLISION:
                 if(event.player.isAlive()) deathSound.play(false);
+                deathAnimation(event);
                 event.player.setAlive(false);
                 break;
             case Event.SAFE_COLLISION:
@@ -95,15 +95,18 @@ public class EventManager implements IEventListener {
     }
 
     public void deathAnimation(Event event) {
-        deathTweenY = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-        deathTweenAlpha = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-        deathTweenRotate = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
-        deathTweenY.animate(TweenableParam.Y,event.player.getyPosition(),event.player.getyPosition()-100,100);
-        deathTweenAlpha.animate(TweenableParam.ALPHA,1,0,100);
-        deathTweenRotate.animate(TweenableParam.ROTATION,0,5,100);
-        event.player.setPivotCenter();
-        TweenJuggler.getInstance().add(deathTweenAlpha);
-        TweenJuggler.getInstance().add(deathTweenY);
-        TweenJuggler.getInstance().add(deathTweenRotate);
+        if(event.player.isAlive()) {
+            Tween deathTweenY, deathTweenAlpha, deathTweenRotate;
+            deathTweenY = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+            deathTweenAlpha = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+            deathTweenRotate = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));
+            deathTweenY.animate(TweenableParam.Y, event.player.getyPosition(), event.player.getyPosition() - 100, 100);
+            deathTweenAlpha.animate(TweenableParam.ALPHA, 1, 0, 100);
+            deathTweenRotate.animate(TweenableParam.ROTATION, 0, 5, 100);
+            event.player.setPivotCenter();
+            TweenJuggler.getInstance().add(deathTweenAlpha);
+            TweenJuggler.getInstance().add(deathTweenY);
+            TweenJuggler.getInstance().add(deathTweenRotate);
+        }
     }
 }
