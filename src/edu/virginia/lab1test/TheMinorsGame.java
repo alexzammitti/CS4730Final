@@ -100,13 +100,13 @@ public class TheMinorsGame extends Game {
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
-    private Sprite startBackground = new Sprite("levelselectionbackground","goal-areas.png");
-    private Sprite finishBackground = new Sprite("levelselectionbackground","goal-areas.png");
+    private Sprite startBackground = new Sprite("levelselectionbackground","goalareas.png");
+    private Sprite finishBackground = new Sprite("levelselectionbackground","goalareas.png");
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
-    private Sprite startText = new Sprite("score title", "start-text.png");
-    private Sprite finishText = new Sprite("score title", "finish-text.png");
+    private Sprite startText = new Sprite("score title", "starttext.png");
+    private Sprite finishText = new Sprite("score title", "finishtext.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -202,10 +202,10 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(platform2);
         levelContainer.addChild(portal);
 
-        overlay.addChild(startText);
-        overlay.addChild(finishText);
         overlay.addChild(startBackground);
         overlay.addChild(finishBackground);
+        overlay.addChild(startText);
+        overlay.addChild(finishText);
         startBackground.setAlpha((float)0.5);
         finishBackground.setAlpha((float)0.5);
         startText.setScale(0.5,0.5);
@@ -741,6 +741,31 @@ public class TheMinorsGame extends Game {
                     }
                     // Preventing overlaps - image changes to imageName + "-error.png"
                     for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
+                        DisplayObjectContainer DOCbeingPlaced = player.item;
+                        if (!levelItem.getId().equals(DOCbeingPlaced.getId())) {                                  // if it's not itself
+                            if (DOCbeingPlaced.getFileName().contains("-error") && levelItem.getFileName().contains("-error")) {
+                                if (!levelItem.collidesWith(DOCbeingPlaced)) {                                     //if there NOT a collision
+                                    DOCbeingPlaced.setImageNormal();
+                                    levelItem.setImageNormal();
+                                    break;
+                                }
+                            } else {
+                                if (levelItem.collidesWith(DOCbeingPlaced)
+                                        && !levelItem.getFileName().contains("beam")) {                             //if there IS a collision
+                                    if (!DOCbeingPlaced.getFileName().contains("Dynamite")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    } else if (levelItem.getId().contains("platform1") || levelItem.getId().contains("platform2") || levelItem.getId().contains("portal")) {
+                                        DOCbeingPlaced.setImageError();
+                                        levelItem.setImageError();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (DisplayObjectContainer levelItem : overlay.getChildren()) {              // iterate over the sprites
                         DisplayObjectContainer DOCbeingPlaced = player.item;
                         if (!levelItem.getId().equals(DOCbeingPlaced.getId())) {                                  // if it's not itself
                             if (DOCbeingPlaced.getFileName().contains("-error") && levelItem.getFileName().contains("-error")) {
