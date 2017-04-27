@@ -97,7 +97,7 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","big-item-selection-screen.png");
-    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","big-item-selection-screen.png");
+    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","bigger-item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
     private Sprite startBackground = new Sprite("levelselectionbackground","goalareas.png");
@@ -106,6 +106,7 @@ public class TheMinorsGame extends Game {
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
     private Sprite noPointsTitle = new Sprite("no points", "nopoints.png");
+    private Sprite noPointsWide = new Sprite("no points wide", "nopointswide.png");
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
     private Sprite scoreboardHeader = null;
@@ -177,7 +178,7 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(375,100);
         selectionBackground.setScale(1,1);
 
-        scoreboardBackground.setPosition(375,100);
+        scoreboardBackground.setPosition(308,100);
         scoreboardBackground.setScale(1,1);
 
 //        scoreboardHeader.setyScale(.5);
@@ -1257,7 +1258,7 @@ public class TheMinorsGame extends Game {
         levelContainer.update(pressedKeys,gamePads);
         scoreboardBackground.removeChild(scoreboardHeader);
         if(playersCompleted == numberOfPlayers && numberOfPlayers != 1) {
-            scoreboardHeader = noPointsTitle;
+            scoreboardHeader = noPointsWide;
             scoreboardBackground.addChild(scoreboardHeader);
             scoreboardHeader.setxScale(.5);
             scoreboardHeader.setyScale(.5);
