@@ -573,6 +573,7 @@ public class TheMinorsGame extends Game {
                                     finishBackground.setPosition(platform2.getxPosition(),platform2.getyPosition()-finishBackground.getScaledHeight());
                                     finishText.setPosition(finishBackground.getxPosition()+finishBackground.getScaledWidth()/2-finishText.getScaledWidth()/2,
                                             finishBackground.getyPosition()+finishBackground.getScaledHeight()/2-finishText.getScaledHeight()/2);
+                                    //align center/vertical didnt work here
                                     break;
                                 }
                             }
