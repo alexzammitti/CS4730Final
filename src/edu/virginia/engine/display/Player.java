@@ -75,6 +75,7 @@ public class Player extends PhysicsSprite {
             this.setyPosition(this.getyPosition()+this.getyVelocity());
             if(this.isAirborne()) {
                 this.setyVelocity(this.getyVelocity()+this.getyAcceleration());
+                platformPlayerIsOn = null;
             }
         }
     }
@@ -95,11 +96,13 @@ public class Player extends PhysicsSprite {
     }
 
     public void fallOffPlatforms(DisplayObject platform) {
-        if (this.isOnPlatform()) {
-            if (this.getRight() < platform.getLeft() || this.getLeft() > platform.getRight()) {
-                if (this.getBottom() > platform.getTop() - 2 && this.getBottom() < platform.getTop() + 2) {
-                    this.setAirborne(true);
-                    this.setOnPlatform(false);
+        if(platform != null) {
+            if (this.isOnPlatform()) {
+                if (this.getRight() < platform.getLeft() || this.getLeft() > platform.getRight()) {
+                    if (this.getBottom() > platform.getTop() - 2 && this.getBottom() < platform.getTop() + 2) {
+                        this.setAirborne(true);
+                        this.setOnPlatform(false);
+                    }
                 }
             }
         }

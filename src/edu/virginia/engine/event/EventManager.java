@@ -63,6 +63,7 @@ public class EventManager implements IEventListener {
                 character.setAirborne(true);
                 character.setOnPlatform(false);
                 character.setyVelocity(0);
+
             }
         } else {
             if(character.getRight() > platform.getLeft() && intersection.x == platform.getLeft()) {

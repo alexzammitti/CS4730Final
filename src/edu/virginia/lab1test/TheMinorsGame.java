@@ -351,11 +351,11 @@ public class TheMinorsGame extends Game {
                     item.setLeftRight(true);
                     item.setUpDown(false);
                 } else if (frameCounter % 3 == 1) {
-                    item.setLeftRight(true);
-                    item.setUpDown(false);                  //Change these when you fix left right
+                    item.setLeftRight(false);
+                    item.setUpDown(true);
                 } else if(frameCounter % 3 == 2) {
                     item.setLeftRight(true);
-                    item.setUpDown(false);
+                    item.setUpDown(true);
                 }
                 selectableSlidingPlatforms.add((Sprite)item);
             } else item.setImage(itemFileNames[random]);
@@ -1117,7 +1117,7 @@ public class TheMinorsGame extends Game {
                         }
                         for (Player player : players) {
                             if (player.platformPlayerIsOn != null) {
-                                if (player.platformPlayerIsOn.equals(platform) && !player.isAirborne()) {
+                                if (player.platformPlayerIsOn.equals(platform)) {
                                     player.setxPosition(player.getxPosition() + SLIDING_PLATFORM_SPEED);
                                 }
                             }
@@ -1130,7 +1130,7 @@ public class TheMinorsGame extends Game {
                         }
                         for (Player player : players) {
                             if (player.platformPlayerIsOn != null) {
-                                if (player.platformPlayerIsOn.equals(platform) && !player.isAirborne())
+                                if (player.platformPlayerIsOn.equals(platform))
                                     player.setxPosition(player.getxPosition() - SLIDING_PLATFORM_SPEED);
                             }
                         }
@@ -1142,11 +1142,23 @@ public class TheMinorsGame extends Game {
                         } else {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
+                        for (Player player : players) {
+                            if (player.platformPlayerIsOn != null) {
+                                if (player.platformPlayerIsOn.equals(platform))
+                                    player.setyPosition(player.getyPosition() - SLIDING_PLATFORM_SPEED);
+                            }
+                        }
                     } else {
                         if (platform.getyAbsolutePosition() < platform.getStartY() + travelDistance) {
                             platform.setyPosition(platform.getyPosition() + SLIDING_PLATFORM_SPEED);
                         } else {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
+                        }
+                        for (Player player : players) {
+                            if (player.platformPlayerIsOn != null) {
+                                if (player.platformPlayerIsOn.equals(platform))
+                                    player.setyPosition(player.getyPosition() + SLIDING_PLATFORM_SPEED);
+                            }
                         }
                     }
                 }
