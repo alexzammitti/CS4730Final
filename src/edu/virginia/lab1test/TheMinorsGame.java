@@ -526,12 +526,11 @@ public class TheMinorsGame extends Game {
                                             portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-60);
                                         }
                                         startBackground.setPosition(platform1.getxPosition(),platform1.getyPosition()-startBackground.getScaledHeight());
-                                        startText.setPosition(startBackground.getxPosition()+startBackground.getScaledWidth()/2,
-                                                startBackground.getyPosition()+startBackground.getScaledHeight()/2);
-                                        startText.alignCenterVertical(startBackground);
+                                        startText.setPosition(startBackground.getxPosition()+startBackground.getScaledWidth()/2-startText.getScaledWidth()/2,
+                                                startBackground.getyPosition()+startBackground.getScaledHeight()/2-startText.getScaledHeight()/2);
                                         finishBackground.setPosition(platform2.getxPosition(),platform2.getyPosition()-finishBackground.getScaledHeight());
-                                        finishText.alignCenterHorizontal(finishBackground);
-                                        finishText.alignCenterVertical(finishBackground);
+                                        finishText.setPosition(finishBackground.getxPosition()+finishBackground.getScaledWidth()/2-finishText.getScaledWidth()/2,
+                                                finishBackground.getyPosition()+finishBackground.getScaledHeight()/2-finishText.getScaledHeight()/2);
                                         break;
                                     }
                                 }
