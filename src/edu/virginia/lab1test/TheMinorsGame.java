@@ -131,6 +131,7 @@ public class TheMinorsGame extends Game {
     private SoundEffect theme1 = new SoundEffect("theme1.wav");
     private SoundEffect theme2 = new SoundEffect("theme2.wav");
     private SoundEffect theme3 = new SoundEffect("theme3.wav");
+    private SoundEffect theme4 = new SoundEffect("theme4.wav");
     private SoundEffect laserSound = new SoundEffect("laser.wav");
     private SoundEffect jumpSound = new SoundEffect("jump.wav");
     private SoundEffect DynamiteSound = new SoundEffect("rocket.wav");
@@ -187,6 +188,8 @@ public class TheMinorsGame extends Game {
 
         levelSelectionBackground.setPosition(0,0);
         levelSelectionBackground.setScaledSize(GAME_WIDTH,GAME_HEIGHT);
+
+        theme1.play(true);
 
         // BUILD DISPLAY TREES
 
@@ -338,9 +341,10 @@ public class TheMinorsGame extends Game {
         for(Player player : players) {
             player.setScore(1);
         }
-        theme1.stop();
         theme2.stop();
         theme3.stop();
+        theme4.stop();
+        theme1.play(true);
     }
 
 	private void initializeItemSelection() {
@@ -501,11 +505,12 @@ public class TheMinorsGame extends Game {
                             if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A) && gamePads.get(player.playerNumber).aButtonClock.getElapsedTime() > KEY_DELAY) {
                                 for(Level level : levelList) {                              // potentially not the best way to do this
                                     if(background.getFileName().equals(level.getBackground().getFileName())){
+                                        theme1.stop();
                                         currentLevel = level;
                                         currentLevel.getBackground().setPosition(0,0);
                                         currentLevel.setPositionAndScaling();
                                         if(currentLevel.getBackground().getFileName().contains("1")) {
-                                            theme1.play(true);
+                                            theme4.play(true);
                                             platform1.setPosition(0,GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/4);
@@ -542,10 +547,11 @@ public class TheMinorsGame extends Game {
                         } else if (pressedKeys.contains(KEY_SPACE) && spaceKeyClock.getElapsedTime() > KEY_DELAY) {
                             for(Level level : levelList) {                              // potentially not the best way to do this
                                 if(background.getFileName().equals(level.getBackground().getFileName())){
+                                    theme1.stop();
                                     currentLevel = level;
                                     currentLevel.setPositionAndScaling();
                                     if(currentLevel.getBackground().getFileName().contains("1")) {
-                                        theme1.play(true);
+                                        theme4.play(true);
                                         platform1.setxPosition(0);
                                         platform1.setyPosition(GAME_HEIGHT*7/8);
                                         platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
