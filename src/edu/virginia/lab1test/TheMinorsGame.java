@@ -97,7 +97,7 @@ public class TheMinorsGame extends Game {
     private Sprite item5 = new Sprite("item5");
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","big-item-selection-screen.png");
-    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
+    private Sprite scoreboardBackground = new Sprite("scoreboardbackground","big-item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
     private Sprite startBackground = new Sprite("levelselectionbackground","goalareas.png");
@@ -108,6 +108,7 @@ public class TheMinorsGame extends Game {
     private Sprite noPointsTitle = new Sprite("no points", "nopoints.png");
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
+    private Sprite scoreboardHeader = null;
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -176,13 +177,12 @@ public class TheMinorsGame extends Game {
         selectionBackground.setPosition(375,100);
         selectionBackground.setScale(1,1);
 
-        scoreboardBackground.setPosition(350,100);
+        scoreboardBackground.setPosition(375,100);
         scoreboardBackground.setScale(1,1);
-        scoreboardBackground.addChild(scoreTitle);
-        scoreTitle.setyScale(.5);
-        scoreTitle.setxScale(.5);
-        scoreTitle.alignCenterHorizontal(scoreboardBackground);
 
+//        scoreboardHeader.setyScale(.5);
+//        scoreboardHeader.setxScale(.5);
+//        scoreboardHeader.alignCenterHorizontal(scoreboardBackground);
 
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
@@ -1255,6 +1255,20 @@ public class TheMinorsGame extends Game {
 
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
+        scoreboardBackground.removeChild(scoreboardHeader);
+        if(playersCompleted == numberOfPlayers && numberOfPlayers != 1) {
+            scoreboardHeader = noPointsTitle;
+            scoreboardBackground.addChild(scoreboardHeader);
+            scoreboardHeader.setxScale(.5);
+            scoreboardHeader.setyScale(.5);
+            scoreboardHeader.alignCenterHorizontal(scoreboardBackground);
+        } else {
+            scoreboardHeader = scoreTitle;
+            scoreboardBackground.addChild(scoreboardHeader);
+            scoreboardHeader.setxScale(.5);
+            scoreboardHeader.setyScale(.5);
+            scoreboardHeader.alignCenterHorizontal(scoreboardBackground);
+        }
 
         if(!scoresCalculated) {
             for (Player player : players) {
@@ -1274,11 +1288,7 @@ public class TheMinorsGame extends Game {
                 player.getScoreBar().setyScale(1);
                 player.getScoreBar().setxScale(0);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
-                if(playersCompleted == numberOfPlayers) {
-                    noPointsTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
-                } else {
-                    scoreTitle.alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, 1);
-                }
+                scoreboardHeader.alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, 1);
                 scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
                     scoreboardBackground.addChild(player.getScoreBar());
@@ -1336,6 +1346,7 @@ public class TheMinorsGame extends Game {
             }
             scoresCalculated = true;
         }
+
 
         if(roundCompleteClock.getElapsedTime() > 5000) {
             for(Player player: players) {
