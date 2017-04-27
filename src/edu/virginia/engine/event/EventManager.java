@@ -58,8 +58,13 @@ public class EventManager implements IEventListener {
                     character.setyVelocity(0);
                     character.hoverClock.resetGameClock();
             }
-            else if(character.getyPosition() > platform.getTop()) {                                         //bottom of platform
-                if(platform.getFileName().contains("sliding"))   {
+            else if(character.getyPosition() > platform.getTop()) { //bottom of platform
+                    if(character.isOnPlatform()) {
+                        if(character.isAlive()) deathSound.play(false);
+                        character.setyScale(0.5*character.getyScale());
+                        character.setAlive(false);
+                    }
+                    if(platform.getFileName().contains("sliding"))   {
                     character.setyPosition(platform.getHitbox().y+platform.getHitbox().height + 10);
                 } else {
                     character.setyPosition(platform.getHitbox().y + platform.getHitbox().height);
