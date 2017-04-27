@@ -71,6 +71,7 @@ public class TheMinorsGame extends Game {
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
+    private boolean gameOver = false;
     private int roundsCompleted = 0;
 
 
@@ -99,10 +100,13 @@ public class TheMinorsGame extends Game {
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","item-selection-screen.png");
     private Sprite gameOverBackground = new Sprite("gameoverbackground","item-selection-screen.png");
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
-
+    private Sprite startBackground = new Sprite("levelselectionbackground","goal-areas.png");
+    private Sprite finishBackground = new Sprite("levelselectionbackground","goal-areas.png");
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
+    private Sprite startText = new Sprite("score title", "start-text.png");
+    private Sprite finishText = new Sprite("score title", "finish-text.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -113,6 +117,7 @@ public class TheMinorsGame extends Game {
     private ArrayList<Sprite> gameplaySawbladeList = new ArrayList<>(0);
     // Display Object Containers
     private DisplayObjectContainer levelContainer = new DisplayObjectContainer("level container");
+    private DisplayObjectContainer overlay = new DisplayObjectContainer("start and finish overlay");
     private DisplayObjectContainer levelImages = new DisplayObjectContainer("level images");        // contains level background images for level selection
     // Levels
     private ArrayList<Level> levelList= new ArrayList<>(0);
@@ -176,6 +181,7 @@ public class TheMinorsGame extends Game {
         scoreTitle.setxScale(.5);
         scoreTitle.alignCenterHorizontal(scoreboardBackground);
 
+
         gameOverBackground.setPosition(350,100);
         gameOverBackground.setScale(1,1);
 
@@ -195,6 +201,15 @@ public class TheMinorsGame extends Game {
         levelContainer.addChild(platform1);
         levelContainer.addChild(platform2);
         levelContainer.addChild(portal);
+
+        overlay.addChild(startText);
+        overlay.addChild(finishText);
+        overlay.addChild(startBackground);
+        overlay.addChild(finishBackground);
+        startBackground.setAlpha((float)0.5);
+        finishBackground.setAlpha((float)0.5);
+        startText.setScale(0.5,0.5);
+        finishText.setScale(0.5,0.5);
 
         platform1.setxPosition(0);
         platform1.setyPosition(GAME_HEIGHT/2);
@@ -256,6 +271,7 @@ public class TheMinorsGame extends Game {
                     break;
             }
             numberOfPlayers = players.size();
+            scoreTitle.alignFractionVertical(scoreboardBackground,numberOfPlayers+2,1);
             resetPlayers(pressedKeys,gamePads);
             for(Player player : players) {
                 player.addEventListener(eventManager, Event.SAFE_COLLISION);
@@ -309,6 +325,7 @@ public class TheMinorsGame extends Game {
 
     private void resetGame(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         gameWon = false;
+        gameOver = false;
         gameWinner = 5;
         roundsCompleted = 0;
         levelContainer.removeAll();
@@ -489,8 +506,7 @@ public class TheMinorsGame extends Game {
                                         currentLevel.setPositionAndScaling();
                                         if(currentLevel.getBackground().getFileName().contains("1")) {
                                             theme1.play(true);
-                                            platform1.setxPosition(0);
-                                            platform1.setyPosition(GAME_HEIGHT*7/8);
+                                            platform1.setPosition(0,GAME_HEIGHT*7/8);
                                             platform2.setxPosition(GAME_WIDTH - platform2.getScaledWidth());
                                             platform2.setyPosition(GAME_HEIGHT/4);
                                             portal.setPosition(GAME_WIDTH-portal.getScaledWidth()-20,GAME_HEIGHT/4-120);
@@ -509,6 +525,13 @@ public class TheMinorsGame extends Game {
                                             platform2.setyPosition(GAME_HEIGHT/4);
                                             portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
                                         }
+                                        startBackground.setPosition(platform1.getxPosition(),platform1.getyPosition()-startBackground.getScaledHeight());
+                                        startText.setPosition(startBackground.getxPosition()+startBackground.getScaledWidth()/2,
+                                                startBackground.getyPosition()+startBackground.getScaledHeight()/2);
+                                        startText.alignCenterVertical(startBackground);
+                                        finishBackground.setPosition(platform2.getxPosition(),platform2.getyPosition()-finishBackground.getScaledHeight());
+                                        finishText.alignCenterHorizontal(finishBackground);
+                                        finishText.alignCenterVertical(finishBackground);
                                         break;
                                     }
                                 }
@@ -544,6 +567,12 @@ public class TheMinorsGame extends Game {
                                         platform2.setyPosition(GAME_HEIGHT/4);
                                         portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-120);
                                     }
+                                    startBackground.setPosition(platform1.getxPosition(),platform1.getyPosition()-startBackground.getScaledHeight());
+                                    startText.alignCenterHorizontal(startBackground);
+                                    startText.alignCenterVertical(startBackground);
+                                    finishBackground.setPosition(platform2.getxPosition(),platform2.getyPosition()-finishBackground.getScaledHeight());
+                                    finishText.alignCenterHorizontal(finishBackground);
+                                    finishText.alignCenterVertical(finishBackground);
                                     break;
                                 }
                             }
@@ -565,6 +594,7 @@ public class TheMinorsGame extends Game {
         }
         movePlatforms(30,pressedKeys,gamePads,false);
 	    spinSawblades(false);
+	    overlay.update(pressedKeys,gamePads);
         for(Player player : players) {
             if(!levelContainer.getChildren().contains(player.item)) {
                 player.cursor.update(pressedKeys, gamePads);
@@ -675,6 +705,7 @@ public class TheMinorsGame extends Game {
     private void itemPlacementUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if (levelContainer != null) {
             levelContainer.update(pressedKeys, gamePads);
+            overlay.update(pressedKeys,gamePads);
             spinSawblades(true);
             for(Player player : players) {
                 // Move sprite based on user input
@@ -1240,14 +1271,15 @@ public class TheMinorsGame extends Game {
 
                 if(player.getScore() >= winScore) {
                     gameWon = true;
+                    gameOver = true;
                 }
             }
             if(roundsCompleted <= ROUND_COUNT) {
                 roundsCompleted++;
             } else {
-                gameWon = true;
+                gameOver = true;
             }
-            if(gameWon) {
+            if(gameOver) {
                 int maxScore = 0;
                 for(Player player : players) {
                     if(player.getScore() > maxScore) {
@@ -1256,6 +1288,13 @@ public class TheMinorsGame extends Game {
                     }
                 }
                 gameWinner++;
+                if(numberOfPlayers == 1 && maxScore < winScore) {
+                    gameWon = false;
+                } else if(numberOfPlayers != 1 && maxScore == 1) {
+                    gameWon = false;
+                } else {
+                    gameWon = true;
+                }
             }
             scoresCalculated = true;
         }
@@ -1264,7 +1303,7 @@ public class TheMinorsGame extends Game {
             for(Player player: players) {
                 player.getScoreBar().setVisible(false);
             }
-            if(!gameWon) {
+            if(!gameOver) {
                 gameMode = GameMode.ITEM_SELECTION;
                 resetPlayers(pressedKeys, gamePads);
                 levelContainer.update(pressedKeys, gamePads);
@@ -1285,6 +1324,11 @@ public class TheMinorsGame extends Game {
             winnerTitle.alignCenterVertical(gameOverBackground);
         } else {
             //TODO make a "No one wins" title and put this in the box
+            Sprite noWinnerTitle = new Sprite("noWinner", "noonewins.png");
+            gameOverBackground.addChild(noWinnerTitle);
+            noWinnerTitle.setScale(0.6,0.6);
+            noWinnerTitle.alignCenterHorizontal(gameOverBackground);
+            noWinnerTitle.alignCenterVertical(gameOverBackground);
         }
         if(gameCompleteClock.getElapsedTime() > 5000) {
             resetGame(pressedKeys, gamePads);
@@ -1339,6 +1383,7 @@ public class TheMinorsGame extends Game {
         if(levelContainer != null) {
             Rectangle test;
             levelContainer.draw(g);
+            overlay.draw(g);
             selectionBackground.draw(g);
             for(Player player : players) {
                 player.cursor.draw(g);
@@ -1361,6 +1406,7 @@ public class TheMinorsGame extends Game {
     private void itemPlacementDraw(Graphics g) {
 	    if(levelContainer != null) {
 	        levelContainer.draw(g);
+	        overlay.draw(g);
             for(Player player : players) {
                 player.cursor.draw(g);
             }
