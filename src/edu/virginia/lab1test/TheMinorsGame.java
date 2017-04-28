@@ -496,7 +496,6 @@ public class TheMinorsGame extends Game {
                 if (inputMode.equals(INPUT_GAMEPADS))
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
                 else handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
-                constrainItemToLevel(player.cursor);
                 levelImages.update(pressedKeys,gamePads);
                 gameTitle.alignCenterHorizontal(GAME_WIDTH);
                 gameTitle.setyPosition(GAME_HEIGHT/2 - 275);
@@ -613,7 +612,6 @@ public class TheMinorsGame extends Game {
                 if (inputMode.equals(INPUT_GAMEPADS))
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
                 else handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
-                constrainItemToLevel(player.cursor);
                 // CHECK FOR OVERLAP BETWEEN CURSORS & SELECTABLE ITEMS
                 for (Iterator<Sprite> iterator = placeableItemList.iterator(); iterator.hasNext(); ) {
                     Sprite s = iterator.next();
@@ -726,10 +724,7 @@ public class TheMinorsGame extends Game {
                     handleCursorMoveInput(player.cursor, CURSOR_SPEED, pressedKeys);
                     handleGamepadCursorMoveInput(player.item, CURSOR_SPEED, gamePads, player.playerNumber);
                     handleGamepadCursorMoveInput(player.cursor, CURSOR_SPEED, gamePads, player.playerNumber);
-                    //constrainItemToLevel(player.item);
                     player.cursor.update(pressedKeys,gamePads);
-                    constrainItemToLevel(player.cursor);
-                    constrainItemToLevel(player.item);
                     // Allow user to rotate image
                     if (inputMode.equals(INPUT_GAMEPADS)) {
                         if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.RIGHT_TRIGGER) && gamePads.get(player.playerNumber).triggerButtonClock.getElapsedTime() > KEY_DELAY) {
@@ -739,7 +734,6 @@ public class TheMinorsGame extends Game {
                                 player.item.setRotation(player.item.getRotation() + Math.PI / 2);
                             gamePads.get(player.playerNumber).triggerButtonClock.resetGameClock();
                             player.item.update(pressedKeys,gamePads);
-                            constrainItemToLevel(player.item);
                         }
                     } else if (pressedKeys.contains(KEY_R) && rKeyClock.getElapsedTime() > KEY_DELAY) {
                         if (player.item.getRotation() >= 3 * Math.PI / 2)
@@ -748,7 +742,6 @@ public class TheMinorsGame extends Game {
                             player.item.setRotation(player.item.getRotation() + Math.PI / 2);
                         rKeyClock.resetGameClock();
                         player.item.update(pressedKeys,gamePads);
-                        constrainItemToLevel(player.item);
                     }
                     // Preventing overlaps - image changes to imageName + "-error.png"
                     for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {              // iterate over the sprites
@@ -934,28 +927,29 @@ public class TheMinorsGame extends Game {
     // METHODIZED UPDATE SEGMENTS
 
     private void handleCursorMoveInput(DisplayObject displayObject, int speed, ArrayList<Integer> pressedKeys) {
-        if (pressedKeys.contains(KEY_UP)) {
+        Rectangle hitbox = displayObject.getHitbox();
+        if (pressedKeys.contains(KEY_UP) && !(hitbox.y - speed < 0)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
-        } else if (pressedKeys.contains(KEY_DOWN)) {
+        } else if (pressedKeys.contains(KEY_DOWN) && !(hitbox.y + hitbox.height + speed > GAME_HEIGHT)) {
             displayObject.setyPosition(displayObject.getyPosition() + speed);
         }
-        if (pressedKeys.contains(KEY_LEFT)) {
+        if (pressedKeys.contains(KEY_LEFT) && !(hitbox.x - speed < 0)) {
             displayObject.setxPosition(displayObject.getxPosition() - speed);
-        } else if (pressedKeys.contains(KEY_RIGHT)) {
+        } else if (pressedKeys.contains(KEY_RIGHT) && !(hitbox.x + hitbox.width + speed > GAME_WIDTH)) {
             displayObject.setxPosition(displayObject.getxPosition() + speed);
         }
     }
 
     private void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads, int playerNumber) {
         if(inputMode.equals(INPUT_GAMEPADS)) {
-            if (gamePads.get(playerNumber).getLeftStickYAxis() < 0) {
+            if (gamePads.get(playerNumber).getLeftStickYAxis() < 0  && !(hitbox.y - speed < 0)) {
                 displayObject.setyPosition(displayObject.getyPosition() - speed);
-            } else if (gamePads.get(playerNumber).getLeftStickYAxis() > 0) {
+            } else if (gamePads.get(playerNumber).getLeftStickYAxis() > 0  && !(hitbox.y + hitbox.height + speed > GAME_HEIGHT)) {
                 displayObject.setyPosition(displayObject.getyPosition() + speed);
             }
-            if (gamePads.get(playerNumber).getLeftStickXAxis() < 0) { //Left
+            if (gamePads.get(playerNumber).getLeftStickXAxis() < 0  && !(hitbox.x - speed < 0)) { //Left
                 displayObject.setxPosition(displayObject.getxPosition() - speed);
-            } else if (gamePads.get(playerNumber).getLeftStickXAxis() > 0) { //Right
+            } else if (gamePads.get(playerNumber).getLeftStickXAxis() > 0  && !(hitbox.x + hitbox.width + speed > GAME_WIDTH)) { //Right
                 displayObject.setxPosition(displayObject.getxPosition() + speed);
             }
         }
@@ -1066,33 +1060,6 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    private void constrainItemToLevel(Sprite sprite) {
-        //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-        Rectangle hitbox = sprite.getHitbox();
-        if (this.getAbsoluteRotation() % (Math.PI) < 1) {
-            if (hitbox.y + hitbox.height > GAME_HEIGHT) {
-                sprite.setyPosition(GAME_HEIGHT - hitbox.height - 1);
-            } else if (hitbox.y < 0) {
-                sprite.setyPosition(0);
-            }
-            if (hitbox.x + hitbox.width > GAME_WIDTH) {
-                sprite.setxPosition(GAME_WIDTH - hitbox.width - 1);
-            } else if (hitbox.x < 0) {
-                sprite.setxPosition(0);
-            }
-        } else if (this.getAbsoluteRotation() % Math.PI / 2 < 1) {
-            if (hitbox.y + hitbox.height > GAME_HEIGHT) {
-                sprite.setyPosition(GAME_HEIGHT - hitbox.height - 1);
-            } else if (hitbox.y < 0) {
-                sprite.setyPosition(hitbox.height/2+2);
-            }
-            if (hitbox.x + hitbox.width > GAME_WIDTH) {
-                sprite.setxPosition(GAME_WIDTH - hitbox.width - 1);
-            } else if (hitbox.x < 0) {
-                sprite.setxPosition(hitbox.width/2 + 2);
-            }
-        }
-    }
 
 
 
@@ -1153,7 +1120,6 @@ public class TheMinorsGame extends Game {
                         }
                     }
                     platform.update(pressedKeys, gamePads);
-                    constrainItemToLevel(platform);
                 }
                 if(platform.isUpDown()) {
                     if (platform.isSlidingPlatformDirection()) {
@@ -1171,7 +1137,6 @@ public class TheMinorsGame extends Game {
                     }
                 }
                     platform.update(pressedKeys, gamePads);
-                    constrainItemToLevel(platform);
             }
         } else {
             for (Sprite platform : gameplaySlidingPlatforms) {
@@ -1232,7 +1197,6 @@ public class TheMinorsGame extends Game {
 
 
                 platform.update(pressedKeys, gamePads);
-                constrainItemToLevel(platform);
             }
         }
     }
