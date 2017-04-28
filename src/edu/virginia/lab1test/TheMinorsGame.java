@@ -946,14 +946,14 @@ public class TheMinorsGame extends Game {
             double leftStickYAxis = gamePads.get(playerNumber).getLeftStickYAxis();
             double leftStickXAxis = gamePads.get(playerNumber).getLeftStickXAxis();
             if (leftStickYAxis < 0  && !(hitbox.y - speed < 0)) {
-                displayObject.setyPosition(displayObject.getyPosition() - (int)(speed*leftStickYAxis));
+                displayObject.setyPosition(displayObject.getyPosition() - Math.abs((int)(speed*leftStickYAxis)));
             } else if (leftStickYAxis > 0  && !(hitbox.y + hitbox.height + speed + 2> GAME_HEIGHT)) {
-                displayObject.setyPosition(displayObject.getyPosition() + (int)(speed*leftStickYAxis));
+                displayObject.setyPosition(displayObject.getyPosition() + Math.abs((int)(speed*leftStickYAxis)));
             }
             if (leftStickXAxis < 0  && !(hitbox.x - speed < 0)) { //Left
-                displayObject.setxPosition(displayObject.getxPosition() - (int)(speed*leftStickXAxis));
+                displayObject.setxPosition(displayObject.getxPosition() - Math.abs((int)(speed*leftStickXAxis)));
             } else if (leftStickXAxis > 0  && !(hitbox.x + hitbox.width + speed > GAME_WIDTH)) { //Right
-                displayObject.setxPosition(displayObject.getxPosition() + (int)(speed*leftStickXAxis));
+                displayObject.setxPosition(displayObject.getxPosition() + Math.abs((int)(speed*leftStickXAxis)));
             }
         }
     }
