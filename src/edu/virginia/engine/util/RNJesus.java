@@ -25,6 +25,7 @@ public class RNJesus {
         } else if(numberOfLaserGuns > 5) {
             int random = ThreadLocalRandom.current().nextInt(0,noLasers.size());
             System.out.println("Less lasers");
+
             return noLasers.get(random);
         } else {
             int random = ThreadLocalRandom.current().nextInt(0,normal.size());
