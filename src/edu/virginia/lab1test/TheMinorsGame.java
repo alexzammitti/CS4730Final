@@ -24,12 +24,12 @@ public class TheMinorsGame extends Game {
 
     // GLOBAL CONSTANTS
     public enum GameMode {
-        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE, START_SCREEN;
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE, START_SCREEN, FEEDBACK;
     }
 
     private GameMode gameMode = GameMode.LEVEL_SELECTION;
-    private final static int GAME_WIDTH = 1250;
-    private final static int GAME_HEIGHT = 700;
+    private final static int GAME_WIDTH = 1900;
+    private final static int GAME_HEIGHT = 1000;
     private final static String INPUT_KEYBOARD = "keyboard";
     private final static String INPUT_GAMEPADS = "gamepads";
     // keys
@@ -67,12 +67,12 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 100; //TODO
+    private int winScore = 400; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
     private boolean gameOver = false;
-    private int roundsCompleted = 0;
+    private int roundsCompleted = 1;
 
 
 //
@@ -110,6 +110,9 @@ public class TheMinorsGame extends Game {
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
     private Sprite scoreboardHeader = null;
+    private Sprite lastRound = new Sprite("last round", "noonewins.png");           //TODO add these text files
+    private Sprite penultimateRound = new Sprite("penultimate", "noonewins.png");
+    private Sprite thirdToLast = new Sprite("third to last", "noonewins.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -154,6 +157,8 @@ public class TheMinorsGame extends Game {
     private GameClock spaceKeyClock = new GameClock();
     private GameClock roundCompleteClock = new GameClock();
     private GameClock gameCompleteClock = new GameClock();
+    private GameClock feedbackClock = new GameClock();
+
 
 
 	
@@ -175,17 +180,17 @@ public class TheMinorsGame extends Game {
         levelList.add(level3);
 
         //SET BACKGROUNDS UP FOR EACH SCREEN
-        selectionBackground.setPosition(375,100);
+        selectionBackground.setPosition(700,250);
         selectionBackground.setScale(1,1);
 
-        scoreboardBackground.setPosition(308,100);
+        scoreboardBackground.setPosition(633,250);
         scoreboardBackground.setScale(1,1);
 
 //        scoreboardHeader.setyScale(.5);
 //        scoreboardHeader.setxScale(.5);
 //        scoreboardHeader.alignCenterHorizontal(scoreboardBackground);
 
-        gameOverBackground.setPosition(350,100);
+        gameOverBackground.setPosition(675,250);
         gameOverBackground.setScale(1,1);
 
         levelSelectionBackground.setPosition(0,0);
@@ -310,7 +315,7 @@ public class TheMinorsGame extends Game {
             player.setyVelocity(0);
             player.setxVelocity(0);
             player.cursor.setScale(0.25, 0.25);
-            player.cursor.setPosition(300, 300);
+            player.cursor.setyPosition(350);
             player.cursor.alignCenterHorizontal(levelContainer);
             player.cursor.setVisible(true);
             player.item = null;
@@ -333,7 +338,7 @@ public class TheMinorsGame extends Game {
         gameWon = false;
         gameOver = false;
         gameWinner = 5;
-        roundsCompleted = 0;
+        roundsCompleted = 1;
         gameOverBackground.removeAll();
         levelContainer.removeAll();
         levelContainer.addChild(platform1);
@@ -476,6 +481,9 @@ public class TheMinorsGame extends Game {
                     case GAME_COMPLETE:
                         gameCompleteUpdate(pressedKeys, gamePads);
                         break;
+                    case FEEDBACK:
+                        feedbackUpdate(pressedKeys, gamePads);
+                        break;
                 }
             }
         }
@@ -511,7 +519,8 @@ public class TheMinorsGame extends Game {
                                         theme1.stop();
                                         currentLevel = level;
                                         currentLevel.getBackground().setPosition(0,0);
-                                        currentLevel.setPositionAndScaling();
+                                        currentLevel.setPosition(0,0);
+                                        currentLevel.getBackground().setScaledSize(GAME_WIDTH, GAME_HEIGHT);
                                         if(currentLevel.getBackground().getFileName().contains("1")) {
                                             theme4.play(true);
                                             platform1.setPosition(0,GAME_HEIGHT*7/8);
@@ -552,7 +561,9 @@ public class TheMinorsGame extends Game {
                                 if(background.getFileName().equals(level.getBackground().getFileName())){
                                     theme1.stop();
                                     currentLevel = level;
-                                    currentLevel.setPositionAndScaling();
+                                    currentLevel.getBackground().setPosition(0,0);
+                                    currentLevel.setPosition(0,0);
+                                    currentLevel.getBackground().setScaledSize(GAME_WIDTH, GAME_HEIGHT);
                                     if(currentLevel.getBackground().getFileName().contains("1")) {
                                         theme4.play(true);
                                         platform1.setxPosition(0);
@@ -1284,7 +1295,7 @@ public class TheMinorsGame extends Game {
                     gameOver = true;
                 }
             }
-            if(roundsCompleted <= ROUND_COUNT) {
+            if(roundsCompleted < ROUND_COUNT) {
                 roundsCompleted++;
             } else {
                 gameOver = true;
@@ -1315,9 +1326,14 @@ public class TheMinorsGame extends Game {
                 player.getScoreBar().setVisible(false);
             }
             if(!gameOver) {
-                gameMode = GameMode.ITEM_SELECTION;
-                resetPlayers(pressedKeys, gamePads);
-                levelContainer.update(pressedKeys, gamePads);
+                if(roundsCompleted == ROUND_COUNT || roundsCompleted == ROUND_COUNT - 1 || roundsCompleted == ROUND_COUNT - 2) {
+                    gameMode = GameMode.FEEDBACK;
+                    feedbackClock.resetGameClock();
+                } else {
+                    gameMode = GameMode.ITEM_SELECTION;
+                    resetPlayers(pressedKeys, gamePads);
+                    levelContainer.update(pressedKeys, gamePads);
+                }
             } else {
                 gameMode = GameMode.GAME_COMPLETE;
                 gameCompleteClock.resetGameClock();
@@ -1334,7 +1350,6 @@ public class TheMinorsGame extends Game {
             winnerTitle.alignCenterHorizontal(gameOverBackground);
             winnerTitle.alignCenterVertical(gameOverBackground);
         } else {
-            //TODO make a "No one wins" title and put this in the box
             Sprite noWinnerTitle = new Sprite("noWinner", "noonewins.png");
             gameOverBackground.addChild(noWinnerTitle);
             noWinnerTitle.setScale(0.6,0.6);
@@ -1347,6 +1362,31 @@ public class TheMinorsGame extends Game {
             gameMode = GameMode.LEVEL_SELECTION;
         }
 
+    }
+
+    public void feedbackUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+        if(roundsCompleted == ROUND_COUNT) {
+            gameOverBackground.addChild(lastRound);
+            lastRound.setScale(0.6,0.6);
+            lastRound.alignCenterHorizontal(gameOverBackground);
+            lastRound.alignCenterVertical(gameOverBackground);
+        } else if (roundsCompleted == ROUND_COUNT - 1) {
+            gameOverBackground.addChild(penultimateRound);
+            penultimateRound.setScale(0.6,0.6);
+            penultimateRound.alignCenterHorizontal(gameOverBackground);
+            penultimateRound.alignCenterVertical(gameOverBackground);
+        } else if (roundsCompleted == ROUND_COUNT - 2) {
+            gameOverBackground.addChild(thirdToLast);
+            thirdToLast.setScale(0.6,0.6);
+            thirdToLast.alignCenterHorizontal(gameOverBackground);
+            thirdToLast.alignCenterVertical(gameOverBackground);
+        }
+        if(feedbackClock.getElapsedTime() > 5000) {
+            gameMode = GameMode.ITEM_SELECTION;
+            resetPlayers(pressedKeys, gamePads);
+            levelContainer.update(pressedKeys, gamePads);
+            gameOverBackground.removeAll();
+        }
     }
 
 	@Override
@@ -1375,6 +1415,9 @@ public class TheMinorsGame extends Game {
                 case GAME_COMPLETE:
                     gameCompleteDraw(g);
                     break;
+                case FEEDBACK:
+                    feedbackDraw(g);
+                    break;
             }
         }
 	}
@@ -1383,10 +1426,11 @@ public class TheMinorsGame extends Game {
         if(frameCounter > 3) {
             levelSelectionBackground.draw(g);
             levelImages.draw(g);
+            gameTitle.draw(g);
             for(Player player : players) {
                 player.cursor.draw(g);
             }
-            gameTitle.draw(g);
+
         }
     }
 
@@ -1467,6 +1511,13 @@ public class TheMinorsGame extends Game {
     }
 
     private void gameCompleteDraw(Graphics g) {
+        if(levelContainer != null) {
+            levelContainer.draw(g);
+        }
+        gameOverBackground.draw(g);
+    }
+
+    private void feedbackDraw(Graphics g) {
         if(levelContainer != null) {
             levelContainer.draw(g);
         }
