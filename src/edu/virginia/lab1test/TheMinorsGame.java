@@ -869,26 +869,6 @@ public class TheMinorsGame extends Game {
                         }
                     }
                 }
-                // Manual way to enter gameplay
-//                if (inputMode.equals(INPUT_GAMEPADS)) {
-//                    if (gamePads.get(0).isButtonPressed(GamePad.BUTTON_START) && escKeyClock.getElapsedTime() > KEY_DELAY) {
-//                        if (!levelContainer.getLastChild().isPlaced) {
-//                            levelContainer.removeChild(levelContainer.getLastChild());
-//                        }
-//                        for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {
-//                            if (levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
-//                        }
-//                        gameMode = GameMode.GAMEPLAY;
-//                    }
-//                } else if (pressedKeys.contains(KEY_ESC) && escKeyClock.getElapsedTime() > KEY_DELAY) {
-//                    if (!levelContainer.getLastChild().isPlaced) {
-//                        levelContainer.removeChild(levelContainer.getLastChild());
-//                    }
-//                    for (DisplayObjectContainer levelItem : levelContainer.getChildren()) {
-//                        if (levelItem.getFileName().contains("-error")) levelItem.setImageNormal();
-//                    }
-//                    gameMode = GameMode.GAMEPLAY;
-//                }
             }
         }
 
@@ -1087,30 +1067,33 @@ public class TheMinorsGame extends Game {
     }
 
     private void constrainItemToLevel(Sprite sprite) {
-
-            if (sprite.getBottom() > GAME_HEIGHT) {
-                //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-                sprite.setyPosition(GAME_HEIGHT - sprite.getHitbox().height);
-            } else if (sprite.getTop() < 0) {
+        //TODO there is not currently a way for us to set the global position of a sprite if it is a child
+        Rectangle hitbox = sprite.getHitbox();
+        if (this.getAbsoluteRotation() % (Math.PI) < 1) {
+            if (hitbox.y + hitbox.height > GAME_HEIGHT) {
+                sprite.setyPosition(GAME_HEIGHT - hitbox.height - 1);
+            } else if (hitbox.y < 0) {
                 sprite.setyPosition(0);
             }
-            if (sprite.getRight() > GAME_WIDTH) {
-                sprite.setxPosition(GAME_WIDTH - sprite.getHitbox().width);
-            } else if (sprite.getLeft() < 0) {
+            if (hitbox.x + hitbox.width > GAME_WIDTH) {
+                sprite.setxPosition(GAME_WIDTH - hitbox.width - 1);
+            } else if (hitbox.x < 0) {
                 sprite.setxPosition(0);
             }
-//
-//            if (sprite.getBottom() > GAME_HEIGHT) {
-//                sprite.setyPosition(GAME_HEIGHT - sprite.getScaledHeight());
-//            } else if (sprite.getTop() < 0) {
-//                sprite.setyPosition(0);
-//            }
-//            if (sprite.getRight() > GAME_WIDTH) {
-//                sprite.setxPosition(GAME_WIDTH - sprite.getScaledWidth());
-//            } else if (sprite.getLeft() < 0) {
-//                sprite.setxPosition(0);
-//            }
+        } else if (this.getAbsoluteRotation() % Math.PI / 2 < 1) {
+            if (hitbox.y + hitbox.height > GAME_HEIGHT) {
+                sprite.setyPosition(GAME_HEIGHT - hitbox.height - 1);
+            } else if (hitbox.y < 0) {
+                sprite.setyPosition(hitbox.height/2+2);
+            }
+            if (hitbox.x + hitbox.width > GAME_WIDTH) {
+                sprite.setxPosition(GAME_WIDTH - hitbox.width - 1);
+            } else if (hitbox.x < 0) {
+                sprite.setxPosition(hitbox.width/2 + 2);
+            }
         }
+    }
+
 
 
 
@@ -1187,7 +1170,6 @@ public class TheMinorsGame extends Game {
                         }
                     }
                 }
-
                     platform.update(pressedKeys, gamePads);
                     constrainItemToLevel(platform);
             }
