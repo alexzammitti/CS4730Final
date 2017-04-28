@@ -930,7 +930,7 @@ public class TheMinorsGame extends Game {
         Rectangle hitbox = displayObject.getHitbox();
         if (pressedKeys.contains(KEY_UP) && !(hitbox.y - speed < 0)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
-        } else if (pressedKeys.contains(KEY_DOWN) && !(hitbox.y + hitbox.height + speed > GAME_HEIGHT)) {
+        } else if (pressedKeys.contains(KEY_DOWN) && !(hitbox.y + hitbox.height + speed + 2 > GAME_HEIGHT)) {
             displayObject.setyPosition(displayObject.getyPosition() + speed);
         }
         if (pressedKeys.contains(KEY_LEFT) && !(hitbox.x - speed < 0)) {
@@ -944,7 +944,7 @@ public class TheMinorsGame extends Game {
         if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(playerNumber).getLeftStickYAxis() < 0  && !(hitbox.y - speed < 0)) {
                 displayObject.setyPosition(displayObject.getyPosition() - speed);
-            } else if (gamePads.get(playerNumber).getLeftStickYAxis() > 0  && !(hitbox.y + hitbox.height + speed > GAME_HEIGHT)) {
+            } else if (gamePads.get(playerNumber).getLeftStickYAxis() > 0  && !(hitbox.y + hitbox.height + speed + 2> GAME_HEIGHT)) {
                 displayObject.setyPosition(displayObject.getyPosition() + speed);
             }
             if (gamePads.get(playerNumber).getLeftStickXAxis() < 0  && !(hitbox.x - speed < 0)) { //Left
@@ -1059,13 +1059,6 @@ public class TheMinorsGame extends Game {
             player.setAnimation(AnimatedSprite.IDLE_ANIMATION);
         }
     }
-
-
-
-
-
-
-
 
     private void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(frameCounter % 100 == 0) {
