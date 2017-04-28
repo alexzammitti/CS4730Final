@@ -1187,6 +1187,7 @@ public class TheMinorsGame extends Game {
                         }
                     }
                 }
+
                     platform.update(pressedKeys, gamePads);
                     constrainItemToLevel(platform);
             }
