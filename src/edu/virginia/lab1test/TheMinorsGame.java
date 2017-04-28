@@ -943,15 +943,17 @@ public class TheMinorsGame extends Game {
     private void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads, int playerNumber) {
         Rectangle hitbox = displayObject.getHitbox();
         if(inputMode.equals(INPUT_GAMEPADS)) {
-            if (gamePads.get(playerNumber).getLeftStickYAxis() < 0  && !(hitbox.y - speed < 0)) {
-                displayObject.setyPosition(displayObject.getyPosition() - speed);
-            } else if (gamePads.get(playerNumber).getLeftStickYAxis() > 0  && !(hitbox.y + hitbox.height + speed + 2> GAME_HEIGHT)) {
-                displayObject.setyPosition(displayObject.getyPosition() + speed);
+            double leftStickYAxis = gamePads.get(playerNumber).getLeftStickYAxis();
+            double leftStickXAxis = gamePads.get(playerNumber).getLeftStickXAxis();
+            if (leftStickYAxis < 0  && !(hitbox.y - speed < 0)) {
+                displayObject.setyPosition(displayObject.getyPosition() - (int)(speed*leftStickYAxis));
+            } else if (leftStickYAxis > 0  && !(hitbox.y + hitbox.height + speed + 2> GAME_HEIGHT)) {
+                displayObject.setyPosition(displayObject.getyPosition() + (int)(speed*leftStickYAxis));
             }
-            if (gamePads.get(playerNumber).getLeftStickXAxis() < 0  && !(hitbox.x - speed < 0)) { //Left
-                displayObject.setxPosition(displayObject.getxPosition() - speed);
-            } else if (gamePads.get(playerNumber).getLeftStickXAxis() > 0  && !(hitbox.x + hitbox.width + speed > GAME_WIDTH)) { //Right
-                displayObject.setxPosition(displayObject.getxPosition() + speed);
+            if (leftStickXAxis < 0  && !(hitbox.x - speed < 0)) { //Left
+                displayObject.setxPosition(displayObject.getxPosition() - (int)(speed*leftStickXAxis));
+            } else if (leftStickXAxis > 0  && !(hitbox.x + hitbox.width + speed > GAME_WIDTH)) { //Right
+                displayObject.setxPosition(displayObject.getxPosition() + (int)(speed*leftStickXAxis));
             }
         }
     }
