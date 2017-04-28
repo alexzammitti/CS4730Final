@@ -241,32 +241,17 @@ public class DisplayObject extends EventDispatcher {
 	public Rectangle getHitbox() { return hitbox; }
 	public void setHitbox(Rectangle r) {this.hitbox = r;}
 	public int getBottom() {
-    	if(this.getRotation() == Math.PI/2 || this.getRotation() == 3*Math.PI/2) {
-    		return this.getyPosition() + this.getScaledHeight();
-		} else {
-			return this.getHitbox().y + this.getHitbox().height;
-		}
+		return this.getHitbox().y + this.getHitbox().height;
     }
 	public int getTop() {
-    	if(this.getRotation() == Math.PI/2 || this.getRotation() == 3*Math.PI/2) {
-			return this.getyPosition();
-		} else {
-			return this.getHitbox().y;
-		}
+		return this.getHitbox().y;
+
     }
 	public int getLeft() {
-    	if(this.getRotation() == Math.PI/2 || this.getRotation() == 3*Math.PI/2){
-    		return this.getxPosition();
-		} else {
-			return this.getHitbox().x;
-		}
+		return this.getHitbox().x;
     }
 	public int getRight() {
-    	if(this.getRotation() == Math.PI/2 || this.getRotation() == 3*Math.PI/2) {
-    		return this.getxPosition() + this.getScaledWidth();
-		} else {
-			return this.getHitbox().x + this.getHitbox().width;
-		}
+		return this.getHitbox().x + this.getHitbox().width;
     }
 
 	public int getScaledWidth() {

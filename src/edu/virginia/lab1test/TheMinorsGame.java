@@ -1090,12 +1090,12 @@ public class TheMinorsGame extends Game {
 
             if (sprite.getBottom() > GAME_HEIGHT) {
                 //TODO there is not currently a way for us to set the global position of a sprite if it is a child
-                sprite.setyPosition(GAME_HEIGHT - sprite.getScaledHeight());
+                sprite.setyPosition(GAME_HEIGHT - sprite.getHitbox().height);
             } else if (sprite.getTop() < 0) {
                 sprite.setyPosition(0);
             }
             if (sprite.getRight() > GAME_WIDTH) {
-                sprite.setxPosition(GAME_WIDTH - sprite.getScaledWidth());
+                sprite.setxPosition(GAME_WIDTH - sprite.getHitbox().width);
             } else if (sprite.getLeft() < 0) {
                 sprite.setxPosition(0);
             }
