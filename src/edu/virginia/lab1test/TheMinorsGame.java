@@ -941,6 +941,7 @@ public class TheMinorsGame extends Game {
     }
 
     private void handleGamepadCursorMoveInput(DisplayObject displayObject, int speed,ArrayList<GamePad> gamePads, int playerNumber) {
+        Rectangle hitbox = displayObject.getHitbox();
         if(inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(playerNumber).getLeftStickYAxis() < 0  && !(hitbox.y - speed < 0)) {
                 displayObject.setyPosition(displayObject.getyPosition() - speed);
