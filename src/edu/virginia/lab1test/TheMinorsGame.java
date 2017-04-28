@@ -14,6 +14,7 @@ import edu.virginia.engine.event.*;
 import edu.virginia.engine.tween.TweenTransition;
 import edu.virginia.engine.tween.TweenableParam;
 import edu.virginia.engine.util.GameClock;
+import edu.virginia.engine.util.RNJesus;
 import edu.virginia.engine.util.SoundEffect;
 
 /**
@@ -73,6 +74,8 @@ public class TheMinorsGame extends Game {
     private boolean gameWon = false;
     private boolean gameOver = false;
     private int roundsCompleted = 0;
+    private int roundsSinceLevelCompleted = 0;
+
 
 
 //
@@ -95,6 +98,7 @@ public class TheMinorsGame extends Game {
     private Sprite item3 = new Sprite("item3");
     private Sprite item4 = new Sprite("item4");
     private Sprite item5 = new Sprite("item5");
+    private RNJesus rnJesus = new RNJesus();
 	// Backgrounds
     private Sprite selectionBackground = new Sprite("selectionbackground","big-item-selection-screen.png");
     private Sprite scoreboardBackground = new Sprite("scoreboardbackground","bigger-item-selection-screen.png");
@@ -367,8 +371,8 @@ public class TheMinorsGame extends Game {
         selectableSlidingPlatforms.clear();
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
-            int random = ThreadLocalRandom.current().nextInt(0,itemFileNames.length);
-            if(itemFileNames[random].equals("slidingplatform.png")) {
+            String filename = rnJesus.intelligentlyRandomize(roundsSinceLevelCompleted,laserGunList.size());
+            if(filename.equals("slidingplatform.png")) {
                 item.setImage("slidingplatform.png");
                 item.setId("sliding1x1");
                 item.setScale(0.8,0.8);
@@ -383,8 +387,8 @@ public class TheMinorsGame extends Game {
                     item.setUpDown(true);
                 }
                 selectableSlidingPlatforms.add((Sprite)item);
-            } else item.setImage(itemFileNames[random]);
-            switch(itemFileNames[random]){
+            } else item.setImage(filename);
+            switch(filename){
                 case "3x1platform.png":
                     item.setScale(.8,.8);
                     break;
@@ -897,12 +901,14 @@ public class TheMinorsGame extends Game {
                 // hold B to commit suicide
                 if (player.isAlive() && !player.isCourseCompleted()) {
                     if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)){
-                        if(gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) player.setAlive(false);
+                        if(gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
+                            player.dispatchEvent(new Event(player,null,Event.UNSAFE_COLLISION));
+                        }
                     } else {
                         gamePads.get(player.playerNumber).bButtonClock.resetGameClock();
                     }
                 }
-            } else if(pressedKeys.contains(KEY_ESC)) player.setAlive(false);
+            } else if(pressedKeys.contains(KEY_ESC)) player.dispatchEvent(new Event(player,null,Event.UNSAFE_COLLISION));
         }
         int dead = 0;
         int done = 0;
@@ -921,6 +927,9 @@ public class TheMinorsGame extends Game {
             }
             laserBeams.clear();
             roundCompleteClock.resetGameClock();
+            if(playersCompleted == 0) {
+                roundsSinceLevelCompleted++;
+            }
         }
     }
 
