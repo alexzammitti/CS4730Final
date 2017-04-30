@@ -913,7 +913,7 @@ public class TheMinorsGame extends Game {
                 // hold B to commit suicide
                 if (player.isAlive() && !player.isCourseCompleted()) {
                     if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)){
-                        if(gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 3000) {
+                        if(gamePads.get(player.playerNumber).bButtonClock.getElapsedTime() > 1500) {
                             player.dispatchEvent(new Event(player,null,Event.UNSAFE_COLLISION));
                         }
                     } else {
