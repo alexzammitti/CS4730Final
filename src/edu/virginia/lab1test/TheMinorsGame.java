@@ -49,7 +49,7 @@ public class TheMinorsGame extends Game {
     private final static int BEAM_SPEED = 15;
     private final static int GRAVITY = 1;
     private final static int JUMP_SPEED = 16;
-    private final static int ROUND_COUNT = 10;
+    private final static int ROUND_COUNT = 5;
     private final static int SLIDING_PLATFORM_SPEED = 2;
     private final static int FLOATTIME = 500;
     private final static int SAW_SPEED = 1;
@@ -113,9 +113,9 @@ public class TheMinorsGame extends Game {
     private Sprite startText = new Sprite("score title", "starttext.png");
     private Sprite finishText = new Sprite("score title", "finishtext.png");
     private Sprite scoreboardHeader = null;
-    private Sprite lastRound = new Sprite("last round", "noonewins.png");           //TODO add these text files
-    private Sprite penultimateRound = new Sprite("penultimate", "noonewins.png");
-    private Sprite thirdToLast = new Sprite("third to last", "noonewins.png");
+    private Sprite lastRound = new Sprite("last round", "lastround.png");
+    private Sprite penultimateRound = new Sprite("penultimate", "2roundsleft.png");
+    private Sprite thirdToLast = new Sprite("third to last", "3roundsleft.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
