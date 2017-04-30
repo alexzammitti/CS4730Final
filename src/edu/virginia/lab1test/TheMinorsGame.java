@@ -374,7 +374,7 @@ public class TheMinorsGame extends Game {
         selectableSlidingPlatforms.clear();
 
         for(DisplayObjectContainer item : selectionBackground.getChildren()) {
-            String filename = rnJesus.intelligentlyRandomize(roundsSinceLevelCompleted,laserGunList.size());
+            String filename = rnJesus.intelligentlyRandomize(roundsSinceLevelCompleted,laserGunList.size(),roundsCompleted);
             if(filename.equals("slidingplatform.png")) {
                 item.setImage("slidingplatform.png");
                 item.setId("sliding1x1");

@@ -12,13 +12,17 @@ public class RNJesus {
     private List<String> normal = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png");
     private List<String> noLasers = Arrays.asList("3x1platform.png","spikerow.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png");
     private List<String> moreDynamite = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png","Dynamite.png","Dynamite.png");
+    private List<String> noDynamite = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png");
 
 
     public RNJesus() {
     }
 
-    public String intelligentlyRandomize(int roundsSinceLevelCompleted, int numberOfLaserGuns) {
-        if(roundsSinceLevelCompleted > 3) {
+    public String intelligentlyRandomize(int roundsSinceLevelCompleted, int numberOfLaserGuns, int roundsCompleted) {
+        if(roundsCompleted <= 3) {
+            int random = ThreadLocalRandom.current().nextInt(0,noDynamite.size());
+            return noDynamite.get(random);
+        } else if(roundsSinceLevelCompleted > 3) {
             int random = ThreadLocalRandom.current().nextInt(0,moreDynamite.size());
             //System.out.println("Adding dynamite");
             return moreDynamite.get(random);
