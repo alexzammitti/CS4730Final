@@ -20,11 +20,11 @@ public class RNJesus {
     public String intelligentlyRandomize(int roundsSinceLevelCompleted, int numberOfLaserGuns) {
         if(roundsSinceLevelCompleted > 3) {
             int random = ThreadLocalRandom.current().nextInt(0,moreDynamite.size());
-            System.out.println("Adding dynamite");
+            //System.out.println("Adding dynamite");
             return moreDynamite.get(random);
         } else if(numberOfLaserGuns > 5) {
             int random = ThreadLocalRandom.current().nextInt(0,noLasers.size());
-            System.out.println("Less lasers");
+            //System.out.println("Less lasers");
 
             return noLasers.get(random);
         } else {

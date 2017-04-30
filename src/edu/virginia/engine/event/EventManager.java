@@ -62,9 +62,10 @@ public class EventManager implements IEventListener {
             }
             else if(character.getyPosition() > platform.getTop()) { //bottom of platform
                     if(character.platformPlayerIsOn != null) {
-                        if(character.isAlive()) deathSound.play(false);
-                        character.setyScale(0.5*character.getyScale());
-                        character.setAlive(false);
+                        if(character.isAlive()) {
+                            character.setyScale(0.5 * character.getyScale());
+                            character.dispatchEvent(new Event(Event.UNSAFE_COLLISION, character));
+                        }
                     }
                     if(platform.getFileName().contains("sliding"))   {
                     character.setyPosition(platform.getHitbox().y+platform.getHitbox().height + 10);

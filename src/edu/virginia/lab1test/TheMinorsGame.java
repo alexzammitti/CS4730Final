@@ -29,8 +29,8 @@ public class TheMinorsGame extends Game {
     }
 
     private GameMode gameMode = GameMode.LEVEL_SELECTION;
-    private final static int GAME_WIDTH = 1250;
-    private final static int GAME_HEIGHT = 700;
+    private final static int GAME_WIDTH = 1900;
+    private final static int GAME_HEIGHT = 1000;
     private final static String INPUT_KEYBOARD = "keyboard";
     private final static String INPUT_GAMEPADS = "gamepads";
     // keys
@@ -68,7 +68,7 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 400; //TODO
+    private int winScore = 600; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -221,6 +221,8 @@ public class TheMinorsGame extends Game {
         overlay.addChild(finishText);
         startBackground.setAlpha((float)0.5);
         finishBackground.setAlpha((float)0.5);
+        startBackground.setScale(1.75, 1.5);
+        finishBackground.setScale(1.75, 1.5);
         startText.setScale(0.5,0.5);
         finishText.setScale(0.5,0.5);
 
@@ -306,7 +308,7 @@ public class TheMinorsGame extends Game {
                 if (currentLevel.getBackground().getFileName().contains("1")) {
                     player.setPosition(10 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
                 } else if (currentLevel.getBackground().getFileName().contains("2")) {
-                    player.setPosition(10 + players.indexOf(player) * 10, 200);   //space out players
+                    player.setPosition(10 + players.indexOf(player) * 10, 400);   //space out players
                 } else if (currentLevel.getBackground().getFileName().contains("3")) {
                     player.setPosition(GAME_WIDTH / 2 + players.indexOf(player) * 10, GAME_HEIGHT - 200);   //space out players
                 }
@@ -542,10 +544,10 @@ public class TheMinorsGame extends Game {
                                             platform2.setyPosition(GAME_HEIGHT/4);
                                             portal.setPosition(GAME_WIDTH/2-portal.getScaledWidth()/2,GAME_HEIGHT/4-60);
                                         }
-                                        startBackground.setPosition(platform1.getxPosition(),platform1.getyPosition()-startBackground.getScaledHeight());
+                                        startBackground.setPosition(platform1.getxPosition()+platform1.getScaledWidth()/2 - startBackground.getScaledWidth()/2,platform1.getyPosition()-startBackground.getScaledHeight());
                                         startText.setPosition(startBackground.getxPosition()+startBackground.getScaledWidth()/2-startText.getScaledWidth()/2,
                                                 startBackground.getyPosition()+startBackground.getScaledHeight()/2-startText.getScaledHeight()/2);
-                                        finishBackground.setPosition(platform2.getxPosition(),platform2.getyPosition()-finishBackground.getScaledHeight());
+                                        finishBackground.setPosition(platform2.getxPosition() + platform2.getScaledWidth()/2 - finishBackground.getScaledWidth()/2,platform2.getyPosition()-finishBackground.getScaledHeight());
                                         finishText.setPosition(finishBackground.getxPosition()+finishBackground.getScaledWidth()/2-finishText.getScaledWidth()/2,
                                                 finishBackground.getyPosition()+finishBackground.getScaledHeight()/2-finishText.getScaledHeight()/2);
                                         break;
@@ -725,7 +727,10 @@ public class TheMinorsGame extends Game {
         if (levelContainer != null) {
             levelContainer.update(pressedKeys, gamePads);
             overlay.update(pressedKeys,gamePads);
-            spinSawblades(true);
+            for(Sprite saw: gameplaySawbladeList) {
+                saw.setRotation(0);
+            }
+            //spinSawblades(true);
             }
             for(Player player : players) {
                 // Move sprite based on user input
@@ -886,7 +891,7 @@ public class TheMinorsGame extends Game {
             spinSawblades(true);
         }
         for(Player player : players) {
-            if(player.isAlive()){
+            if(player.isAlive() && !player.isCourseCompleted()){
                 handleAnimation(player,pressedKeys,gamePads);
                 player.animate();
             }
