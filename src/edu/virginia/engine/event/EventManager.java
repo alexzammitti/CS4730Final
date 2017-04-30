@@ -27,9 +27,11 @@ public class EventManager implements IEventListener {
             case Event.TWEEN_COMPLETE_EVENT:
                 break;
             case Event.UNSAFE_COLLISION:
-                if(event.player.isAlive()) deathSound.play(false);
-                deathAnimation(event);
-                event.player.setAlive(false);
+                if(event.player.isAlive() && !event.player.isCourseCompleted()) {
+                    deathSound.play(false);
+                    deathAnimation(event);
+                    event.player.setAlive(false);
+                }
                 break;
             case Event.SAFE_COLLISION:
                 if(event.player.isAirborne()) thudSound.play(false);

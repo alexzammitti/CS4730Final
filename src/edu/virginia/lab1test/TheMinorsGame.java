@@ -29,8 +29,8 @@ public class TheMinorsGame extends Game {
     }
 
     private GameMode gameMode = GameMode.LEVEL_SELECTION;
-    private final static int GAME_WIDTH = 1900;
-    private final static int GAME_HEIGHT = 1000;
+    private final static int GAME_WIDTH = 1250;
+    private final static int GAME_HEIGHT = 700;
     private final static String INPUT_KEYBOARD = "keyboard";
     private final static String INPUT_GAMEPADS = "gamepads";
     // keys
@@ -949,7 +949,7 @@ public class TheMinorsGame extends Game {
         Rectangle hitbox = displayObject.getHitbox();
         if (pressedKeys.contains(KEY_UP) && !(hitbox.y - speed < 0)) {
             displayObject.setyPosition(displayObject.getyPosition() - speed);
-        } else if (pressedKeys.contains(KEY_DOWN) && !(hitbox.y + hitbox.height + speed + 2 > GAME_HEIGHT)) {
+        } else if (pressedKeys.contains(KEY_DOWN) && !(hitbox.y + hitbox.height + speed + 50 > GAME_HEIGHT)) {
             displayObject.setyPosition(displayObject.getyPosition() + speed);
         }
         if (pressedKeys.contains(KEY_LEFT) && !(hitbox.x - speed < 0)) {
