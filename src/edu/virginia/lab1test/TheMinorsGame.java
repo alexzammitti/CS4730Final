@@ -49,7 +49,7 @@ public class TheMinorsGame extends Game {
     private final static int BEAM_SPEED = 15;
     private final static int GRAVITY = 1;
     private final static int JUMP_SPEED = 16;
-    private final static int ROUND_COUNT = 5;
+    private final static int ROUND_COUNT = 10;
     private final static int SLIDING_PLATFORM_SPEED = 2;
     private final static int FLOATTIME = 500;
     private final static int SAW_SPEED = 1;
@@ -239,9 +239,6 @@ public class TheMinorsGame extends Game {
 
 
         // PLAY MUSIC
-
-
-        // SET UP TWEENS - TODO - might also be good to methodize
 
 
         gameMode = GameMode.LEVEL_SELECTION;
@@ -1094,6 +1091,8 @@ public class TheMinorsGame extends Game {
                 beam.setPivotCenter();
                 laserBeams.add(beam);
                 levelContainer.addChild(beam);
+                levelContainer.removeChild(gun);
+                levelContainer.addChild(gun);
                 laserSound.play(false);
             }
         }
