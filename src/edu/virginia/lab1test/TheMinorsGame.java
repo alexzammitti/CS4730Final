@@ -3,7 +3,6 @@ package edu.virginia.lab1test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.event.Event;
@@ -53,6 +52,7 @@ public class TheMinorsGame extends Game {
     private final static int SLIDING_PLATFORM_SPEED = 2;
     private final static int FLOATTIME = 500;
     private final static int SAW_SPEED = 1;
+    private final static int WIN_SCORE = 600; //TODO
 
 
 
@@ -68,7 +68,6 @@ public class TheMinorsGame extends Game {
     private int playersDead = 0;
     private int playersCompleted = 0;
     private Player firstCompleted = null;
-    private int winScore = 600; //TODO
     private boolean scoresCalculated = false;
     private int gameWinner = 5;
     private boolean gameWon = false;
@@ -1280,29 +1279,29 @@ public class TheMinorsGame extends Game {
 //                if(player.getScore() > 1) {
                     if (player.playerNumber == 0) {
                         Tween score1 = new Tween(player1.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
-                        score1.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        score1.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) WIN_SCORE, 100);
                         TweenJuggler.getInstance().add(score1);
                         player.getScoreBar().setVisible(true);
                     } else if (player.playerNumber == 1) {
                         Tween score2 = new Tween(player2.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
-                        score2.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        score2.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) WIN_SCORE, 100);
                         TweenJuggler.getInstance().add(score2);
                         player.getScoreBar().setVisible(true);
                     } else if (player.playerNumber == 2) {
                         Tween score3 = new Tween(player3.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
-                        score3.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        score3.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) WIN_SCORE, 100);
                         TweenJuggler.getInstance().add(score3);
                         player.getScoreBar().setVisible(true);
                     } else if (player.playerNumber == 3) {
                         Tween score4 = new Tween(player4.getScoreBar(), new TweenTransition(TweenTransition.TransitionType.LINEAR));
-                        score4.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) winScore, 100);
+                        score4.animate(TweenableParam.SCALE_X, 0, (double) player.getScore() / (double) WIN_SCORE, 100);
                         TweenJuggler.getInstance().add(score4);
                         player.getScoreBar().setVisible(true);
                     }
 //                }
                 //player.sizeScoreBar(0);
 
-                if(player.getScore() >= winScore) {
+                if(player.getScore() >= WIN_SCORE) {
                     gameWon = true;
                     gameOver = true;
                 }
@@ -1321,7 +1320,7 @@ public class TheMinorsGame extends Game {
                     }
                 }
                 gameWinner++;
-                if(numberOfPlayers == 1 && maxScore < winScore) {
+                if(numberOfPlayers == 1 && maxScore < WIN_SCORE) {
                     gameWon = false;
                 } else if(numberOfPlayers != 1 && maxScore == 1) {
                     gameWon = false;
