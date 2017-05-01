@@ -21,6 +21,7 @@ public class Player extends PhysicsSprite {
     protected int score = 1;
     protected boolean first = false;
     protected Sprite scoreBar = null;
+    protected Sprite head = null;
     public GameClock hoverClock = new GameClock();
 
     public boolean isAlive() {
@@ -54,6 +55,12 @@ public class Player extends PhysicsSprite {
     public void setScoreBar(Sprite scoreBar) {
         this.scoreBar = scoreBar;
     }
+    public Sprite getHead() {
+        return head;
+    }
+    public void setHead(Sprite head) {
+        this.head = head;
+    }
 
     public void sizeScoreBar(int winScore) {
         scoreBar.setyScale(1);
@@ -66,6 +73,7 @@ public class Player extends PhysicsSprite {
         cursor = new Sprite(id + "cursor",cursorFileName);
         this.playerNumber = number;
         this.scoreBar = new Sprite("player" + playerNumber + "scorebar", "scorebar" + playerNumber + ".png");
+        this.head = new Sprite("player" + playerNumber + "head", "player" + playerNumber + "-head.png");
         hoverClock.resetGameClock();
     }
 

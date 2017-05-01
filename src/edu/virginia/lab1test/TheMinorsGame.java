@@ -970,8 +970,10 @@ public class TheMinorsGame extends Game {
 
     private void instructionsUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         for(Player player : players) {
-            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)) {
-                gameMode = GameMode.LEVEL_SELECTION;
+            if(inputMode.equals(INPUT_GAMEPADS)) {
+                if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)) gameMode = GameMode.LEVEL_SELECTION;
+            } else {
+                if(pressedKeys.contains(KEY_SPACE)) gameMode = GameMode.LEVEL_SELECTION;
             }
         }
     }
@@ -1307,11 +1309,14 @@ public class TheMinorsGame extends Game {
                 if(numberOfPlayers == 1 && playersCompleted == 1) {
                     player.incrementScore(100);
                 }
-
-                player.getScoreBar().setxPosition(145);
+                scoreboardBackground.addChild(player.getHead());
+                player.getScoreBar().setxPosition(200);
+                player.getHead().setxPosition(145);
+                player.getHead().setScale(.8,.8);
                 player.getScoreBar().setyScale(1);
                 player.getScoreBar().setxScale(0);
                 player.getScoreBar().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
+                player.getHead().alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, player.playerNumber + 2);
                 scoreboardHeader.alignFractionVertical(scoreboardBackground, numberOfPlayers + 2, 1);
                 scoreboardBackground.update(pressedKeys,gamePads);
                 if (!scoreboardBackground.getChildren().contains(player.getScoreBar()))
