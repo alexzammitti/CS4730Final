@@ -10,9 +10,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RNJesus {
 
     private List<String> normal = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png");
+    private List<String> lessSpikesNoDynamite = Arrays.asList("3x1platform.png","spikerow.png",
+            "LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png",
+            "LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png");
     private List<String> noLasers = Arrays.asList("3x1platform.png","spikerow.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png");
     private List<String> moreDynamite = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png","Dynamite.png","Dynamite.png");
-    private List<String> noDynamite = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png");
+    //private List<String> noDynamite = Arrays.asList("3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png");
 
 
     public RNJesus() {
@@ -20,8 +23,8 @@ public class RNJesus {
 
     public String intelligentlyRandomize(int roundsSinceLevelCompleted, int numberOfLaserGuns, int roundsCompleted) {
         if(roundsCompleted <= 3) {
-            int random = ThreadLocalRandom.current().nextInt(0,noDynamite.size());
-            return noDynamite.get(random);
+            int random = ThreadLocalRandom.current().nextInt(0,lessSpikesNoDynamite.size());
+            return lessSpikesNoDynamite.get(random);
         } else if(roundsSinceLevelCompleted > 3) {
             int random = ThreadLocalRandom.current().nextInt(0,moreDynamite.size());
             //System.out.println("Adding dynamite");
@@ -29,7 +32,6 @@ public class RNJesus {
         } else if(numberOfLaserGuns > 5) {
             int random = ThreadLocalRandom.current().nextInt(0,noLasers.size());
             //System.out.println("Less lasers");
-
             return noLasers.get(random);
         } else {
             int random = ThreadLocalRandom.current().nextInt(0,normal.size());
