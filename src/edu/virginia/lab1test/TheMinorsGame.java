@@ -24,7 +24,7 @@ public class TheMinorsGame extends Game {
 
     // GLOBAL CONSTANTS
     public enum GameMode {
-        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE, START_SCREEN, FEEDBACK;
+        ITEM_SELECTION, ITEM_PLACEMENT, GAMEPLAY, MAIN_MENU, ROUND_COMPLETE, LEVEL_SELECTION, GAME_COMPLETE, START_SCREEN, FEEDBACK, INSTRUCTIONS;
     }
 
     private GameMode gameMode = GameMode.LEVEL_SELECTION;
@@ -102,6 +102,8 @@ public class TheMinorsGame extends Game {
     private Sprite levelSelectionBackground = new Sprite("levelselectionbackground","Background4.png");
     private Sprite startBackground = new Sprite("levelselectionbackground","goalareas.png");
     private Sprite finishBackground = new Sprite("levelselectionbackground","goalareas.png");
+    private Sprite controlsBackground = new Sprite("controlsbackground","goalareas.png");
+
     // Titles
     private Sprite gameTitle = new Sprite("game title","gametitle.png");
     private Sprite scoreTitle = new Sprite("score title", "scoreboardtitle.png");
@@ -113,6 +115,8 @@ public class TheMinorsGame extends Game {
     private Sprite lastRound = new Sprite("last round", "lastround.png");
     private Sprite penultimateRound = new Sprite("penultimate", "2roundsleft.png");
     private Sprite thirdToLast = new Sprite("third to last", "3roundsleft.png");
+    private Sprite controlsText = new Sprite("controlsText", "controls.png");
+    private Sprite instructions = new Sprite("instructions", "instructions.png");
     // Item Lists
     private ArrayList<Sprite> placeableItemList = new ArrayList<>(0);
     private ArrayList<Sprite> laserGunList = new ArrayList<>(0);
@@ -186,6 +190,9 @@ public class TheMinorsGame extends Game {
         scoreboardBackground.setPosition(633,250);
         scoreboardBackground.setScale(1,1);
 
+        instructions.setPosition(0,0);
+        instructions.setScaledSize(GAME_WIDTH,GAME_HEIGHT);
+
 //        scoreboardHeader.setyScale(.5);
 //        scoreboardHeader.setxScale(.5);
 //        scoreboardHeader.alignCenterHorizontal(scoreboardBackground);
@@ -218,8 +225,10 @@ public class TheMinorsGame extends Game {
         overlay.addChild(finishText);
         startBackground.setAlpha((float)0.5);
         finishBackground.setAlpha((float)0.5);
+        controlsBackground.setAlpha((float)0.5);
         startBackground.setScale(1.75, 1.5);
         finishBackground.setScale(1.75, 1.5);
+        controlsBackground.setScale(1.5, 1.25);
         startText.setScale(0.5,0.5);
         finishText.setScale(0.5,0.5);
 
@@ -483,6 +492,9 @@ public class TheMinorsGame extends Game {
                     case FEEDBACK:
                         feedbackUpdate(pressedKeys, gamePads);
                         break;
+                    case INSTRUCTIONS:
+                        instructionsUpdate(pressedKeys,gamePads);
+                        break;
                 }
             }
         }
@@ -506,6 +518,14 @@ public class TheMinorsGame extends Game {
                 levelImages.update(pressedKeys,gamePads);
                 gameTitle.alignCenterHorizontal(GAME_WIDTH);
                 gameTitle.setyPosition(GAME_HEIGHT/2 - 275);
+                controlsText.setPivotCenter();
+                controlsText.setScale(0.5,0.5);
+                controlsText.alignCenterHorizontal(GAME_WIDTH);
+                controlsText.setPosition(controlsBackground.getxPosition()+controlsBackground.getScaledWidth()/2- controlsText.getScaledWidth()/2,
+                        controlsBackground.getyPosition()+controlsBackground.getScaledHeight()/2- controlsText.getScaledHeight()/2);
+                controlsBackground.alignCenterHorizontal(GAME_WIDTH);
+                controlsBackground.setyPosition(GAME_HEIGHT-300);
+                controlsBackground.update(pressedKeys,gamePads);
                 for(DisplayObjectContainer background : levelImages.getChildren()) {
                     background.setScaledSize(300,175);
                     background.alignCenterVertical(GAME_HEIGHT);
@@ -602,7 +622,15 @@ public class TheMinorsGame extends Game {
                         }
                     }
                 }
-
+                if (player.cursor.collidesWith(controlsBackground)){
+                    if (inputMode.equals(INPUT_GAMEPADS)) {
+                        if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_A)) {
+                            gameMode = GameMode.INSTRUCTIONS;
+                        }
+                    } else if (pressedKeys.contains(KEY_SPACE)) {
+                        gameMode = GameMode.INSTRUCTIONS;
+                    }
+                }
             }
         }
     }
@@ -878,8 +906,6 @@ public class TheMinorsGame extends Game {
             }
         }
 
-
-
     private void gameplayUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         if(levelContainer != null){
             levelContainer.update(pressedKeys, gamePads);
@@ -938,6 +964,14 @@ public class TheMinorsGame extends Game {
             roundCompleteClock.resetGameClock();
             if(playersCompleted == 0) {
                 roundsSinceLevelCompleted++;
+            }
+        }
+    }
+
+    private void instructionsUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
+        for(Player player : players) {
+            if (gamePads.get(player.playerNumber).isButtonPressed(GamePad.BUTTON_B)) {
+                gameMode = GameMode.LEVEL_SELECTION;
             }
         }
     }
@@ -1435,6 +1469,9 @@ public class TheMinorsGame extends Game {
                 case FEEDBACK:
                     feedbackDraw(g);
                     break;
+                case INSTRUCTIONS:
+                    instructionsDraw(g);
+                    break;
             }
         }
 	}
@@ -1444,6 +1481,8 @@ public class TheMinorsGame extends Game {
             levelSelectionBackground.draw(g);
             levelImages.draw(g);
             gameTitle.draw(g);
+            controlsBackground.draw(g);
+            controlsText.draw(g);
             for(Player player : players) {
                 player.cursor.draw(g);
             }
@@ -1539,6 +1578,10 @@ public class TheMinorsGame extends Game {
             levelContainer.draw(g);
         }
         gameOverBackground.draw(g);
+    }
+
+    private void instructionsDraw(Graphics g) {
+        if(instructions != null) instructions.draw(g);
     }
 
     private void wait(int milliseconds) {
