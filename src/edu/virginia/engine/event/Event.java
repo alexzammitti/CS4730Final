@@ -19,7 +19,7 @@ public class Event {
 
 
     private String eventType;
-    private EventDispatcher source;
+    protected EventDispatcher source;
 
     // COLLISION FIELDS
     Player player;
