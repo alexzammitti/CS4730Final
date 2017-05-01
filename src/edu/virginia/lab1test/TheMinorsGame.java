@@ -89,8 +89,6 @@ public class TheMinorsGame extends Game {
 	private Sprite platform2 = new Sprite("platform2", "3x1platform.png");
 	private Sprite portal = new Sprite("portal","portal.png");
 	// Placeholder Sprites for randomly selected placeable items - their images are what will be set later, and their ids updated
-    private static String[] itemFileNames = {"3x1platform.png","spikerow.png","LaserGun.png","1x1platform.png", "box.png", "sawblade.png","slidingplatform.png","Dynamite.png"};
-    //private static String[] itemFileNames = {"3x1platform.png","1x1platform.png", "slidingplatform.png", "sawblade.png"};
     private Sprite item1 = new Sprite("item1");
     private Sprite item2 = new Sprite("item2");
     private Sprite item3 = new Sprite("item3");
@@ -1352,7 +1350,7 @@ public class TheMinorsGame extends Game {
         }
     }
 
-    public void gameCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void gameCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(gameWon) {
             Sprite winnerTitle = new Sprite("winner", "wins" + gameWinner + ".png");
             gameOverBackground.addChild(winnerTitle);
@@ -1375,7 +1373,7 @@ public class TheMinorsGame extends Game {
 
     }
 
-    public void feedbackUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
+    private void feedbackUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(roundsCompleted == ROUND_COUNT) {
             gameOverBackground.addChild(lastRound);
             lastRound.setScale(0.6,0.6);

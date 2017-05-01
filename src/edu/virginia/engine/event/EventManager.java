@@ -1,16 +1,13 @@
 package edu.virginia.engine.event;
 
 import edu.virginia.engine.display.DisplayObject;
-import edu.virginia.engine.display.PhysicsSprite;
 import edu.virginia.engine.display.Player;
 import edu.virginia.engine.tween.*;
 import edu.virginia.engine.util.SoundEffect;
 
 import java.awt.*;
 
-/**
- * Created by Alex on 3/2/17.
- */
+
 public class EventManager implements IEventListener {
 
     private SoundEffect deathSound = new SoundEffect("death.wav");
@@ -48,7 +45,7 @@ public class EventManager implements IEventListener {
 
     }
 
-    public void handlePlatformCollision(Player character, DisplayObject platform) {
+    private void handlePlatformCollision(Player character, DisplayObject platform) {
         Rectangle intersection = character.getHitbox().intersection(platform.getHitbox());
         if( intersection.width > intersection.height && character.getBottom() > platform.getTop()
                 || intersection.width > intersection.height && character.getTop() < platform.getBottom()){
@@ -97,7 +94,7 @@ public class EventManager implements IEventListener {
         }
     }
 
-    public void deathAnimation(Event event) {
+    private void deathAnimation(Event event) {
         if(event.player.isAlive()) {
             Tween deathTweenY, deathTweenAlpha, deathTweenRotate;
             deathTweenY = new Tween(event.player, new TweenTransition(TweenTransition.TransitionType.LINEAR));

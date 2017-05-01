@@ -11,7 +11,6 @@ import edu.virginia.engine.display.Sprite;
 public class Event {
     public final static String TWEEN_COMPLETE_EVENT = "tween_complete_event";
     public final static String COLLISION = "collision";
-    public final static String COIN_PICKED_UP = "coin picked up";
     public final static String SAFE_COLLISION = "safe collision";
     public final static String UNSAFE_COLLISION = "unsafe collision";
     public final static String DEATH = "death";
@@ -19,9 +18,8 @@ public class Event {
 
 
 
-    public String eventType;
-    public EventDispatcher source;
-    public int data;
+    private String eventType;
+    private EventDispatcher source;
 
     // COLLISION FIELDS
     Player player;
@@ -60,7 +58,4 @@ public class Event {
         this.source = source;
     }
 
-    public void setData(int d) {
-        this.data = d;
-    }
 }
