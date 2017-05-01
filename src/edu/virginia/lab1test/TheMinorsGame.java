@@ -1166,7 +1166,7 @@ public class TheMinorsGame extends Game {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
                         for (Player player : players) {
-                            if (player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn != null && player.isAlive()) {
                                 if (player.platformPlayerIsOn.equals(platform)) {
                                     player.setxPosition(player.getxPosition() + SLIDING_PLATFORM_SPEED);
                                 }
@@ -1179,7 +1179,7 @@ public class TheMinorsGame extends Game {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
                         for (Player player : players) {
-                            if (player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn != null && player.isAlive()) {
                                 if (player.platformPlayerIsOn.equals(platform))
                                     player.setxPosition(player.getxPosition() - SLIDING_PLATFORM_SPEED);
                             }
@@ -1193,7 +1193,7 @@ public class TheMinorsGame extends Game {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
                         for (Player player : players) {
-                            if (player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn != null && player.isAlive()) {
                                 if (player.platformPlayerIsOn.equals(platform))
                                     player.setyPosition(player.getyPosition() - SLIDING_PLATFORM_SPEED);
                             }
@@ -1205,7 +1205,7 @@ public class TheMinorsGame extends Game {
                             platform.setSlidingPlatformDirection(!platform.isSlidingPlatformDirection());
                         }
                         for (Player player : players) {
-                            if (player.platformPlayerIsOn != null) {
+                            if (player.platformPlayerIsOn != null && player.isAlive()) {
                                 if (player.platformPlayerIsOn.equals(platform))
                                     player.setyPosition(player.getyPosition() + SLIDING_PLATFORM_SPEED);
                             }
