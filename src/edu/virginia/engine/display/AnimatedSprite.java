@@ -22,7 +22,7 @@ public class AnimatedSprite extends Sprite {
 
     protected BufferedImage[] rightFrames = new BufferedImage[14];
 	protected BufferedImage[] leftFrames = new BufferedImage[14];
-	protected BufferedImage[] dancingFrames = new BufferedImage[40];
+	protected BufferedImage[] dancingFrames = new BufferedImage[24];
 	protected int currentIndex = 0;
 	protected int startIndex;
 	protected int endIndex;
@@ -113,36 +113,30 @@ public class AnimatedSprite extends Sprite {
 		}
 
 		//Dancing
-		for(int i = 0; i <= 7; i++) {
-			dancingFrames[i] = leftFrames[i];
+		dancingFrames[0] = leftFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+1] = leftFrames[i+9];
+		}
+		dancingFrames[4] = leftFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+5] = leftFrames[i+9];
 		}
 		dancingFrames[8] = leftFrames[12];
 		for(int i = 0; i <= 2; i++) {
 			dancingFrames[i+9] = leftFrames[i+9];
 		}
-		dancingFrames[12] = leftFrames[12];
-		for(int i = 0; i <= 2; i++) {
-			dancingFrames[i+13] = leftFrames[i+9];
-		}
-		dancingFrames[16] = leftFrames[12];
-		for(int i = 0; i <= 2; i++) {
-			dancingFrames[i+17] = leftFrames[i+9];
-		}
 
-		for(int i = 0; i <= 7; i++) {
-			dancingFrames[i+20] = rightFrames[i];
-		}
-		dancingFrames[28] = rightFrames[12];
+		dancingFrames[12] = rightFrames[12];
 		for(int i = 0; i <= 2; i++) {
-			dancingFrames[i+29] = rightFrames[i+9];
+			dancingFrames[i+13] = rightFrames[i+9];
 		}
-		dancingFrames[32] = rightFrames[12];
+		dancingFrames[16] = rightFrames[12];
 		for(int i = 0; i <= 2; i++) {
-			dancingFrames[i+33] = rightFrames[i+9];
+			dancingFrames[i+17] = rightFrames[i+9];
 		}
-		dancingFrames[36] = rightFrames[12];
+		dancingFrames[20] = rightFrames[12];
 		for(int i = 0; i <= 2; i++) {
-			dancingFrames[i+37] = rightFrames[i+9];
+			dancingFrames[i+21] = rightFrames[i+9];
 		}
 
 
@@ -151,12 +145,32 @@ public class AnimatedSprite extends Sprite {
 	
 	public void animate() {
 		frameCounter++;
-		if(right) {
+		if(this.animation.equals(DANCING_ANIMATION)) {
+			if(firstDance) {
+				currentIndex = 0;
+				startIndex = 0;
+				endIndex = 23;
+				firstJump = true;
+				firstWalk = true;
+				firstFall = true;
+				firstDance = false;
+			}
+			if (frameCounter % speed == 0) {
+				if (currentIndex == endIndex) {
+					currentIndex = startIndex;
+					this.setImage(dancingFrames[currentIndex]);
+				} else {
+					currentIndex++;
+					this.setImage(dancingFrames[currentIndex]);
+				}
+			}
+		} else if(right) {
 
 			if (this.animation.equals(JUMP_ANIMATION)) {
 				if (firstJump) {
 					firstJump = false;
 					firstWalk = true;
+					firstDance = true;
 					currentIndex = 9;
 				}
 				startIndex = 9;
@@ -175,6 +189,7 @@ public class AnimatedSprite extends Sprite {
 				if (firstWalk) {
 					firstWalk = false;
 					firstJump = true;
+					firstDance = true;
 					currentIndex = 1;
 				}
 				startIndex = 1;
@@ -188,6 +203,7 @@ public class AnimatedSprite extends Sprite {
 				firstJump = true;
 				firstWalk = true;
 				firstFall = true;
+				firstDance = true;
 				this.setImage(rightFrames[currentIndex]);
 			} else if (this.animation.equals(WALK_ANIMATION) || this.animation.equals(JUMP_ANIMATION)) {
 				if (frameCounter % speed == 0) {
@@ -205,6 +221,7 @@ public class AnimatedSprite extends Sprite {
 				if (firstJump) {
 					firstJump = false;
 					firstWalk = true;
+					firstDance = true;
 					currentIndex = 9;
 				}
 				startIndex = 9;
@@ -223,6 +240,7 @@ public class AnimatedSprite extends Sprite {
 				if (firstWalk) {
 					firstWalk = false;
 					firstJump = true;
+					firstDance = true;
 					currentIndex = 1;
 				}
 				startIndex = 1;
@@ -251,25 +269,7 @@ public class AnimatedSprite extends Sprite {
 			}
 		}
 
-		if(this.animation.equals(DANCING_ANIMATION)) {
-			if(firstDance) {
-				currentIndex = 0;
-				startIndex = 0;
-				endIndex = 39;
-				firstJump = true;
-				firstWalk = true;
-				firstFall = true;
-			}
-			if (frameCounter % speed == 0) {
-				if (currentIndex == endIndex) {
-					currentIndex = startIndex;
-					this.setImage(dancingFrames[currentIndex]);
-				} else {
-					currentIndex++;
-					this.setImage(dancingFrames[currentIndex]);
-				}
-			}
-		}
+
 	}
 
 }

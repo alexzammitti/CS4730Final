@@ -39,57 +39,56 @@ public class EventManager implements IEventListener {
             case Event.GOAL:
                 if(!event.player.isCourseCompleted()) goalSound.play(false);
                 event.player.setCourseCompleted(true);
-                event.player.setAnimation(AnimatedSprite.DANCING_ANIMATION);
                 break;
         }
 
     }
 
     private void handlePlatformCollision(Player character, DisplayObject platform) {
-        Rectangle intersection = character.getHitbox().intersection(platform.getHitbox());
-        if( intersection.width > intersection.height && character.getBottom() > platform.getTop()
-                || intersection.width > intersection.height && character.getTop() < platform.getBottom()){
-                if(character.getyPosition() < platform.getTop()) {                                          //top of platform
-                    character.setyPosition(platform.getHitbox().y-(character.getScaledHeight()+1));
+        if(character.isAlive()) {
+            Rectangle intersection = character.getHitbox().intersection(platform.getHitbox());
+            if (intersection.width > intersection.height && character.getBottom() > platform.getTop()
+                    || intersection.width > intersection.height && character.getTop() < platform.getBottom()) {
+                if (character.getyPosition() < platform.getTop()) {                                          //top of platform
+                    character.setyPosition(platform.getHitbox().y - (character.getScaledHeight() + 1));
                     character.setAirborne(false);
                     character.setOnPlatform(true);
                     character.platformPlayerIsOn = platform;
                     character.setyVelocity(0);
                     character.hoverClock.resetGameClock();
-            }
-            else if(character.getyPosition() > platform.getTop()) { //bottom of platform
-                    if(character.platformPlayerIsOn != null) {
-                        if(character.isAlive()) {
+                } else if (character.getyPosition() > platform.getTop()) { //bottom of platform
+                    if (character.platformPlayerIsOn != null) {
+                        if (character.isAlive()) {
                             character.setyScale(0.5 * character.getyScale());
                             character.dispatchEvent(new Event(Event.UNSAFE_COLLISION, character));
                         }
                     }
-                    if(platform.getFileName().contains("sliding"))   {
-                    character.setyPosition(platform.getHitbox().y+platform.getHitbox().height + 10);
-                } else {
-                    character.setyPosition(platform.getHitbox().y + platform.getHitbox().height);
+                    if (platform.getFileName().contains("sliding")) {
+                        character.setyPosition(platform.getHitbox().y + platform.getHitbox().height + 10);
+                    } else {
+                        character.setyPosition(platform.getHitbox().y + platform.getHitbox().height);
+                    }
+                    character.setAirborne(true);
+                    character.setOnPlatform(false);
+                    character.platformPlayerIsOn = null;
+                    character.setyVelocity(0);
                 }
-                character.setAirborne(true);
-                character.setOnPlatform(false);
-                character.platformPlayerIsOn = null;
-                character.setyVelocity(0);
-            }
-        } else {
-            if(character.getRight() > platform.getLeft() && intersection.x == platform.getLeft()) {
-                if(platform.getFileName().contains("sliding")) {
-                    character.setxPosition(platform.getLeft()-character.getScaledWidth()-10);
-                } else {
-                    character.setxPosition(platform.getLeft() - character.getScaledWidth() - 1);
+            } else {
+                if (character.getRight() > platform.getLeft() && intersection.x == platform.getLeft()) {
+                    if (platform.getFileName().contains("sliding")) {
+                        character.setxPosition(platform.getLeft() - character.getScaledWidth() - 10);
+                    } else {
+                        character.setxPosition(platform.getLeft() - character.getScaledWidth() - 1);
+                    }
+                    character.setxVelocity((int) (character.getxVelocity() * -1.2));
+                } else if (character.getLeft() < platform.getRight()) {
+                    if (platform.getFileName().contains("sliding")) {
+                        character.setxPosition(platform.getRight() + 10);
+                    } else {
+                        character.setxPosition(platform.getRight() + 1);
+                    }
+                    character.setxVelocity((int) (character.getxVelocity() * -1.2));
                 }
-                character.setxVelocity((int)(character.getxVelocity()*-1.2));
-            }
-            else if(character.getLeft() < platform.getRight()) {
-                if(platform.getFileName().contains("sliding")) {
-                    character.setxPosition(platform.getRight()+10);
-                } else {
-                    character.setxPosition(platform.getRight() + 1);
-                }
-                character.setxVelocity((int)(character.getxVelocity()*-1.2));
             }
         }
     }
