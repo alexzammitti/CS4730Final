@@ -16,10 +16,13 @@ public class AnimatedSprite extends Sprite {
     public final static String FALLING_ANIMATION = "falling";
     public final static String JUMP_ANIMATION = "jump";
     public final static String LANDING_ANIMATION = "landing";
+	public final static String DANCING_ANIMATION = "dancing";
+
 
 
     protected BufferedImage[] rightFrames = new BufferedImage[14];
 	protected BufferedImage[] leftFrames = new BufferedImage[14];
+	protected BufferedImage[] dancingFrames = new BufferedImage[40];
 	protected int currentIndex = 0;
 	protected int startIndex;
 	protected int endIndex;
@@ -32,6 +35,7 @@ public class AnimatedSprite extends Sprite {
 	protected boolean firstJump = true;
 	protected boolean firstWalk = true;
 	protected boolean firstFall = true;
+	protected boolean firstDance = true;
 	protected boolean right = true;
 	private String animation = "idle";
 
@@ -71,7 +75,15 @@ public class AnimatedSprite extends Sprite {
 
 	public void setEndIndex(int endIndex) { this.endIndex = endIndex; }
 
-	public void update(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) { super.update(pressedKeys,gamePads); }
+	public boolean isFirstDance() {
+		return firstDance;
+	}
+
+	public void setFirstDance(boolean firstDance) {
+		this.firstDance = firstDance;
+	}
+
+	public void update(ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) { super.update(pressedKeys,gamePads); }
 
 	public AnimatedSprite(String id) { super(id); }
 
@@ -99,6 +111,40 @@ public class AnimatedSprite extends Sprite {
 		for(int i = 0; i <= 1; i++) {
 			leftFrames[i+12] = readImage("left-" + player + "-falling-0" + i + ".png");
 		}
+
+		//Dancing
+		for(int i = 0; i <= 7; i++) {
+			dancingFrames[i] = leftFrames[i];
+		}
+		dancingFrames[8] = leftFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+9] = leftFrames[i+9];
+		}
+		dancingFrames[12] = leftFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+13] = leftFrames[i+9];
+		}
+		dancingFrames[16] = leftFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+17] = leftFrames[i+9];
+		}
+
+		for(int i = 0; i <= 7; i++) {
+			dancingFrames[i+20] = rightFrames[i];
+		}
+		dancingFrames[28] = rightFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+29] = rightFrames[i+9];
+		}
+		dancingFrames[32] = rightFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+33] = rightFrames[i+9];
+		}
+		dancingFrames[36] = rightFrames[12];
+		for(int i = 0; i <= 2; i++) {
+			dancingFrames[i+37] = rightFrames[i+9];
+		}
+
 
 		this.setImage(rightFrames[0]);
 	}
@@ -190,6 +236,7 @@ public class AnimatedSprite extends Sprite {
 				firstJump = true;
 				firstWalk = true;
 				firstFall = true;
+				firstDance = true;
 				this.setImage(leftFrames[currentIndex]);
 			} else if (this.animation.equals(WALK_ANIMATION) || this.animation.equals(JUMP_ANIMATION)) {
 				if (frameCounter % speed == 0) {
@@ -200,6 +247,26 @@ public class AnimatedSprite extends Sprite {
 						currentIndex++;
 						this.setImage(leftFrames[currentIndex]);
 					}
+				}
+			}
+		}
+
+		if(this.animation.equals(DANCING_ANIMATION)) {
+			if(firstDance) {
+				currentIndex = 0;
+				startIndex = 0;
+				endIndex = 39;
+				firstJump = true;
+				firstWalk = true;
+				firstFall = true;
+			}
+			if (frameCounter % speed == 0) {
+				if (currentIndex == endIndex) {
+					currentIndex = startIndex;
+					this.setImage(dancingFrames[currentIndex]);
+				} else {
+					currentIndex++;
+					this.setImage(dancingFrames[currentIndex]);
 				}
 			}
 		}

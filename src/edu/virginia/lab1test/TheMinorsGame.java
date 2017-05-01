@@ -888,7 +888,7 @@ public class TheMinorsGame extends Game {
             spinSawblades(true);
         }
         for(Player player : players) {
-            if(player.isAlive() && !player.isCourseCompleted()){
+            if(player.isAlive()){
                 handleAnimation(player,pressedKeys,gamePads);
                 player.animate();
             }
