@@ -52,7 +52,7 @@ public class TheMinorsGame extends Game {
     private final static int SLIDING_PLATFORM_SPEED = 2;
     private final static int FLOATTIME = 500;
     private final static int SAW_SPEED = 1;
-    private final static int WIN_SCORE = 600; //TODO
+    private final static int WIN_SCORE = 400; //TODO
 
 
 
@@ -1310,8 +1310,8 @@ public class TheMinorsGame extends Game {
                     player.incrementScore(100);
                 }
                 scoreboardBackground.addChild(player.getHead());
-                player.getScoreBar().setxPosition(200);
-                player.getHead().setxPosition(145);
+                player.getScoreBar().setxPosition(150);
+                player.getHead().setxPosition(100);
                 player.getHead().setScale(.8,.8);
                 player.getScoreBar().setyScale(1);
                 player.getScoreBar().setxScale(0);
