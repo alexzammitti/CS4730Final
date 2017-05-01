@@ -1,5 +1,6 @@
 package edu.virginia.engine.event;
 
+import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.Player;
 import edu.virginia.engine.tween.*;
@@ -18,8 +19,6 @@ public class EventManager implements IEventListener {
     public void handleEvent(Event event) {
         switch (event.getEventType()) {
             case Event.COLLISION:
-                break;
-            case Event.COIN_PICKED_UP:
                 break;
             case Event.TWEEN_COMPLETE_EVENT:
                 break;
@@ -40,6 +39,7 @@ public class EventManager implements IEventListener {
             case Event.GOAL:
                 if(!event.player.isCourseCompleted()) goalSound.play(false);
                 event.player.setCourseCompleted(true);
+                event.player.setAnimation(AnimatedSprite.DANCING_ANIMATION);
                 break;
         }
 
