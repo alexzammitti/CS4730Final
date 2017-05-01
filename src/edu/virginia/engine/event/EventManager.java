@@ -39,7 +39,6 @@ public class EventManager implements IEventListener {
             case Event.GOAL:
                 if(!event.player.isCourseCompleted()) goalSound.play(false);
                 event.player.setCourseCompleted(true);
-                event.player.setAnimation(AnimatedSprite.DANCING_ANIMATION);
                 break;
         }
 

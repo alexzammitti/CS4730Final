@@ -1012,12 +1012,13 @@ public class TheMinorsGame extends Game {
     }
 
     private void handleAnimation(Player player, ArrayList<Integer> pressedKeys, ArrayList<GamePad> gamePads) {
-
-        if(inputMode.equals(INPUT_GAMEPADS)) {
+        if (player.isCourseCompleted()) {
+            player.setAnimation(AnimatedSprite.DANCING_ANIMATION);
+        } else if (inputMode.equals(INPUT_GAMEPADS)) {
             if (gamePads.get(player.playerNumber).getLeftStickXAxis() < 0) {
                 player.setRight(false);
-                if(player.isAirborne()) {
-                    if(player.getyVelocity() > 0) {
+                if (player.isAirborne()) {
+                    if (player.getyVelocity() > 0) {
                         player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
                     } else {
                         player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1027,8 +1028,8 @@ public class TheMinorsGame extends Game {
                 }
             } else if (gamePads.get(player.playerNumber).getLeftStickXAxis() > 0) {
                 player.setRight(true);
-                if(player.isAirborne()) {
-                    if(player.getyVelocity() > 0) {
+                if (player.isAirborne()) {
+                    if (player.getyVelocity() > 0) {
                         player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
                     } else {
                         player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1036,8 +1037,8 @@ public class TheMinorsGame extends Game {
                 } else {
                     player.setAnimation(AnimatedSprite.WALK_ANIMATION);
                 }
-            } else if (player.isAirborne()){
-                if(player.getyVelocity() > 0) {
+            } else if (player.isAirborne()) {
+                if (player.getyVelocity() > 0) {
                     player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
                 } else {
                     player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1048,8 +1049,8 @@ public class TheMinorsGame extends Game {
 
         } else if (pressedKeys.contains(KEY_RIGHT)) {
             player.setRight(true);
-            if(player.isAirborne()) {
-                if(player.getyVelocity() > 0) {
+            if (player.isAirborne()) {
+                if (player.getyVelocity() > 0) {
                     player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
                 } else {
                     player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1058,10 +1059,10 @@ public class TheMinorsGame extends Game {
                 player.setAnimation(AnimatedSprite.WALK_ANIMATION);
             }
 
-        } else if(pressedKeys.contains(KEY_LEFT)){
+        } else if (pressedKeys.contains(KEY_LEFT)) {
             player.setRight(false);
-            if(player.isAirborne()) {
-                if(player.getyVelocity() > 0) {
+            if (player.isAirborne()) {
+                if (player.getyVelocity() > 0) {
                     player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
                 } else {
                     player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1070,8 +1071,8 @@ public class TheMinorsGame extends Game {
                 player.setAnimation(AnimatedSprite.WALK_ANIMATION);
             }
 
-        } else if (player.isAirborne()){
-            if(player.getyVelocity() > 0) {
+        } else if (player.isAirborne()) {
+            if (player.getyVelocity() > 0) {
                 player.setAnimation(AnimatedSprite.FALLING_ANIMATION);
             } else {
                 player.setAnimation(AnimatedSprite.JUMP_ANIMATION);
@@ -1080,6 +1081,7 @@ public class TheMinorsGame extends Game {
             player.setAnimation(AnimatedSprite.IDLE_ANIMATION);
         }
     }
+
 
     private void shootGuns(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads) {
         if(frameCounter % 100 == 0) {
@@ -1238,6 +1240,12 @@ public class TheMinorsGame extends Game {
     private void roundCompleteUpdate(ArrayList<Integer> pressedKeys,ArrayList<GamePad> gamePads){
         levelContainer.update(pressedKeys,gamePads);
         scoreboardBackground.removeChild(scoreboardHeader);
+        for(Player player: players) {
+            if(player.isAlive()){
+                handleAnimation(player,pressedKeys,gamePads);
+                player.animate();
+            }
+        }
         if(playersCompleted == numberOfPlayers && numberOfPlayers != 1) {
             scoreboardHeader = noPointsWide;
             scoreboardBackground.addChild(scoreboardHeader);
